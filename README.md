@@ -1,4 +1,4 @@
-### so you wanna be a master of jira tickets!
-#### do you have the skills to be number one?
+#### So, you don't want to be the master of JIRA Tickets?
+##### Do you have the skills to be number one?
 
 RNG sprint masters 
