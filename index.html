@@ -16,6 +16,15 @@
 
 			c.drawGeometry("fillRect", 0, 0, 10, 10, "fillStyle", "green");
 
+			keyframe.start([
+				function () {
+					console.log('h')
+				},
+				function () {
+					keyframe.abort = true;
+				}
+			])
+
 		</script>
 	</body>
 </html>
