@@ -1,21 +1,11 @@
 window.keyframe = {};
 
-keyframe.request = function () {
-	this.proccess = (typeof this.context === "function") ? function (delta) { this.context(delta, this) } : function (delta) { for (var i = 0; i < this.context.length; i++) { this.context[i](delta, this)}; };
-};
-
-keyframe.start = function (context) {
-	this.context = context || function () {console.log('hi')};
-	this.request();
+keyframe.start = function (functions) {
+	this.functions = functions || function (delta) { console.log(delta) };
+	this.animate = (keyframe.functions.length) ? function (delta) { if (keyframe.abort) return; for (var i = 0, f = keyframe.functions; i < f.length; i++) { f[i](delta); }; keyframe.id = window.requestAnimationFrame(keyframe.animate); } : function (delta) { if (keyframe.abort) return; keyframe.function(delta); keyframe.id = window.requestAnimationFrame(keyframe.animate); };
 	this.animate();
 };
-
-keyframe.end = function () {
+keyframe.end = function (callback) {
 	window.cancelAnimationFrame(keyframe.id);
-};
-
-keyframe.animate = function (delta) {
-	keyframe.proccess(delta);
-	if (keyframe.abort) return; 
-	keyframe.id = window.requestAnimationFrame(keyframe.animate);
+	if (callback) callback();
 };
