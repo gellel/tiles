@@ -4,7 +4,11 @@ class canvas {
 	}
 
 	process (delta) {
+	}
 
+	drawGeometry (type, positionX, positionY, width, height, attribute, style) {
+		if (attribute && this.context[attribute] && style) this.context[attribute] = style;
+		this.context[type || "fillRect"](positionX, positionY, width, height);
 	}
 
 	drawImage (image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight) {
