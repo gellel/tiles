@@ -19,7 +19,7 @@ class canvas {
 
 	drawApplyStyle (style) {
 		for (var key in style) {
-			if (this.context[key]) this.context[key] = style[key]
+			if (this.context[key]) this.context[key] = style[key];
 		}
 	}
 
@@ -63,6 +63,22 @@ class canvas {
 		}
 	}
 
+	fontApplyAttributes (font) {
+		return font.style + ' ' + font.variant + ' ' + font.weight + ' ' + font.stretch + ' ' + font.size + '/' + font.line + ' ' + font.family;
+	}
+
+	drawFillText (positionX, positionY, fontString, fontAttributes, fontStyle) {
+		this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
+		if (fontStyle) this.drawApplyStyle(fontStyle);
+		this.context.fillText(fontString, positionX, positionY);
+	}
+
+	drawStrokeText (positionX, positionY, fontString, fontAttributes, fontStyle) {
+		this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
+		if (fontStyle) this.drawApplyStyle(fontStyle);
+		this.context.strokeText(fontString, positionX, positionY);
+	}
+
 	create (node, attributes) {
 		return node.insertNode("canvas", attributes);
 	}
@@ -72,4 +88,5 @@ class canvas {
 		this.node = this.create(node || document.body, attributes || { id: 'canvas', style: 'border: 1px solid #e1e1e1;' });
 		this.context = this.node.getContext("2d");
 	}
+
 };
