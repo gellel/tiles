@@ -2,8 +2,8 @@
 #### So, you don't want to be the master of JIRA Tickets?
 ##### Do you have the skills to be number one?
 
-fixed that for you lz
-![alt tag](http://vignette2.wikia.nocookie.net/pokemon/images/1/15/007Squirtle_XY_anime.png/revision/latest?cb=20140916184418)
+fixed that for you lz (switched to git source)
+![alt tag](https://git.corp.yahoo.com/lindsaygelle/pokesprint/blob/master/img/png/temp/squirtle/squirtle.png?raw=true)
 
 RNG sprint masters 
 
