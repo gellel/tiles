@@ -2,9 +2,8 @@
 #### So, you don't want to be the master of JIRA Tickets?
 ##### Do you have the skills to be number one?
 
-<a href="http://au.yahoo.com">
-	<img src="http://static.giantbomb.com/uploads/original/0/25/11320-937627_20070510_screen004.jpg">
-</a>
+fixed that for you lz
+![alt tag](http://vignette2.wikia.nocookie.net/pokemon/images/1/15/007Squirtle_XY_anime.png/revision/latest?cb=20140916184418)
 
 RNG sprint masters 
 
