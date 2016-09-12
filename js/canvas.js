@@ -8,8 +8,8 @@ class canvas {
 		return undefined;
 	}
 
-	drawGeometry (type, positionX, positionY, width, height, attribute, style) {
-		if (attribute && this.context[attribute] && style) this.context[attribute] = style;
+	drawGeometry (type, positionX, positionY, width, height, style) {
+		if (style) this.drawApplyStyle(style);
 		this.context[this.drawRegExp(type) || "fillRect"](positionX, positionY, width, height);
 	}
 
@@ -64,7 +64,7 @@ class canvas {
 	}
 
 	fontApplyAttributes (font) {
-		return font.style + ' ' + font.variant + ' ' + font.weight + ' ' + font.stretch + ' ' + font.size + '/' + font.line + ' ' + font.family;
+		return (font.style || 'normal') + ' ' + (font.variant || 'normal') + ' ' + (font.weight || 'normal') + ' ' + (font.stretch || 'normal') + ' ' + (font.size || '14px') + '/' + (font.line || 'inherit') + ' ' + (font.family || 'sans-serif');
 	}
 
 	drawFillText (positionX, positionY, fontString, fontAttributes, fontStyle) {
@@ -85,7 +85,7 @@ class canvas {
 
 	constructor (node, attributes) {
 		this.id = "canvas" + new Date().getMilliseconds();
-		this.node = this.create(node || document.body, attributes || { id: 'canvas', style: 'border: 1px solid #e1e1e1;' });
+		this.node = this.create(node || document.body, attributes || { id: 'canvas', width: 600, height: 400, style: 'border: 1px solid #e1e1e1;' });
 		this.context = this.node.getContext("2d");
 	}
 
