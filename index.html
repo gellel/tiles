@@ -13,36 +13,12 @@
 		<script src="js/tiles.js"></script>
 		<script>
 			
-			var c = new canvas();
+			var c = new canvas(document.body, {id: "bg", width: 600, height: 400});
 
-			var t = new tiles(c.node, c.node.width / 30);
+			var t = new tiles(c, c.node.width / 30);
 
+			t.createExampleMap();
 
-			var map = t.maps[0];
-
-			for (var i = 0; i < map.length; i++) {
-
-				var tile = map[i];
-				
-				var s = {};
-
-				switch (tile.i) {
-					case 1:
-						s.fillStyle = 'red';
-						break;
-					case 2:
-						s.fillStyle = 'blue';
-						break;
-					case 3:
-						s.fillStyle = 'green';
-						break;
-					default:
-						s.fillStyle = 'white';
-				}
-
-				c.drawGeometry("fillRect", tile.x, tile.y, t.width, t.height, s);
-
-			}
 
 
 		</script>

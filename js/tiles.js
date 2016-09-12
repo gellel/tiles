@@ -4,7 +4,7 @@ class tiles {
 		return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 	}
 
-	tileInt (row, col, totalRows, totalColumns) {
+	createTileObject (row, col, totalRows, totalColumns) {
 		var map_data = { x: (col * this.width), y: (row * this.height) };
 
 		if (row === 0 || row === totalRows - 1) {
@@ -22,22 +22,46 @@ class tiles {
 		return map_data;
 	}
 
-	create () {
-		var map = []
+	createMapArray () {
+		var map = [];
 		for (var i = 0; i < this.rows; i++) {
 			for (var j = 0; j < this.cols; j++) {
-				map.push(this.tileInt(i, j, this.rows, this.cols));
+				map.push(this.createTileObject(i, j, this.rows, this.cols));
 			}
 		}
 		return map;
+	}
+
+	createExampleMap () {
+		for (var i = 0; i < this.map.length; i++) {
+
+			var tile = this.map[i];
+			
+			var style = {};
+
+			switch (tile.i) {
+				case 1:
+					style.fillStyle = 'red';
+					break;
+				case 2:
+					style.fillStyle = 'blue';
+					break;
+				case 3:
+					style.fillStyle = 'green';
+					break;
+				default:
+					style.fillStyle = 'white';
+			}
+			this.canvas.drawGeometry("fillRect", tile.x, tile.y, this.width, this.height, style);
+		}
 	}
 
 	constructor (canvas, scale) {
 		this.canvas = canvas; 
 		this.width = scale;
 		this.height = scale;
-		this.rows = this.canvas.height / this.height;
-		this.cols = this.canvas.width / this.width;
-		this.maps = [this.create()];
+		this.rows = this.canvas.node.height / this.height;
+		this.cols = this.canvas.node.width / this.width;
+		this.map = this.createMapArray();
 	}
 }

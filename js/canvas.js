@@ -84,7 +84,6 @@ class canvas {
 	}
 
 	constructor (node, attributes) {
-		this.id = "canvas" + new Date().getMilliseconds();
 		this.node = this.create(node || document.body, attributes || { id: 'canvas', width: 600, height: 400, style: 'border: 1px solid #e1e1e1;' });
 		this.context = this.node.getContext("2d");
 	}
