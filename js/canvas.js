@@ -6,9 +6,19 @@ class canvas {
 	process (delta) {
 	}
 
+	drawRegExp (type) {
+		var methods = [{ key: "fillRect", exp: new RegExp("fill?Rect", "gi") }, { key: "clearRect", exp: new RegExp("^clear?Rect$", "gi") }, { key: "strokeRect", exp: new RegExp("^stroke?Rect$", "gi" ) }];
+		for (var i = 0; i < methods.length; i++) {
+			var test = type.match(methods[i].exp);
+			console.log(test, methods[i].exp, type)
+			if (expressions[i].exp.match(type)) return expressions[i].key;
+		}
+		return undefined;
+	}
+
 	drawGeometry (type, positionX, positionY, width, height, attribute, style) {
 		if (attribute && this.context[attribute] && style) this.context[attribute] = style;
-		this.context[type || "fillRect"](positionX, positionY, width, height);
+		this.context[this.drawRegExp(type) || "fillRect"](positionX, positionY, width, height);
 	}
 
 	drawImage (image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight) {
