@@ -1,18 +1,10 @@
 class canvas {
 
-	draw (a) {
-	}
-
-	process (delta) {
-	}
-
 	drawRegExp (type) {
-		var methods = [{ key: "fillRect", exp: new RegExp("fill?Rect", "gi") }, { key: "clearRect", exp: new RegExp("^clear?Rect$", "gi") }, { key: "strokeRect", exp: new RegExp("^stroke?Rect$", "gi" ) }];
+		var methods = [{ key: "fillRect", exp: new RegExp("^fill(Rect)?$", "gi") }, { key: "clearRect", exp: new RegExp("^clear(Rect)?$", "gi") }, { key: "strokeRect", exp: new RegExp("^stroke?Rect$", "gi" ) }];	
 		for (var i = 0; i < methods.length; i++) {
-			var test = type.match(methods[i].exp);
-			console.log(test, methods[i].exp, type)
-			if (expressions[i].exp.match(type)) return expressions[i].key;
-		}
+			if (type.match(methods[i].exp)) return methods[i].key;
+		};
 		return undefined;
 	}
 
@@ -23,6 +15,52 @@ class canvas {
 
 	drawImage (image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight) {
 		this.context.drawImage(image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight)
+	}
+
+	drawApplyStyle (style) {
+		for (var key in style) {
+			if (this.context[key]) this.context[key] = style[key]
+		}
+	}
+
+	drawBezier (curveXStart, curveYStart, curveXEnd, curveYEnd, positionXStart, positionYStart, positionXEnd, positionYEnd, style) {
+		this.context.beginPath();
+		if (style) this.drawApplyStyle(style);
+		this.context.moveTo(positionXStart, positionYStart);
+		this.context.bezierCurveTo(curveXStart, curveYStart, curveXEnd, curveYEnd, positionXEnd, positionYEnd);
+		this.context.stroke();
+	}
+
+	drawBeziers () {
+		var parameters = Array.prototype.slice.call(arguments);
+		if (parameters[0].length) {
+			for (var i = 0, beziers = parameters[0]; i < beziers.length; i++) {
+				this.drawBezier(beziers[i].curve.x.s, beziers[i].curve.y.s, beziers[i].curve.x.e, beziers[i].curve.y.e, beziers[i].position.x.s, beziers[i].position.y.s, beziers[i].position.x.e, beziers[i].position.y.e, beziers[i].style);
+			}
+		}
+		else {
+			this.drawBezier(parameters);
+		}
+	}
+
+	drawLine (positionXStart, positionYStart, positionXEnd, positionYEnd, style) {
+		this.context.beginPath();
+		if (style) this.drawApplyStyle(style);
+		this.context.moveTo(positionXStart, positionYStart);
+		this.context.lineTo(positionXEnd, positionYEnd);
+		this.context.stroke();
+	}
+
+	drawLines () {
+		var parameters = Array.prototype.slice.call(arguments);
+		if (parameters[0].length) {
+			for (var i = 0, lines = parameters[0]; i < lines.length; i++) {
+				this.drawLine(lines[i].x.s, lines[i].y.s, lines[i].x.e, (lines[i].y.e || lines[i].y.s), lines[i].style);
+			}
+		}
+		else {
+			this.drawLine(parameters);
+		}
 	}
 
 	create (node, attributes) {
