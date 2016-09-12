@@ -17,42 +17,30 @@ class tiles {
 			map_data.i = 3;
 		}
 		else {
-			map_data.i = this.randRange(0, 3);
+			map_data.i = (!this.randRange(0, 2)) ?  this.randRange(0, 3) : 0;
 		}
 		return map_data;
 	}
 
 	createMapArray () {
-		var map = [];
+		var map_full = [];
 		for (var i = 0; i < this.rows; i++) {
+			var map_array_line = [];
 			for (var j = 0; j < this.cols; j++) {
-				map.push(this.createTileObject(i, j, this.rows, this.cols));
+				map_array_line.push(this.createTileObject(i, j, this.rows, this.cols));
 			}
+			map_full.push(map_array_line);
 		}
-		return map;
+		return map_full;
 	}
 
 	createExampleMap () {
-		for (var i = 0; i < this.map.length; i++) {
-
-			var tile = this.map[i];
-			
-			var style = {};
-
-			switch (tile.i) {
-				case 1:
-					style.fillStyle = 'red';
-					break;
-				case 2:
-					style.fillStyle = 'blue';
-					break;
-				case 3:
-					style.fillStyle = 'green';
-					break;
-				default:
-					style.fillStyle = 'white';
+		for (var i = 0, rlen = this.maps.length; i < rlen; i++) {
+			var map_array_line = this.maps[i];
+			for (var j = 0, clen = map_array_line.length; j < clen; j++) {
+				var data = this.maps[i][j];
+				this.canvas.drawGeometry("fillRect", data.x, data.y, this.width, this.height, { fillStyle: 1 === data.i ? "red" : 2 === data.i ? "blue" : 3 === data.i ? "green" : "transparent" });	
 			}
-			this.canvas.drawGeometry("fillRect", tile.x, tile.y, this.width, this.height, style);
 		}
 	}
 
@@ -62,6 +50,6 @@ class tiles {
 		this.height = scale;
 		this.rows = this.canvas.node.height / this.height;
 		this.cols = this.canvas.node.width / this.width;
-		this.map = this.createMapArray();
+		this.maps = this.createMapArray();
 	}
 }

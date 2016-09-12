@@ -1,8 +1,16 @@
 class canvas {
 
+	save () {
+		this.context.save();
+	}
+
+	restore () {
+		this.context.restore();
+	}
+
 	drawRegExp (type) {
 		var methods = [{ key: "fillRect", exp: new RegExp("^fill(Rect)?$", "gi") }, { key: "clearRect", exp: new RegExp("^clear(Rect)?$", "gi") }, { key: "strokeRect", exp: new RegExp("^stroke?Rect$", "gi" ) }];	
-		for (var i = 0; i < methods.length; i++) {
+		for (var i = 0, len = methods.length; i < len; i++) {
 			if (type.match(methods[i].exp)) return methods[i].key;
 		};
 		return undefined;
@@ -34,8 +42,9 @@ class canvas {
 	drawBeziers () {
 		var parameters = Array.prototype.slice.call(arguments);
 		if (parameters[0].length) {
-			for (var i = 0, beziers = parameters[0]; i < beziers.length; i++) {
-				this.drawBezier(beziers[i].curve.x.s, beziers[i].curve.y.s, beziers[i].curve.x.e, beziers[i].curve.y.e, beziers[i].position.x.s, beziers[i].position.y.s, beziers[i].position.x.e, beziers[i].position.y.e, beziers[i].style);
+			for (var i = 0, beziers = parameters[0], len = beziers.length; i < len; i++) {
+				var bezier = beziers[i];
+				this.drawBezier(bezier.curve.x.s, bezier.curve.y.s, bezier.curve.x.e, bezier.curve.y.e, bezier.position.x.s, bezier.position.y.s, bezier.position.x.e, bezier.position.y.e, bezier.style);
 			}
 		}
 		else {
@@ -54,8 +63,9 @@ class canvas {
 	drawLines () {
 		var parameters = Array.prototype.slice.call(arguments);
 		if (parameters[0].length) {
-			for (var i = 0, lines = parameters[0]; i < lines.length; i++) {
-				this.drawLine(lines[i].x.s, lines[i].y.s, lines[i].x.e, (lines[i].y.e || lines[i].y.s), lines[i].style);
+			for (var i = 0, lines = parameters[0], len = lines.length; i < len; i++) {
+				var line = lines[i];
+				this.drawLine(line.x.s, line.y.s, line.x.e, (line.y.e || line.y.s), line.style);
 			}
 		}
 		else {
