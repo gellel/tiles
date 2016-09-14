@@ -38,7 +38,7 @@ class canvas {
 		for (var key in style) {
 			/** apply 'style' to canvas context if key matches system definition **/
 			if (this.context[key]) this.context[key] = style[key];
-		}
+		};
 	}
 
 	drawBezier (curveXStart, curveYStart, curveXEnd, curveYEnd, positionXStart, positionYStart, positionXEnd, positionYEnd, style) {
@@ -65,7 +65,7 @@ class canvas {
 				var bezier = beziers[i];
 				/** pass data to single bezier function **/
 				this.drawBezier(bezier.curve.x.s, bezier.curve.y.s, bezier.curve.x.e, bezier.curve.y.e, bezier.position.x.s, bezier.position.y.s, bezier.position.x.e, bezier.position.y.e, bezier.style);
-			}
+			};
 		}
 		else {
 			/** pass data to single bezier function **/
@@ -97,12 +97,12 @@ class canvas {
 				var line = lines[i];
 				/** pass data to single line function **/
 				this.drawLine(line.x.s, line.y.s, line.x.e, (line.y.e || line.y.s), line.style);
-			}
+			};
 		}
 		else {
 			/** pass data to single line function **/
 			this.drawLine(parameters);
-		}
+		};
 	}
 
 	fontApplyAttributes (font) {
