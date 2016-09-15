@@ -71,10 +71,15 @@ class tiles {
 		var row;
 		/** set temporary col value **/
 		var col;
+
+		console.log(parameters[0])
 		/** set row and col value based on the type of argument supplied (either object with .row and .col keys) or seperate arguments **/
 		parameters.length > 1 ? (row = parameters[0], col = parameters[1]) : (row = parameters[0].row, col = parameters[0].col);
 		/** set and return grid array object if available otherwise return false **/
-		return (this.map[row] && this.map[row][col]) ? this.map[row][col] : !1;
+		console.log(row, col);
+
+
+		return (this.map[row] && this.map[row][col]) ? this.map[row][col] : false;
 	}
 
 	constructor (canvas, scale) {

@@ -1,8 +1,8 @@
 class character {
 
-	getTrueCorner (direction) {
+	getTrueCorners (direction) {
 		/** set and return intger based on string if it equates to defined direction **/
-		return "top" === direction ? this.y : "right" === direction ? this.width : "bottom" === direction ? this.height : this.x;
+		return "top" === direction ? { x: this.x, y: this.y } : "right" === direction ? { x: this.width, y: this.y } : "bottom" === direction ? { x: this.x, y: this.height } : { x: this.x, y: this.y };
 	}
 
 	getDirectionIntegers (direction) {
@@ -10,9 +10,12 @@ class character {
 		return "top" === direction ? {offsetX: 0, offsetY: -1} : "right" === direction ? {offsetX: 1, offsetY: 0} : "bottom" === direction ? {offsetX:0, offsetY:1} : "left" === direction ? {offsetX: -1, offsetY: 0} : {offsetX: 0, offsetY: 0};
 	}
 
-	getTilePosition (offsetRowInteger, offsetColumnInteger) {
+	getTilePosition (offsetX, offsetY) {
+		/** convert position to base 1 or 0 if NaN from 0 int division **/
+		var row = (this.y / this.y) || 0;
+		var col = (this.x / this.x) || 0;
 		/** set and return object based on characters position within grid (based on base 1 scale x and y position) **/
-		return { row: (this.y / this.y) + offsetRowInteger || 0, col: (this.x / this.x) + offsetColumnInteger ||  0 };
+		return { row: row + offsetY, col: col + offsetX };
 	}
 
 	getAdjacentTiles (tilesInstance) {
@@ -24,7 +27,7 @@ class character {
 		/** set direction to object containing offset integers **/
 		direction = this.getDirectionIntegers(direction);
 		/** set and return object based on offset integers and character position (beware: can return current position) **/
-		return tilesInstance.getTile(this.getTilePosition(direction.offsetY, direction.offsetX));
+		return tilesInstance.getTile(this.getTilePosition(direction.offsetX, direction.offsetY));
 	}
 
 	selectRandomTile (tilesObject) {
@@ -59,14 +62,13 @@ class character {
 		/** set temporary object of specific adjacent tile based on direction variable **/
 		var tile = this.getSpecificAdjacentTile(tilesInstance, direction);
 		/** confirm that tile was found in grid **/
-		this.ismoving = true;
 		/** set and return context movement data **/
 		return { offset, tile, direction };
 	}
 
 	hasReachedTile () {
 		/** confirm true corner has reached target **/
-		if (this.x !== this.tx || this.y !== this.ty) return false;
+		if (this.tcx !== this.tx && this.tcy !== this.ty) return false;
 		/** reset velocity intgers **/
 		this.setVelocity(0, 0);
 		/** set and return true **/
@@ -78,6 +80,11 @@ class character {
 		this.ty = ty;
 	}
 
+	setTargetCorners (tcx, tcy) {
+		this.tcx = tcx;
+		this.tcy = tcy;
+	}
+
 	setVelocity (vx, vy) {
 		this.vx = vx;
 		this.vy = vy;
@@ -87,40 +94,41 @@ class character {
 		/** clear drawing from item canvas instance using non updated coordinates **/
 		this.clear();
 
-		if (true) {
-
-			if (this.ismoving) return;
-
+		if (this.hasReachedTile()) {
 
 			var context = this.getNextMovement(tilesInstance);
 
-			console.log('target direction:', context.direction);
+			var tile = context.tile;
 
-			console.log('current tile:', { x: this.x, y: this.y });
+			if (tile.canuse) {
 
-			console.log('next tile:', { x: context.tile.x, y: context.tile.y });
+				var direction = context.direction;
+
+				var offset = context.offset;
+
+				var truecorners = this.getTrueCorners(context.direction);
+
+				console.log('direction to move:', direction);
+				console.log('true corner to check:', truecorners);
+				console.log('tile corner to reach:', {x: tile.x, y:tile.y})
+			}
 			
+			this.position();
+
+			keyframe.abort = true;
+
 		}
 		else {
-
+			this.incrementPosition();
 		}
 
-		/** redraw using potentially updated coordinates **/
 		this.draw();
 
-		//var random = this.selectRandomTile(this.getAdjacentTiles(tilesInstance));
-
-		/*
-			var specific = this.selectSpecificTile(this.getAdjacentTiles(tilesInstance), "right");
-			console.log("random tile:", random)
-			console.log("specific tile:", specific)
-		*/
-		//if (random.canuse) this.clear(), this.updatePosition(random.x, random.y), this.draw();
 	}
 
 	incrementPosition () {
-		this.x = this.x + this.xv || 0;
-		this.y = this.y + this.yx || 0;
+		this.x = this.x + this.vx || 0;
+		this.y = this.y + this.vy || 0;
 	}
 
 	updatePosition (x, y) {
@@ -136,6 +144,20 @@ class character {
 	draw () {
 		/** draw sample shape to test character position as fillRect **/
 		this.canvas.drawGeometry("fillRect", this.x, this.y, this.width, this.height, { fillStyle: this.color || "cyan" });
+	}
+
+	init (print) {
+		this.setVelocity(0, 0);
+		this.setTargetCorners(this.x, this.y);
+		this.setTargetPosition(this.x, this.y);
+
+		if (print) this.position();
+	}
+
+	position () {
+		console.log('x:', this.x, 'y:', this.y);
+		console.log('vx:', this.vx, 'vy:', this.vy);
+		console.log('tcx:', this.tcx, 'tcy:', this.tcy);
 	}
 
 	constructor (canvas, x, y, scale, image) {
