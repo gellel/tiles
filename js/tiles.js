@@ -7,7 +7,7 @@ class tiles {
 
 	createTile (row, col, totalRows, totalColumns) {
 		/** set the base coordinates for tile item for the array **/
-		var map_data = { x: (col * this.width), y: (row * this.height), row: row, col: col };
+		var map_data = { x: (col * this.width), y: (row * this.height), row: row, col: col, width: this.width, height: this.height };
 		/** set tile type to be 1 if it is along the top or bottom row **/
 		if (row === 0 || row === totalRows - 1) {
 			map_data.image = 1;
@@ -64,22 +64,9 @@ class tiles {
 		};
 	}
 
-	getTile () {
-		/** set parameters from parse arguments to function **/
-		var parameters = Array.prototype.slice.call(arguments);
-		/** set temporary row value **/
-		var row;
-		/** set temporary col value **/
-		var col;
-
-		console.log(parameters[0])
-		/** set row and col value based on the type of argument supplied (either object with .row and .col keys) or seperate arguments **/
-		parameters.length > 1 ? (row = parameters[0], col = parameters[1]) : (row = parameters[0].row, col = parameters[0].col);
+	getTile (column, row) {
 		/** set and return grid array object if available otherwise return false **/
-		console.log(row, col);
-
-
-		return (this.map[row] && this.map[row][col]) ? this.map[row][col] : false;
+		return (this.map[row] && this.map[row][column]) ? this.map[row][column] : false;
 	}
 
 	constructor (canvas, scale) {

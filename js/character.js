@@ -1,139 +1,130 @@
 class character {
 
-	getTrueCorners (direction) {
-		/** set and return intger based on string if it equates to defined direction **/
-		return "top" === direction ? { x: this.x, y: this.y } : "right" === direction ? { x: this.width, y: this.y } : "bottom" === direction ? { x: this.x, y: this.height } : { x: this.x, y: this.y };
+	getDirectionCheck (direction) {
+		return "top" === direction ? "canMoveTop" : "right" === direction ? "canMoveRight" : "bottom" === direction ? "canMoveBottom" : "canMoveLeft";	
 	}
 
 	getDirectionIntegers (direction) {
 		/** set and return object based on direction string; object contains both x and y offsets **/
-		return "top" === direction ? {offsetX: 0, offsetY: -1} : "right" === direction ? {offsetX: 1, offsetY: 0} : "bottom" === direction ? {offsetX:0, offsetY:1} : "left" === direction ? {offsetX: -1, offsetY: 0} : {offsetX: 0, offsetY: 0};
+		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
 	}
 
-	getTilePosition (offsetX, offsetY) {
-		/** convert position to base 1 or 0 if NaN from 0 int division **/
-		var row = (this.y / this.y) || 0;
-		var col = (this.x / this.x) || 0;
-		/** set and return object based on characters position within grid (based on base 1 scale x and y position) **/
-		return { row: row + offsetY, col: col + offsetX };
+	getAdjacentTiles (map) {
+		/** set base array to hold found tiles **/
+		var tiles = [];
+		/** iterate over direction options **/
+		for (var i = 0, len = this.directions.length; i < len; i++) {
+			/** append tile data to array **/
+			tiles.push(this.getSpecificAdjacentTile(map, this.directions[i]));
+		};
+		/** return tiles and their data **/
+		return tiles;
 	}
 
-	getAdjacentTiles (tilesInstance) {
-		/** set and return object based on characters position within grid (based on base 1 x and y position) and increment this position based on four point direction **/
-		return { top: tilesInstance.getTile(this.getTilePosition(-1, 0)), right: tilesInstance.getTile(this.getTilePosition(0, 1)), bottom: tilesInstance.getTile(this.getTilePosition(1, 0)), left: tilesInstance.getTile(this.getTilePosition(0, -1)) };
+	getSpecificAdjacentTile (map, direction) {
+		/** set offset integers to find tile next to character **/
+		var integers = this.getDirectionIntegers(direction);
+		/** attempt to find tile **/
+		var tile = map.getTile(this.col + integers.x, this.row + integers.y);
+		/** return tile data **/
+		return tile;
 	}
 
-	getSpecificAdjacentTile (tilesInstance, direction) {
-		/** set direction to object containing offset integers **/
-		direction = this.getDirectionIntegers(direction);
-		/** set and return object based on offset integers and character position (beware: can return current position) **/
-		return tilesInstance.getTile(this.getTilePosition(direction.offsetX, direction.offsetY));
-	}
-
-	selectRandomTile (tilesObject) {
+	getRandomAjacentTile (map) {
+		/** collect array of tiles near character **/
+		var tiles = this.getAdjacentTiles(map).filter(function (i) { if (i) return i });
 		/** set temporary array to hold filtered from object values **/
 		var filtered = [];
 		/** iterate over tiles object **/
-		for (var key in tilesObject) {
-			/** populate array with object key value if it is not false (assumed missing or unavailable tile) **/
-			if (tilesObject[key]) filtered.push(tilesObject[key]);
+		for (var key in tiles) {
+			/** confirm that tile was found for direction **/
+			if (tiles[key]) {
+				/** confirm that tile can be used **/
+				if (tiles[key].canuse) {
+					/** add item to array of usable items **/
+					filtered.push(tiles[key]);
+				}
+			}
 		};
 		/** set and return object from filtered array with random direction from length **/
 		return filtered[Math.floor(Math.random() * filtered.length)];
 	}
 
-	selectSpecificTile (tilesObject, direction) {
-		/** set and return single item from object; intended to be used with the object that would be passed to selectRandomTile **/
-		return (direction) ? tilesObject[direction] : false;
-	}
-
 	selectRandomDirectionString () {
-		/** set base direction strings **/
-		var directions = ["top", "right", "bottom", "left"];
 		/** set and return random string from selection **/
-		return directions[Math.floor(Math.random() * directions.length)];
+		return this.directions[Math.floor(Math.random() * this.directions.length)];
 	}
 
-	getNextMovement (tilesInstance) {
-		/** set temporary string of direction to move toward (used for velocity and axis) **/
-		var direction = this.selectRandomDirectionString();
-		/** set direction velocities **/
-		var offset = this.getDirectionIntegers(direction);
-		/** set temporary object of specific adjacent tile based on direction variable **/
-		var tile = this.getSpecificAdjacentTile(tilesInstance, direction);
-		/** confirm that tile was found in grid **/
-		/** set and return context movement data **/
-		return { offset, tile, direction };
+	canMoveTop () {
+		return this.y + this.velocityY > this.tile.y ? true : false;
 	}
 
-	hasReachedTile () {
-		/** confirm true corner has reached target **/
-		if (this.tcx !== this.tx && this.tcy !== this.ty) return false;
-		/** reset velocity intgers **/
-		this.setVelocity(0, 0);
-		/** set and return true **/
-		return true;
+	canMoveBottom () {
+		return this.tile.y + this.tile.height > this.y + this.height + this.velocityX ? true : false;
+	}
+	canMoveLeft () {
+		return this.x + this.velocityX > this.tile.x ? true : false;
 	}
 
-	setTargetPosition (tx, ty) {
-		this.tx = tx;
-		this.ty = ty;
+	canMoveRight () {
+		return this.tile.x + this.tile.width >= this.x + this.width + this.velocityX ? true : false;
 	}
 
-	setTargetCorners (tcx, tcy) {
-		this.tcx = tcx;
-		this.tcy = tcy;
+	canMove () {
+		return (this.x !== this.tile.x) ? ((this.x < this.tile.x) ? this.canMoveLeft() : this.canMoveRight()) : ((this.y > this.tile.y) ? this.canMoveTop() : this.canMoveBottom());		
 	}
 
-	setVelocity (vx, vy) {
-		this.vx = vx;
-		this.vy = vy;
+
+	tileCorners (tile) {
+		/** get true corners according to canvas for tile suppled **/
+		return { top: tile.y, right: tile.x + tile.width, bottom: tile.y + tile.height, left: tile.x };
 	}
 
-	move (tilesInstance, method) {
-		/** clear drawing from item canvas instance using non updated coordinates **/
+	tileCollision () {
+		return (this.x === this.tile.x && this.y === this.tile.y) ? true : false;
+	}
+
+	move (map) {
+
 		this.clear();
+		
+		this.tile = this.getRandomAjacentTile(map);
+		//this.tile = this.getSpecificAdjacentTile(map, "bottom");
 
-		if (this.hasReachedTile()) {
+		this.updatePosition(this.tile.x, this.tile.y);
 
-			var context = this.getNextMovement(tilesInstance);
-
-			var tile = context.tile;
-
-			if (tile.canuse) {
-
-				var direction = context.direction;
-
-				var offset = context.offset;
-
-				var truecorners = this.getTrueCorners(context.direction);
-
-				console.log('direction to move:', direction);
-				console.log('true corner to check:', truecorners);
-				console.log('tile corner to reach:', {x: tile.x, y:tile.y})
-			}
-			
-			this.position();
-
-			keyframe.abort = true;
-
-		}
-		else {
-			this.incrementPosition();
-		}
+		this.updateGrid(this.tile.col, this.tile.row);
 
 		this.draw();
-
 	}
 
-	incrementPosition () {
-		this.x = this.x + this.vx || 0;
-		this.y = this.y + this.vy || 0;
+	incrementPosition (x, y) {
+		/** increment this current x position by the value of supplied x position **/
+		this.x = this.x + x;
+		/** increment this current y position by the value of supplied y position **/
+		this.y = this.y + y;
+	}
+
+
+	updateVelocity (velocityX, velocityY) {
+		/** set this characters x velocity to defined integer or float **/
+		this.velocityX = velocityX;
+		/** set this characters y velocity to defined integer or float **/
+		this.velocityY = velocityY;
 	}
 
 	updatePosition (x, y) {
+		/** set this current x position to new x position **/
 		this.x = x;
+		/** set this current y position to new y position **/
 		this.y = y;
+	}
+
+	updateGrid (col, row) {
+		/** set this characters column position within grid to new column position **/
+		this.col = col;
+		/** set this characters row position within grid to new row position **/
+		this.row = row;
 	}
 
 	clear () {
@@ -146,35 +137,30 @@ class character {
 		this.canvas.drawGeometry("fillRect", this.x, this.y, this.width, this.height, { fillStyle: this.color || "cyan" });
 	}
 
-	init (print) {
-		this.setVelocity(0, 0);
-		this.setTargetCorners(this.x, this.y);
-		this.setTargetPosition(this.x, this.y);
-
-		if (print) this.position();
-	}
-
-	position () {
-		console.log('x:', this.x, 'y:', this.y);
-		console.log('vx:', this.vx, 'vy:', this.vy);
-		console.log('tcx:', this.tcx, 'tcy:', this.tcy);
-	}
-
-	constructor (canvas, x, y, scale, image) {
+	constructor (canvas, tile, attributes) {
 		/** create self instance of html canvas element **/
 		this.canvas = canvas;
 		/** create self instance x position **/
-		this.x = x;
+		this.x = tile.x;
 		/** create self instance y position **/
-		this.y = y;
-		/** create self instance scale measurement **/
-		this.scale = scale;
-		/** create self instance scale width **/
-		this.width = scale;
-		/** create self instance scale height **/
-		this.height = scale;
+		this.y = tile.y;
+		/** create self instance character width **/
+		this.width = tile.width;
+		/** create self instance character height **/
+		this.height = tile.height;
+		/** create self instance x velocity **/
+		this.velocityX = attributes.velocityX || 0;
+		/** create self instance y velocity **/
+		this.velocityY = attributes.velocityY || 0;
+		/** create self instance of moveable directions **/
+		this.directions = ["top", "right", "bottom", "left"];
 		/** create self instance image resource **/
-		this.image = image;
-		/** create base attributes **/
+		this.image = attributes.image || "none";
+		/** create reference to starting tile **/
+		this.tile = tile;
+		/** create reference to column in grid **/
+		this.col = tile.col;
+		/** create reference to row in grid **/
+		this.row = tile.row;
 	}
 }

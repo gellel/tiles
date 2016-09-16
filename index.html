@@ -25,23 +25,15 @@
 
 			const map = new tiles(base, grid);
 
-
-			const c = new character(main, (0 * grid), (1 * grid), grid, 'noimage');
-
-
+			const c = new character(main, map.getTile(0, 0), {});
+			
 			map.draw();
 
-			c.init();
-
-			c.draw();
-
-
 			keyframe.start(function () {
-				c.move(map);	
+				c.move(map);
 			});
-		
 
-	
+
 		</script>
 	</body>
 </html>
