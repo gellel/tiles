@@ -5,21 +5,21 @@ class tiles {
 		return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 	}
 
-	createTile (row, col, totalRows, totalColumns) {
+	createTile (row, column, totalRows, totalColumns) {
 		/** set the base coordinates for tile item for the array **/
-		var map_data = { x: (col * this.width), y: (row * this.height), row: row, col: col, width: this.width, height: this.height };
+		var map_data = { x: (column * this.width), y: (row * this.height), row: row, column: column, width: this.width, height: this.height };
 		/** set tile type to be 1 if it is along the top or bottom row **/
 		if (row === 0 || row === totalRows - 1) {
 			map_data.image = 1;
 			map_data.canuse = false;
 		}
 		/** set tile type to be 2 if it is along the left column **/
-		else if (col === 0) {
+		else if (column === 0) {
 			map_data.image = 2;
 			map_data.canuse = true;
 		}
 		/** set tile type to be 3 if it is along the right column **/
-		else if (col === totalColumns - 1) {
+		else if (column === totalColumns - 1) {
 			map_data.image = 3;
 			map_data.canuse = true;
 		}

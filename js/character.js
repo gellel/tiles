@@ -1,9 +1,5 @@
 class character {
 
-	getDirectionCheck (direction) {
-		return "top" === direction ? "canMoveTop" : "right" === direction ? "canMoveRight" : "bottom" === direction ? "canMoveBottom" : "canMoveLeft";	
-	}
-
 	getDirectionIntegers (direction) {
 		/** set and return object based on direction string; object contains both x and y offsets **/
 		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
@@ -25,7 +21,7 @@ class character {
 		/** set offset integers to find tile next to character **/
 		var integers = this.getDirectionIntegers(direction);
 		/** attempt to find tile **/
-		var tile = map.getTile(this.col + integers.x, this.row + integers.y);
+		var tile = map.getTile(this.column + integers.x, this.row + integers.y);
 		/** return tile data **/
 		return tile;
 	}
@@ -56,24 +52,29 @@ class character {
 	}
 
 	canMoveTop () {
-		return this.y + this.velocityY > this.tile.y ? true : false;
+		/** confirm that the top side of the character has collided with the target tile **/
+		return this.tile.y <= (this.y + this.velocityY) ? true : false;
 	}
 
 	canMoveBottom () {
-		return this.tile.y + this.tile.height > this.y + this.height + this.velocityX ? true : false;
+		/** confirm that the bottom side of the character has collided with the target tile **/
+		return ((this.y + this.height) + this.velocityY) <= this.tile.y + this.tile.height ? true : false;
 	}
+
 	canMoveLeft () {
-		return this.x + this.velocityX > this.tile.x ? true : false;
+		/** confirm that the left side of the character has collided with the target tile **/
+		return (this.x + this.velocityX) >= this.tile.x ? true : false;
 	}
 
 	canMoveRight () {
-		return this.tile.x + this.tile.width >= this.x + this.width + this.velocityX ? true : false;
+		/** confirm that the right side of the character has collided with the target tile **/
+		return ((this.x + this.width) + this.velocityX) <= this.tile.x + this.tile.width ? true : false;
 	}
 
 	canMove () {
-		return (this.x !== this.tile.x) ? ((this.x < this.tile.x) ? this.canMoveLeft() : this.canMoveRight()) : ((this.y > this.tile.y) ? this.canMoveTop() : this.canMoveBottom());		
+		/** confirm for the axis that the character can move **/
+		return this.velocityX || this.velocityY ? 0 !== this.velocityX ? this.velocityX < 0 ? this.canMoveLeft() : this.canMoveRight() : this.velocityY < 0 ? this.canMoveTop() : this.canMoveBottom() : false;
 	}
-
 
 	tileCorners (tile) {
 		/** get true corners according to canvas for tile suppled **/
@@ -81,21 +82,77 @@ class character {
 	}
 
 	tileCollision () {
+		/** confirm that the drawing coordinates for the character and the tile intersect **/
 		return (this.x === this.tile.x && this.y === this.tile.y) ? true : false;
 	}
 
-	move (map) {
+	canGetTile () {
+		/** confirm that the character has finished moving **/
+		if (!this.canMove()) {
+			/** confirm that the tile did intersect its next tile position **/
+			if (this.tileCollision()) {
+				/** tile can be fetched **/
+				return true;
+			}
+		}
+		/** the character cannot move to the designated position **/
+		return false;
+	}
 
+	
+	snapToMove (map) {
 		this.clear();
 		
 		this.tile = this.getRandomAjacentTile(map);
-		//this.tile = this.getSpecificAdjacentTile(map, "bottom");
 
 		this.updatePosition(this.tile.x, this.tile.y);
 
-		this.updateGrid(this.tile.col, this.tile.row);
+		this.updateGrid(this.tile.column, this.tile.row);
 
 		this.draw();
+	}
+
+	incrementMove () {
+		this.clear();
+		this.incrementPosition(this.velocityX, this.velocityY);
+		this.draw();
+	}
+
+	move (map) {
+		
+		if (this.canMove()) return this.incrementMove();
+
+		if (this.tileCollision()) {
+
+			console.log('resetting')
+			this.updateVelocity(0, 0);
+
+			var direction = this.selectRandomDirectionString();
+			var tile = this.getSpecificAdjacentTile(map, direction);
+
+			if (!tile || !tile.canuse) return;
+
+
+
+			//if (tile && tile.canuse) {
+
+				//console.log(this.column, this.row);
+
+				//console.log(tile.column, tile.row);
+
+				var velocity = this.getDirectionIntegers(direction);
+
+				this.updateVelocity(velocity.x, velocity.y);
+
+				this.updateGrid(tile.column, tile.row);
+
+				this.tile = tile;
+
+				//console.log(direction, tile, velocity)
+
+				//return keyframe.abort = true;
+			//}
+		}
 	}
 
 	incrementPosition (x, y) {
@@ -104,7 +161,6 @@ class character {
 		/** increment this current y position by the value of supplied y position **/
 		this.y = this.y + y;
 	}
-
 
 	updateVelocity (velocityX, velocityY) {
 		/** set this characters x velocity to defined integer or float **/
@@ -120,9 +176,9 @@ class character {
 		this.y = y;
 	}
 
-	updateGrid (col, row) {
+	updateGrid (column, row) {
 		/** set this characters column position within grid to new column position **/
-		this.col = col;
+		this.column = column;
 		/** set this characters row position within grid to new row position **/
 		this.row = row;
 	}
@@ -149,9 +205,9 @@ class character {
 		/** create self instance character height **/
 		this.height = tile.height;
 		/** create self instance x velocity **/
-		this.velocityX = attributes.velocityX || 0;
+		this.velocityX = 0;
 		/** create self instance y velocity **/
-		this.velocityY = attributes.velocityY || 0;
+		this.velocityY = 0;
 		/** create self instance of moveable directions **/
 		this.directions = ["top", "right", "bottom", "left"];
 		/** create self instance image resource **/
@@ -159,7 +215,7 @@ class character {
 		/** create reference to starting tile **/
 		this.tile = tile;
 		/** create reference to column in grid **/
-		this.col = tile.col;
+		this.column = tile.column;
 		/** create reference to row in grid **/
 		this.row = tile.row;
 	}
