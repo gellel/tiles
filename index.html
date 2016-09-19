@@ -25,15 +25,60 @@
 
 			const map = new tiles(base, grid);
 
-			const c = new character(main, map.getTile(0, 0), {});
-			
 			map.draw();
 
-			c.draw();
+			/** test multiple **/
+			const characters = [];
+
+			/*** INCASE YOU FORGET. THE PREVENT TILE FOR BEING USED IF OCCUPIED IS ON **/
+
+			for (var i = 0; i < 5; i++) {
+				characters.push( new character(main, map.getTile(0, getRandomInt(1, map.rows - 1)), {}) )
+			}
+
+			for (var i = 0; i < characters.length; i++) {
+				characters[i].init(map);
+			}
+
+			keyframe.start(function () {
+				for (var i = 0, len = characters.length; i < len; i++) {
+					characters[i].move(map);
+				}
+			});
+			
+
+
+			/** test single 
+
+			
+			const c = new character(main, map.getTile(0, 1), {});
+			
+			c.init(map);
 
 			keyframe.start(function () {
 				c.move(map);
 			});
+			
+			**/
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 		</script>

@@ -40,9 +40,9 @@ class tiles {
 			/** set a base container to hold the current rows data **/
 			var row = [];
 			/** iterate over the defined columns for the current row **/
-			for (var j = 0; j < this.cols; j++) {
+			for (var j = 0; j < this.columns; j++) {
 				/** push current tile data to row array **/
-				row.push(this.createTile(i, j, this.rows, this.cols));
+				row.push(this.createTile(i, j, this.rows, this.columns));
 			};
 			/** push complete row to main 2d array **/
 			grid.push(row);
@@ -69,6 +69,14 @@ class tiles {
 		return (this.map[row] && this.map[row][column]) ? this.map[row][column] : false;
 	}
 
+	editTile (column, row, data) {
+		/** confirm that tile exists in grid **/
+		if (this.getTile(column, row)) {
+			/** set this tile to new data **/
+			this.map[row][column] = data;
+		}
+	}
+
 	constructor (canvas, scale) {
 		/** create self instance of canvas class (requires canvas.js) (uses it to draw to canvas element) **/
 		this.canvas = canvas; 
@@ -81,7 +89,7 @@ class tiles {
 		/** create self instance number of rows based on physical canvas element size width **/
 		this.rows = this.canvas.node.height / this.height;
 		/** create self instance number of rows based on physical canvas element size height **/
-		this.cols = this.canvas.node.width / this.width;
+		this.columns = this.canvas.node.width / this.width;
 		/** create self instance of canvas grid 2d map **/
 		this.map = this.createArray();
 	}

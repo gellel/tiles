@@ -1,8 +1,13 @@
 class character {
 
 	getDirectionIntegers (direction) {
-		/** set and return object based on direction string; object contains both x and y offsets **/
+		/** set and return direction object based on direction string; object contains both x and y offsets **/
 		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
+	}
+
+	getVelocityIntegers (integers) {
+		/** set and return velocity object based on direction integers; object contains both x and y offsets **/
+		return 0 !== integers.x ? integers.x < 0 ? integers.x = -this.speed : integers.x = this.speed : integers.y < 0 ? integers.y = -this.speed : integers.y = this.speed, integers;
 	}
 
 	getAdjacentTiles (map) {
@@ -46,6 +51,11 @@ class character {
 		return filtered[Math.floor(Math.random() * filtered.length)];
 	}
 
+	getPlottedAdjacentTile (map) {
+		/** return next item object **/
+		return this.plotted[0];
+	}
+
 	selectRandomDirectionString () {
 		/** set and return random string from selection **/
 		return this.directions[Math.floor(Math.random() * this.directions.length)];
@@ -78,7 +88,7 @@ class character {
 
 	tileCorners (tile) {
 		/** get true corners according to canvas for tile suppled **/
-		return { top: tile.y, right: tile.x + tile.width, bottom: tile.y + tile.height, left: tile.x };
+		return { top: tile.y, right: (tile.x + tile.width), bottom: (tile.y + tile.height), left: tile.x };
 	}
 
 	tileCollision () {
@@ -86,30 +96,59 @@ class character {
 		return (this.x === this.tile.x && this.y === this.tile.y) ? true : false;
 	}
 
-	canGetTile () {
-		/** confirm that the character has finished moving **/
-		if (!this.canMove()) {
-			/** confirm that the tile did intersect its next tile position **/
-			if (this.tileCollision()) {
-				/** tile can be fetched **/
-				return true;
-			}
-		}
-		/** the character cannot move to the designated position **/
-		return false;
+	setTileUsed (map, column, row, tile) {
+		tile.canuse = false;
+		map.editTile(column, row, tile);
 	}
 
-	snapToMove (map) {
+	snapPosition (map) {
 		/** clear character illustration from map at base position **/
 		this.clear();
 		/** get random tile from character position **/
-		this.tile = this.getRandomAjacentTile(map);
+		var tile = this.getRandomAjacentTile(map);
+		/** confirm that tile exists and can be used **/
+		if (!tile || !tile.canuse) return;
+		/** set found tile to base tile **/
+		this.tile = tile;
 		/** update coordinates by new tile x and y position **/
 		this.updatePosition(this.tile.x, this.tile.y);
 		/** set character position within grid columns and rows **/
 		this.updateGrid(this.tile.column, this.tile.row);
 		/** redraw item to stage **/
 		this.draw();
+	}
+
+	glidePosition (map) {
+		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
+		if (this.canMove()) return this.incrementMove();
+		/** confirm that character has intersected its destination tile **/
+		if (this.tileCollision()) {
+			/** reset character velocities to prevent additional movement **/
+			this.updateVelocity(0, 0);
+			/** get and set direction for next tile selection **/
+			var direction = this.selectRandomDirectionString();
+			/** attempt to get tile from character position **/
+			var tile = this.getSpecificAdjacentTile(map, direction);
+			/** exit function if tile cannot be found or used **/
+			if (!tile || !tile.canuse) return;
+			/** set velocity integers for corner check and movement **/
+			var velocity = this.getVelocityIntegers(this.getDirectionIntegers(direction));
+
+			this.updateTile(map, this.tile, { canuse: true });
+			/** set movement velocity **/
+			this.updateVelocity(velocity.x, velocity.y);
+			/** set character position within grid columns and rows **/
+			this.updateGrid(tile.column, tile.row);
+			/** set tile to new destination tile **/
+			this.tile = tile;
+
+			this.updateTile(map, this.tile, { canuse: false });
+		}
+	}
+
+	move (map) {
+		/** movement method **/
+		this.glidePosition(map);
 	}
 
 	incrementMove () {
@@ -119,35 +158,6 @@ class character {
 		this.incrementPosition(this.velocityX, this.velocityY);
 		/** redraw item to stage **/
 		this.draw();
-	}
-
-	glideMoveToNext (map) {
-		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
-		if (this.canMove()) return this.incrementMove();
-		/** confirm that character has intersected its destination tile **/
-		if (this.tileCollision()) {
-			/** reset character velocities to prevent additional moveemnt **/
-			this.updateVelocity(0, 0);
-			/** get and set direction for next tile selection **/
-			var direction = this.selectRandomDirectionString();
-			/** attempt to get tile from character position **/
-			var tile = this.getSpecificAdjacentTile(map, direction);
-			/** exit function if tile cannot be found or used **/
-			if (!tile || !tile.canuse) return;
-			/** set velocity integers for corner check and movement **/
-			var velocity = this.getDirectionIntegers(direction);
-			/** set movement velocity **/
-			this.updateVelocity(velocity.x, velocity.y);
-			/** set character position within grid columns and rows **/
-			this.updateGrid(tile.column, tile.row);
-			/** set tile to new destination tile **/
-			this.tile = tile;
-		}
-	}
-
-	move (map) {
-		/** movement method **/
-		this.glideMoveToNext(map);
 	}
 
 	incrementPosition (x, y) {
@@ -178,6 +188,15 @@ class character {
 		this.row = row;
 	}
 
+	updateTile (map, tile, edits) {
+		if (edits) {
+			for (var key in edits) {
+				tile[key] = edits[key];
+			}
+		}
+		map.editTile(tile.column, tile.row, tile);
+	}
+
 	clear () {
 		/** remove current image data from canvas **/
 		this.canvas.drawGeometry("clearRect", this.x, this.y, this.width, this.height, { fillStyle: undefined });
@@ -186,6 +205,12 @@ class character {
 	draw () {
 		/** draw sample shape to test character position as fillRect **/
 		this.canvas.drawGeometry("fillRect", this.x, this.y, this.width, this.height, { fillStyle: this.color || "cyan" });
+	}
+
+	init (map) {
+		/** set used status to tile **/
+		
+		this.setTileUsed(map, this.column, this.row, this.tile);
 	}
 
 	constructor (canvas, tile, attributes) {
@@ -205,8 +230,14 @@ class character {
 		this.velocityY = 0;
 		/** create self instance of moveable directions **/
 		this.directions = ["top", "right", "bottom", "left"];
+		/** create self instance of plotted tiles **/
+		this.plotted = [];
+		/** create self instance of movement based speed **/
+		this.speed = 1;
 		/** create self instance image resource **/
 		this.image = attributes.image || "none";
+		/** create self instance colour resource **/
+		this.color = "rgb(" +  Math.floor(Math.random() * (255 - 0) + 0) + ", " + Math.floor(Math.random() * (255 - 0) + 0) + ", " + Math.floor(Math.random() * (255 - 0) + 0) + ")";
 		/** create reference to starting tile **/
 		this.tile = tile;
 		/** create reference to column in grid **/
