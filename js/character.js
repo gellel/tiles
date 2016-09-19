@@ -99,60 +99,55 @@ class character {
 		return false;
 	}
 
-	
 	snapToMove (map) {
+		/** clear character illustration from map at base position **/
 		this.clear();
-		
+		/** get random tile from character position **/
 		this.tile = this.getRandomAjacentTile(map);
-
+		/** update coordinates by new tile x and y position **/
 		this.updatePosition(this.tile.x, this.tile.y);
-
+		/** set character position within grid columns and rows **/
 		this.updateGrid(this.tile.column, this.tile.row);
-
+		/** redraw item to stage **/
 		this.draw();
 	}
 
 	incrementMove () {
+		/** clear character illustration from map at base position **/
 		this.clear();
+		/** increment coordinates by position velocity integer **/
 		this.incrementPosition(this.velocityX, this.velocityY);
+		/** redraw item to stage **/
 		this.draw();
 	}
 
-	move (map) {
-		
+	glideMoveToNext (map) {
+		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
 		if (this.canMove()) return this.incrementMove();
-
+		/** confirm that character has intersected its destination tile **/
 		if (this.tileCollision()) {
-
-			console.log('resetting')
+			/** reset character velocities to prevent additional moveemnt **/
 			this.updateVelocity(0, 0);
-
+			/** get and set direction for next tile selection **/
 			var direction = this.selectRandomDirectionString();
+			/** attempt to get tile from character position **/
 			var tile = this.getSpecificAdjacentTile(map, direction);
-
+			/** exit function if tile cannot be found or used **/
 			if (!tile || !tile.canuse) return;
-
-
-
-			//if (tile && tile.canuse) {
-
-				//console.log(this.column, this.row);
-
-				//console.log(tile.column, tile.row);
-
-				var velocity = this.getDirectionIntegers(direction);
-
-				this.updateVelocity(velocity.x, velocity.y);
-
-				this.updateGrid(tile.column, tile.row);
-
-				this.tile = tile;
-
-				//console.log(direction, tile, velocity)
-
-				//return keyframe.abort = true;
-			//}
+			/** set velocity integers for corner check and movement **/
+			var velocity = this.getDirectionIntegers(direction);
+			/** set movement velocity **/
+			this.updateVelocity(velocity.x, velocity.y);
+			/** set character position within grid columns and rows **/
+			this.updateGrid(tile.column, tile.row);
+			/** set tile to new destination tile **/
+			this.tile = tile;
 		}
+	}
+
+	move (map) {
+		/** movement method **/
+		this.glideMoveToNext(map);
 	}
 
 	incrementPosition (x, y) {
