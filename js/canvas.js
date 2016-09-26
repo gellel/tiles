@@ -1,4 +1,46 @@
-class canvas {
+class Canvas extends Grid {
+
+	/*
+		* about class: creates a HTML canvas with bound drawing attributes for that canvas
+
+		* constructor parameters:
+			config: typeof Object {}
+				required object origin: [GridClassInstance].__this__();
+	*/
+
+	static ALPHA (minimum, maximum, floatminimum, floatmaximum) {
+		/** set default maximum if not defined **/
+		maximum = maximum || 0;
+		/** set default minimum if not defined **/
+		minimum = minimum || 0;
+		/** set default floatmaximum if not defined **/
+		floatmaximum = floatmaximum || 0;
+		/** set default minimum if not defined **/
+		floatminimum = floatmaximum || 0;
+		/** return value for alpha item **/
+		return "0" + "." + (Math.floor(Math.random() * (maximum - minimum + 1)) + minimum) + (Math.floor(Math.random() * (floatmaximum - floatminimum + 1)) + floatminimum);
+	}
+
+	static INT (minimum, maximum) {
+		/** set default maximum if not defined **/
+		maximum = maximum || 255;
+		/** set default minimum if not defined **/
+		minimum = minimum || 0;
+		/** adjust maximum if it is outside 255 (ceiling for RGB) **/
+		if (maximum > 255) maximum = maximum - (maximum - 255);
+		/** return value for RGB item **/
+		return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+	}
+
+	static RGB (red, green, blue) {
+		/** public function: create RGB colour string for used as fillStyle **/
+		return "rgb(" + String(red) + "," + String(green) + "," + String(blue) + ")";
+	}
+
+	static RGBA (red, green, blue, alpha) {
+		/** public function: create RGBA colour string for used as fillStyle **/
+		return "rgba(" + String(red) + "," + String(green) + "," + String(blue) + "," + String(alpha) + ")";
+	}
 
 	save () {
 		/** store this classes instance of the canvas state **/
@@ -8,6 +50,11 @@ class canvas {
 	restore () {
 		/** restore this classes instance of the canvas state **/
 		this.context.restore();
+	}
+
+	clear () {
+		/** draw clearing rectangle across entire canvas instance **/
+		this.drawGeometry("clearRect", 0, 0, this.node.clientWidth, this.node.clientHeight);
 	}
 
 	drawRegExp (type) {
@@ -128,15 +175,41 @@ class canvas {
 		this.context.strokeText(fontString, positionX, positionY);
 	}
 
+	setCanvasWidth () {
+		/** set canvas to have required bitmap scale for width **/
+		this.node.width = this.columns * this.scale;
+	}
+
+	setCanvasHeight () {
+		/** set canvas to have required bitmap scale for height **/
+		this.node.height = this.rows * this.scale;
+	}
+
+	setAttributes (attributes) {
+		/** set base object for defining attributes for canvas **/
+		attributes = attributes || {};
+		/** defined required width for node constructor **/
+		attributes.width = this.gridWidth || this.columns * this.scale;
+		/** defined required height for node constructor **/
+		attributes.height = this.gridHeight || this.rows * this.scale;
+		/** set and return formatted object for constructor **/
+		return attributes;
+	}
+
 	create (node, attributes) {
+		attributes = attributes || {};
 		/** create html canvas element with attributes (requires prototypes.js) **/
 		return node.insertNode("canvas", attributes);
 	}
 
-	constructor (node, attributes) {
-		/** create self instance of html canvas element **/
-		this.node = this.create(node || document.body, attributes || { id: 'canvas', width: 600, height: 400, style: 'border: 1px solid #e1e1e1;' });
-		/** create self instance of canvas context 2d **/
+	constructor (config) {
+		/** set base object for constructor **/
+		config = config || {};
+		/** super will configure the matrix if not defined **/
+		super(config);
+		/** set class canvas node from config data **/
+		this.node = (config.target) ? config.target.insertNode("canvas", this.setAttributes(config.attributes || config.attr)) : (config.node) ? config.node.setMultipleAttributes(this.setAttributes(config.attributes || config.attr)) : document.body.insertNode("canvas", this.setAttributes(config.attributes || config.attr));
+		/** set class canvas context from class node **/
 		this.context = this.node.getContext("2d");
 	}
 

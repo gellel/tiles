@@ -1,96 +1,181 @@
-class tiles {
+class Tiles extends Grid {
 
-	getRandomInt (minimum, maximum) {
-		/** set and return random number based on minimum and maximum values as arguments **/
-		return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+	/*
+		* about class: create map array containing object data based on Grid data
+
+		* constructor parameters:
+			config: typeof Object {}
+				required object origin: [GridClassInstance].__this__();
+	*/
+
+	getRandomDirectionString () {
+		/** set and return random string from selection **/
+		return this.directions[Math.floor(Math.random() * this.directions.length)];
 	}
 
-	createTile (row, column, totalRows, totalColumns) {
-		/** set the base coordinates for tile item for the array **/
-		var map_data = { x: (column * this.width), y: (row * this.height), row: row, column: column, width: this.width, height: this.height };
-		/** set tile type to be 1 if it is along the top or bottom row **/
-		if (row === 0 || row === totalRows - 1) {
-			map_data.image = 1;
-			map_data.canuse = false;
-		}
-		/** set tile type to be 2 if it is along the left column **/
-		else if (column === 0) {
-			map_data.image = 2;
-			map_data.canuse = true;
-		}
-		/** set tile type to be 3 if it is along the right column **/
-		else if (column === totalColumns - 1) {
-			map_data.image = 3;
-			map_data.canuse = true;
-		}
-		/** set tile type to be either 0,3 if it is any other position if the random occurance check returns 0 **/
-		else {
-			map_data.image = (!this.getRandomInt(0, 2)) ? this.getRandomInt(0, 3) : 0;
-			map_data.canuse = (map_data.image === 0) ? true : false;
-		}
-		/** return complete object **/
-		return map_data;
+	getDirectionIntegers (direction) {
+		/** set and return direction object based on direction string; object contains both x and y offsets **/
+		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
 	}
 
-	createArray () {
-		/** set base container to hold 2d array **/
-		var grid = [];
-		/** iterate over defined rows for this size of grid **/
-		for (var i = 0; i < this.rows; i++) {
-			/** set a base container to hold the current rows data **/
-			var row = [];
-			/** iterate over the defined columns for the current row **/
-			for (var j = 0; j < this.columns; j++) {
-				/** push current tile data to row array **/
-				row.push(this.createTile(i, j, this.rows, this.columns));
-			};
-			/** push complete row to main 2d array **/
-			grid.push(row);
+	getAdjacentTiles (map, tile) {
+		/** set base array to hold found tiles **/
+		var tiles = [];
+		/** iterate over direction options **/
+		for (var i = 0, len = this.directions.length; i < len; i++) {
+			/** append tile data to array **/
+			tiles.push(this.getSpecificAdjacentTile(map, this.directions[i], tile));
 		};
-		/** set and return complete 2d array for class **/
-		return grid;
+		/** return tiles and their data **/
+		return tiles;
 	}
 
-	draw () {
-		/** iterate over length of 2d array rows **/
-		for (var i = 0, rowlength = this.map.length; i < rowlength; i++) {
-			/** iterate over array row columns **/
-			for (var j = 0, columnlength = this.map[i].length; j < columnlength; j++) {
-				/** cache current row and column data **/
-				var data = this.map[i][j];
-				/** draw a simple rectangle using the canvas class defined method and supplied data **/
-				this.canvas.drawGeometry("fillRect", data.x, data.y, this.width, this.height, { fillStyle: 1 === data.image ? "red" : 2 === data.image ? "blue" : 3 === data.image ? "green" : "transparent" });	
-			};
-		};
+	getSpecificAdjacentTile (map, direction, tile) {
+		/** set offset integers to find tile next to supplied tile **/
+		var integers = this.getDirectionIntegers(direction);
+		/** attempt to find tile **/
+		var tile = map.getTile(tile.column + integers.x, tile.row + integers.y);
+		/** return tile data **/
+		return tile;
 	}
 
-	getTile (column, row) {
-		/** set and return grid array object if available otherwise return false **/
-		return (this.map[row] && this.map[row][column]) ? this.map[row][column] : false;
+	getAdjacentFilteredTiles (tile) {
+		/** return reduced filtered array from adjacent tiles from tile source **/
+		return this.getAdjacentTiles(this, tile).filter(function (i) { return i && i.canUseTile ? i : !1; });
 	}
 
-	editTile (column, row, data) {
-		/** confirm that tile exists in grid **/
-		if (this.getTile(column, row)) {
-			/** set this tile to new data **/
-			this.map[row][column] = data;
+	getTile () {
+		/** collect arguments and set to the instance **/
+		var parameters = Array.prototype.slice.call(arguments);
+		/** set map instance from supplied or local map **/
+		var map = (typeof parameters[0] === "object") ? parameters.shift() : this.map;
+		/** set column from arguments list **/
+		var column = parameters.shift();
+		/** set row from arguments list **/
+		var row = parameters.shift();
+		/** confirm map **/
+		if (map) {
+			/** confirm that object was found in map column **/
+			if (map[column]) {
+				/** confirm that object was found in map column and row and return object **/
+				if (map[column][row]) return map[column][row];
+			}
+		}
+		/** failed outcome **/
+		return false;
+	}
+
+	getTiles () {
+		/** collect arguments and set to the instance **/
+		var parameters = Array.prototype.slice.call(arguments);
+		/** fetch first argument **/
+		var arg = parameters[0];
+		/** assign array map to variable **/
+		var map = (typeof arg !== "function") ? parameters[0] : this.map;
+		/** assign function handler to variable **/
+		if (typeof parameters.slice(-1)[0] === "function") {
+			/** iterate over the defined columns of the map **/
+			for (var column = 0; column < this.columns; column++) {
+				/** iterate over the defined rows of the map **/
+				for (var row = 0; row < this.rows; row++) {
+					/** process the tile with callback **/
+					parameters.slice(-1)[0](map[column][row]);
+				}
+			}
 		}
 	}
 
-	constructor (canvas, scale) {
-		/** create self instance of canvas class (requires canvas.js) (uses it to draw to canvas element) **/
-		this.canvas = canvas; 
-		/** create self instance tile sprite size width **/
-		this.width = scale;
-		/** create self instance tile sprite size height **/
-		this.height = scale;
-		/** create self instance scale measurement **/
-		this.scale = scale;
-		/** create self instance number of rows based on physical canvas element size width **/
-		this.rows = this.canvas.node.height / this.height;
-		/** create self instance number of rows based on physical canvas element size height **/
-		this.columns = this.canvas.node.width / this.width;
-		/** create self instance of canvas grid 2d map **/
-		this.map = this.createArray();
+	editTile () {
+		/** collect arguments and set to the instance **/
+		var parameters = Array.prototype.slice.call(arguments);
+		/** set map instance from supplied or local map **/
+		var map = (typeof parameters[0] === "object") ? parameters.shift() : this.map;
+		/** set column from arguments list **/
+		var column = parameters.shift();
+		/** set row from arguments list **/
+		var row = parameters.shift();
+		/** set method from arguments list **/
+		var method = parameters.shift();
+		/** set map column row item to be the result of the returned data from the callback or the object **/
+		map[column][row] = (typeof method === "function") ? method({ columns: this.columns, rows: this.rows, scale: this.scale, gridWidth: this.gridWidth, gridHeight: this.gridHeight, column: column, row: row, self: map[column][row] }) : method;
+	}
+
+	editTiles () {
+		/** collect arguments and set to the instance **/
+		var parameters = Array.prototype.slice.call(arguments);
+		/** fetch first argument **/
+		var arg = parameters[0];
+		/** assign array map to variable **/
+		var map = (typeof arg !== "function") ? parameters[0] : this.map;
+		/** assign function handler to variable **/
+		if (typeof parameters.slice(-1)[0] === "function") {
+			/** iterate over the defined columns of the map **/
+			for (var column = 0; column < this.columns; column++) {
+				/** iterate over the defined rows of the map **/
+				for (var row = 0; row < this.rows; row++) {
+					/** edit the tile **/
+					this.editTile(map, column, row, parameters.slice(-1)[0]);
+				}
+			}
+		}
+	}
+
+	create () {
+		/** collect arguments and set to the instance **/
+		var parameters = Array.prototype.slice.call(arguments);
+		/** set empty variable to hold potential constructor function **/
+		var construct;
+		/** set empty variable to hold potential config object **/
+		var config;
+		/** iterate over paramaters **/
+		for (var key in parameters) {
+			switch (typeof parameters[key]) {
+				case "function":
+					construct = parameters[key];
+					break;
+				case "object":
+					config = parameters[key];
+					break
+			};
+		}
+		/** set base container for returned map **/
+		var gridarray = [];
+		/** iterate over the defined columns of the map **/
+		for (var column = 0; column < this.columns; column++) {
+			/** set base container for column in process **/
+			var position = [];
+			/** iterate over the defined rows of the map **/
+			for (var row = 0; row < this.rows; row++) {
+				/** create temporary parameter object **/
+				var para = Object.assign({ column: column, row: row }, this.__this__());
+				/** confirm that config object exists **/
+				if (config) {
+					/** extend object with configuration object data **/
+					para = Object.assign(para, config);
+				}
+				/** confirm that object constructor exists **/
+				if (construct) {
+					/** set para to be instance of constructor function **/
+					para = new construct(para);
+				}
+				/** updated column with row data **/
+				position.push(para);
+			}
+			/** append position array to main map **/
+			gridarray.push(position);
+		}
+		/** completed array map returned for handler **/
+		return gridarray;
+	}
+
+	constructor (config) {
+		/** set base object for constructor **/
+		config = config || {};
+		/** super will configure the matrix if not defined **/
+		super(config);
+		/** set class map array data from super config **/
+		this.map = config.map || this.create(config.class, config.config);
+		/** set class character moveable directions **/
+		this.directions = config.directions || ["top", "right", "bottom", "left"];
 	}
 }

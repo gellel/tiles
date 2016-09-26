@@ -9,78 +9,13 @@
 	<body>
 		<script src="js/prototypes.js"></script>
 		<script src="js/keyframe.js"></script>
+		<script src="js/grid.js"></script>
 		<script src="js/canvas.js"></script>
 		<script src="js/tiles.js"></script>
 		<script src="js/tile.js"></script>
+		<script src="js/maptile.js"></script>
 		<script src="js/character.js"></script>
-		<script>
-
-			const config = { width: 600, height: 400 };
-
-			const grid = 20;
-
-			const base = new canvas(document.body, Object.assign({ style: 'position: absolute; z-index: 0;'}, config));
-
-			const main = new canvas(document.body, Object.assign({ style: 'position: absolute; z-index: 1;'}, config));
-
-			const map = new tiles(base, grid);
-
-			map.draw();
-
-			/** test multiple **/
-			const characters = [];
-
-			/*** INCASE YOU FORGET. THE PREVENT TILE FOR BEING USED IF OCCUPIED IS ON **/
-
-			for (var i = 0; i < 5; i++) {
-				characters.push( new character(main, map.getTile(0, getRandomInt(1, map.rows - 1)), {}) )
-			}
-
-			for (var i = 0; i < characters.length; i++) {
-				characters[i].init(map);
-			}
-
-			keyframe.start(function () {
-				for (var i = 0, len = characters.length; i < len; i++) {
-					characters[i].move(map);
-				}
-			});
-			
-
-
-			/** test single 
-
-			
-			const c = new character(main, map.getTile(0, 1), {});
-			
-			c.init(map);
-
-			keyframe.start(function () {
-				c.move(map);
-			});
-			
-			**/
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		</script>
+		<script src="js/path.js"></script>
+		<script src="js/main.js"></script>
 	</body>
 </html>
