@@ -2,7 +2,7 @@ class Path extends Tiles {
 
 	find (start, target) {
 		var result = this.search(start, function (tile) {
-			if (tile.x === target.x) {
+			if (tile.x === target.x && target.y === tile.y) {
 				return true;
 			}
 		});
