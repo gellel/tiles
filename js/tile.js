@@ -5,7 +5,7 @@ class Tile extends Grid {
 
 		* constructor parameters:
 			config: typeof Object {}
-				required object origin: [GridClassInstance].__this__();
+				required object inclusion: [GridClassInstance].__this__();
 	*/
 
 	getLeftPoint () {

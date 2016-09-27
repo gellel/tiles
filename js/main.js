@@ -1,5 +1,5 @@
 /** set base columns **/
-const columns = 80;
+const columns = 60;
 
 /** set base rows **/
 const rows = 20;
@@ -21,6 +21,8 @@ const stage = new Canvas(Object.assign(grid.__this__(), { attr: { id: "stage", s
 /** set collision environment **/
 const objects = new Canvas(Object.assign(grid.__this__(), { attr: { id: "objects", style: "position: absolute; z-index: 2;"} }));
 
+/** set path environment **/
+const paths = new Canvas(Object.assign(grid.__this__(), { attr: { id: "paths", style: "position: absolute; z-index: 3;"} }));
 
 
 /** set map tiles **/
@@ -55,38 +57,44 @@ collisions.getTiles(function (tile) {
 
 
 
-
 var path = new Path(collisions.__this__());
 
-console.log(path);
+var s = path.getTile(0, 0);
+var e = path.getTile(7, 6);
+
+var p = path.find(path.getTile(0, 0), path.getTile(7, 6));
+
+paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
+
+paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
+
+console.log(p)
 
 
 
+if (p) {
 
+	var myVar = setInterval(function(){ myTimer() }, 50);
 
-var characters = [];
+	function myTimer() {
+	    if (p.length) {
+	    	var t = p.shift();
 
-for (var i = 0; i < 4; i++) {
-	characters.push(
-		new Character(Object.assign(grid.__this__(), { column: 0, row: window.getRandomInt(0, grid.rows) }))
-	);
+	    	stage.drawGeometry("fill", t.x, t.y, t.width, t.height);
+	    }
+	    else {
+	    	myStopFunction()
+	    }
+	}
+
+	function myStopFunction() {
+	    clearInterval(myVar);
+	}
+
 }
 
-for (var i = 0; i < characters.length; i++) {
-	stage.drawGeometry("fill", characters[i].x, characters[i].y, characters[i].width, characters[i].height, { fillStyle: characters[i].tileBaseColour });
-}
 
-keyframe.start(function () {
-	for (var i = 0; i < characters.length; i++) {
-		stage.drawGeometry("clear", characters[i].x, characters[i].y, characters[i].width, characters[i].height);
-	}
-	for (var i = 0; i < characters.length; i++) {
-		characters[i].g(collisions);
 
-		stage.drawGeometry("fill", characters[i].x, characters[i].y, characters[i].width, characters[i].height, { fillStyle: characters[i].tileBaseColour });
-
-	}
-});
 
 
 

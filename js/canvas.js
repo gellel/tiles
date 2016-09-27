@@ -159,7 +159,7 @@ class Canvas extends Grid {
 
 	drawFillText (positionX, positionY, fontString, fontAttributes, fontStyle) {
 		/** set font for canvas based on string as argument or object formatted to string **/
-		this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
+		if (fontAttributes) this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
 		/** apply drawing styles for font **/
 		if (fontStyle) this.drawApplyStyle(fontStyle);
 		/** draw filled text **/

@@ -18,30 +18,43 @@ class Tiles extends Grid {
 		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
 	}
 
-	getAdjacentTiles (map, tile) {
+	getAdjacentTiles (tile) {
 		/** set base array to hold found tiles **/
 		var tiles = [];
 		/** iterate over direction options **/
 		for (var i = 0, len = this.directions.length; i < len; i++) {
 			/** append tile data to array **/
-			tiles.push(this.getSpecificAdjacentTile(map, this.directions[i], tile));
+			tiles.push(this.getSpecificAdjacentTile(this.directions[i], tile));
 		};
 		/** return tiles and their data **/
 		return tiles;
 	}
 
-	getSpecificAdjacentTile (map, direction, tile) {
+	getSpecificAdjacentTile (direction, tile) {
 		/** set offset integers to find tile next to supplied tile **/
 		var integers = this.getDirectionIntegers(direction);
 		/** attempt to find tile **/
-		var tile = map.getTile(tile.column + integers.x, tile.row + integers.y);
+		var tile = this.getTile(tile.column + integers.x, tile.row + integers.y);
 		/** return tile data **/
 		return tile;
 	}
 
 	getAdjacentFilteredTiles (tile) {
 		/** return reduced filtered array from adjacent tiles from tile source **/
-		return this.getAdjacentTiles(this, tile).filter(function (i) { return i && i.canUseTile ? i : !1; });
+		return this.getAdjacentTiles(tile).filter(function (i) { return i && i.canUseTile ? i : !1; });
+	}
+
+	getSurroundingTiles (tile) {
+		/** set offset integers to fine tile next to supplied tile **/
+		var integers = [{x: -1, y:-1}, {x: 0, y: -1}, {x: 1, y: -1}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: -1, y: 1}, {x: -1, y: 0}];
+		/** set base array to hold found tiles **/
+		var tiles = [];
+		/** iteraver over directions **/
+		for (var i = 0, len = integers.length; i < len; i++) {
+			tiles.push(this.getTile(tile.column + integers[i].x, tile.row + integers[i].y));
+		}
+		/** return tile data **/
+		return tiles;
 	}
 
 	getTile () {
@@ -135,7 +148,7 @@ class Tiles extends Grid {
 					break;
 				case "object":
 					config = parameters[key];
-					break
+					break;
 			};
 		}
 		/** set base container for returned map **/
