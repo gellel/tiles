@@ -1,8 +1,7 @@
 class Path extends Tiles {
 
-
-
 	heuristic (start, target) {
+		/** set based heuristic **/
 		start.heuristic = 0;
 		/** **/
 		var heuristic = 1;
@@ -13,11 +12,11 @@ class Path extends Tiles {
 		/** process queue **/
 		while (queue.length) {
 			/** fetch tiles from queue tile reference **/
-			var tiles = this.getAdjacentTiles(queue.shift());
-			/** iterate over the collected tiles **/
-			for (var i = 0, len = tiles.length; i < len; i++) {
-				/** confirm that tile exists **/
-				if (tiles[i] && tiles[i].canUseTile) {
+			var tiles = this.getAdjacentFilteredTiles(queue.shift());
+			/** confirm that tiles are not empty **/
+			if (tiles.length) {
+				/** iterate over the collected tiles **/
+				for (var i = 0, len = tiles.length; i < len; i++) {
 					/** confirm that array does not container this tile square instance **/
 					if (visited.indexOf(tiles[i]) === -1) {
 						/** **/
@@ -28,9 +27,10 @@ class Path extends Tiles {
 						visited.push(tiles[i]);
 						/** break case **/
 						if (target.x === tiles[i].x && target.y === tiles[i].y) {
+							/** returned visited **/
 							return visited;
 						}
-					}
+					}	
 				}
 			}
 		}
@@ -55,11 +55,11 @@ class Path extends Tiles {
 		/** process queue **/
 		while (queue.length) {
 			/** fetch tiles from queue tile reference **/
-			var tiles = this.getAdjacentTiles(queue.shift());
-			/** iterate over the collected tiles **/
-			for (var i = 0, len = tiles.length; i < len; i++) {
-				/** confirm that tile exists **/
-				if (tiles[i] && tiles[i].canUseTile) {
+			var tiles = this.getAdjacentFilteredTiles(queue.shift());
+			/** confirm that tiles are not empty **/
+			if (tiles.length) {
+				/** iterate over the collected tiles **/
+				for (var i = 0, len = tiles.length; i < len; i++) {
 					/** confirm that array does not container this tile square instance **/
 					if (visited.indexOf(tiles[i]) === -1) {
 						/** enqueue task **/

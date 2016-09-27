@@ -67,10 +67,10 @@ paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 2
 paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
 
 
-path.heuristic(s, e)
+//console.log(path.heuristic(s, e))
 
 
-/*
+
 var p = path.find(s, e);
 if (p) {
 	var myVar = setInterval(function(){ myTimer() }, 50);
@@ -88,7 +88,7 @@ if (p) {
 	    clearInterval(myVar);
 	}
 }
-*/
+
 
 
 
