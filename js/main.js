@@ -56,7 +56,7 @@ collisions.getTiles(function (tile) {
 });
 
 
-
+/*** SOMETIMES YOU ARE SEEING A FALSE NEGATIVE . FETCH TILES CAN BE SET TO USED TILES THEREFORE RETURNING NO PATH **/
 var path = new Path(collisions.__this__());
 
 var s = path.getTile(0, 0);
@@ -67,18 +67,50 @@ paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 2
 paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
 
 
-//console.log(path.heuristic(s, e))
+var fetched_path = path.assert(s, e);
+
+if (fetched_path) {
+
+	path.getTiles(function (tile) {
+
+		if (tile.heuristic === undefined) return;
+
+		paths.drawFillText(tile.x, tile.y + tile.halfHeight, tile.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"})
+
+	});
+
+}
+
+/*
+if (fetched_path && fetched_path.length) {
+
+	var path = [fetched_path.shift()];
+
+	while (fetched_path.length) {
+
+		if (fetched_path[0].heuristic > path[0].heuristic) {
+			path.push(fetched_path.shift());
+		}
+
+	}
+
+	p = path;
+
+}	
 
 
 
 var p = path.find(s, e);
+
 if (p) {
 	var myVar = setInterval(function(){ myTimer() }, 50);
 	function myTimer() {
 	    if (p.length) {
 	    	var t = p.shift();
 
-	    	stage.drawGeometry("fill", t.x, t.y, t.width, t.height);
+	    	path.drawFillText(t.x, t.y, )
+
+	    	//stage.drawGeometry("fill", t.x, t.y, t.width, t.height);
 	    }
 	    else {
 	    	myStopFunction()
@@ -89,7 +121,7 @@ if (p) {
 	}
 }
 
-
+*/
 
 
 
