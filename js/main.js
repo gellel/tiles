@@ -62,20 +62,18 @@ var path = new Path(collisions.__this__());
 var s = path.getTile(0, 0);
 var e = path.getTile(7, 6);
 
-var p = path.find(path.getTile(0, 0), path.getTile(7, 6));
-
 paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
 
 paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
 
-console.log(p)
+
+path.heuristic(s, e)
 
 
-
+/*
+var p = path.find(s, e);
 if (p) {
-
 	var myVar = setInterval(function(){ myTimer() }, 50);
-
 	function myTimer() {
 	    if (p.length) {
 	    	var t = p.shift();
@@ -86,12 +84,11 @@ if (p) {
 	    	myStopFunction()
 	    }
 	}
-
 	function myStopFunction() {
 	    clearInterval(myVar);
 	}
-
 }
+*/
 
 
 
