@@ -15,15 +15,14 @@ const grid = new Grid({ columns: columns, rows: rows, scale: scale });
 /** set map environment **/
 const base = new Canvas(Object.assign(grid.__this__(), { attr: { id: "map", style: "position: absolute; z-index: 0;"} }));
 
-/** set stage environment **/
-const stage = new Canvas(Object.assign(grid.__this__(), { attr: { id: "stage", style: "position: absolute; z-index: 1;"} }));
-
 /** set collision environment **/
-const objects = new Canvas(Object.assign(grid.__this__(), { attr: { id: "objects", style: "position: absolute; z-index: 2;"} }));
+const objects = new Canvas(Object.assign(grid.__this__(), { attr: { id: "objects", style: "position: absolute; z-index: 1;"} }));
 
 /** set path environment **/
-const paths = new Canvas(Object.assign(grid.__this__(), { attr: { id: "paths", style: "position: absolute; z-index: 3;"} }));
+const paths = new Canvas(Object.assign(grid.__this__(), { attr: { id: "paths", style: "position: absolute; z-index: 2;"} }));
 
+/** set stage environment **/
+const stage = new Canvas(Object.assign(grid.__this__(), { attr: { id: "stage", style: "position: absolute; z-index: 3;"} }));
 
 
 /** set map tiles **/
@@ -57,15 +56,21 @@ collisions.getTiles(function (tile) {
 });
 
 
+
+
+
+
+
+
+
 /*** SOMETIMES YOU ARE SEEING A FALSE NEGATIVE . FETCH TILES CAN BE SET TO USED TILES THEREFORE RETURNING NO PATH **/
 var path = new Path(collisions.__this__());
 
 var s = path.getTile(0, 0);
-var e = path.getTile(50, 11);
+var e = path.getTile(59, 5);
 
-paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
 
-paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
+/** path needs to be asserted **/
 
 
 var p = path.assert(s, e);
@@ -76,9 +81,16 @@ if (p) {
 	    if (p.length) {
 	    	var t = p.shift();
 
-	    	stage.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
+	    	paths.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
 
-			paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"})
+			paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"});
+
+			
+		    paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
+
+			paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
+
+
 	    }
 	    else {
 	    	clearTimer(myVar);
@@ -86,6 +98,20 @@ if (p) {
 	}
 	function clearTimer (instance) {
 	    clearInterval(instance);
+
+	    var character = new Character(Object.assign(path.__this__(), { column: 0, row: 0 }))
+
+		keyframe.start(function () {
+
+		stage.drawGeometry("clear", character.x, character.y, character.width, character.height)
+	
+		character.p(path)
+
+		stage.drawGeometry("fill", character.x, character.y, character.width, character.height, {fillStyle: "pink"})
+
+});
+
+
 	}
 }
 

@@ -54,6 +54,11 @@ class Character extends Tile {
 		return 0 !== integers.x ? integers.x < 0 ? integers.x = -this.speed : integers.x = this.speed : integers.y < 0 ? integers.y = -this.speed : integers.y = this.speed, integers;
 	}
 
+	getNextTileDirection (tile) {
+		/** set and return result from tile position **/
+		return tile.column === this.column ? tile.row < this.row ? "top" : "bottom" : tile.column < this.column ? "left" : "right";
+	}
+
 	getAdjacentTiles (map) {
 		/** set base array to hold found tiles **/
 		var tiles = [];
@@ -163,8 +168,22 @@ class Character extends Tile {
 			this.setVelocityIntegers(0, 0);
 			/** collect tiles relative to character position **/
 			var tiles = this.getAdjacentTiles(map).filter(function (i) { return i && i.canUseTile ? i : false });
+			/** reduce heuristic value **/
+			var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }))
+			/** reduce tiles from heuristic **/
+			var tile = tiles.find(function(i) { return i.heuristic === res; });
 
-			console.log(tiles);
+			if (!tile || !tile.heuristic) return;
+
+			console.log(tile.heuristic)
+			/** set velocity integers for corner check and movement **/
+			var velocity = this.getVelocityIntegers(this.getDirectionIntegers(this.getNextTileDirection(tile)));
+			/** set movement velocity **/
+			this.setVelocityIntegers(velocity.x, velocity.y);
+			/** set character position within grid columns and rows **/
+			this.setGridReference(tile.column, tile.row);
+			/** set tile to new destination tile **/
+			this.setTargetCoordinatePosition(tile.x, tile.y);
 		}
 	}
 	

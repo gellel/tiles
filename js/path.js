@@ -1,6 +1,5 @@
 class Path extends Tiles {
 
-
 	find (start, target) {
 		/** if start object or target object not provided exit function **/
 		if (!start || !target) return false;
@@ -51,7 +50,6 @@ class Path extends Tiles {
 		/** exit **/
 		return visited;
 	}
-
 
 	search (index, callback) {
 		/** set base heuristic **/

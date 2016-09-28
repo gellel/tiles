@@ -87,10 +87,12 @@ class Tile extends Grid {
 	}
 
 	setPositionX (x) {
+		/** set position of tile coordinate x **/
 		this.x = (x || 0) * this.scale;
 	}
 
 	setPositionY (y) {
+		/** set position of tile coordinate y **/
 		this.y = (y || 0) * this.scale;
 	}
 
