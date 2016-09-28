@@ -173,7 +173,9 @@ class Character extends Tile {
 			/** reduce tiles from heuristic **/
 			var tile = tiles.find(function(i) { return i.heuristic === res; });
 
-			if (!tile || !tile.heuristic) return;
+			if (!tile) return;
+
+			if (tile.heuristic === 0) return;
 
 			console.log(tile.heuristic)
 			/** set velocity integers for corner check and movement **/
