@@ -153,6 +153,20 @@ class Character extends Tile {
 			this.setTargetCoordinatePosition(tile.x, tile.y);
 		}
 	}
+
+	p (map) {
+		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
+		if (this.canMove()) return this.incrementCoordinatePosition(this.velocityX, this.velocityY);
+		/** confirm that character has intersected its destination tile **/
+		if (this.tileCollision()) {
+			/** reset character velocities to prevent additional movement **/
+			this.setVelocityIntegers(0, 0);
+			/** collect tiles relative to character position **/
+			var tiles = this.getAdjacentTiles(map).filter(function (i) { return i && i.canUseTile ? i : false });
+
+			console.log(tiles);
+		}
+	}
 	
 	constructor (config) {
 		/** set base object for constructor **/

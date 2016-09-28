@@ -17,11 +17,10 @@ class Path extends Tiles {
 	}
 
 	assert (start, target) {
-		var result = this.calculate(target, start);
-		return result
+		return this.calculate(target, start);
 	}
 
-	calculate (index, target) {
+	calculate (index) {
 		/** set base heuristic **/
 		index.heuristic = 0;
 		/** base starting position added to call stack queue **/
@@ -30,8 +29,9 @@ class Path extends Tiles {
 		var visited = [index];
 		/** process queue **/
 		while (queue.length) {
+			var tile = queue.shift();
 			/** fetch tiles from queue tile reference **/
-			var tiles = this.getAdjacentFilteredTiles(queue.shift());
+			var tiles = this.getAdjacentFilteredTiles(tile);
 			/** confirm that tiles are not empty **/
 			if (tiles.length) {
 				/** iterate over the collected tiles **/
@@ -39,7 +39,7 @@ class Path extends Tiles {
 					/** confirm that array does not container this tile square instance **/
 					if (visited.indexOf(tiles[i]) === -1) {
 						/** calculate heuristic distance from position index **/
-						tiles[i].heuristic = Math.abs(tiles[i].column - index.column) + Math.abs(tiles[i].row - index.row)
+						tiles[i].heuristic = tile.heuristic + 1;
 						/** enqueue task **/
 						queue.push(tiles[i]);
 						/** prevent revising **/
