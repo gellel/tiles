@@ -25,6 +25,7 @@ const objects = new Canvas(Object.assign(grid.__this__(), { attr: { id: "objects
 const paths = new Canvas(Object.assign(grid.__this__(), { attr: { id: "paths", style: "position: absolute; z-index: 3;"} }));
 
 
+
 /** set map tiles **/
 const map = new Tiles(Object.assign(grid.__this__(), { class: MapTile }));
 /** get map tiles **/
@@ -40,7 +41,7 @@ map.getTiles(function (tile) {
 
 
 /** set collision tiles **/
-const collisions = new Tiles(Object.assign(grid.__this__(), { class: MapTile }));
+const collisions = new Tiles(Object.assign(grid.__this__(), { class: MapTile, config: {  } }));
 /** get collision tiles **/
 collisions.getTiles(function (tile) {
 	/** confirm that tile can be used **/
@@ -60,57 +61,25 @@ collisions.getTiles(function (tile) {
 var path = new Path(collisions.__this__());
 
 var s = path.getTile(0, 0);
-var e = path.getTile(7, 6);
+var e = path.getTile(50, 11);
 
 paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
 
 paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
 
 
-var fetched_path = path.assert(s, e);
-
-if (fetched_path) {
-
-	path.getTiles(function (tile) {
-
-		if (tile.heuristic === undefined) return;
-
-		paths.drawFillText(tile.x, tile.y + tile.halfHeight, tile.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"})
-
-	});
-
-}
-
-/*
-if (fetched_path && fetched_path.length) {
-
-	var path = [fetched_path.shift()];
-
-	while (fetched_path.length) {
-
-		if (fetched_path[0].heuristic > path[0].heuristic) {
-			path.push(fetched_path.shift());
-		}
-
-	}
-
-	p = path;
-
-}	
-
-
-
-var p = path.find(s, e);
+var p = path.assert(s, e);
 
 if (p) {
-	var myVar = setInterval(function(){ myTimer() }, 50);
+	var myVar = setInterval(function(){ myTimer() }, 00);
 	function myTimer() {
 	    if (p.length) {
 	    	var t = p.shift();
 
-	    	path.drawFillText(t.x, t.y, )
 
-	    	//stage.drawGeometry("fill", t.x, t.y, t.width, t.height);
+	    	stage.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
+
+			paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"})
 	    }
 	    else {
 	    	myStopFunction()
@@ -120,8 +89,6 @@ if (p) {
 	    clearInterval(myVar);
 	}
 }
-
-*/
 
 
 

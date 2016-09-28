@@ -1,26 +1,29 @@
 class Path extends Tiles {
 
-	assert (start, target) {
-		if (!start || !target) return false;
-		var result = this.search(start, function (tile) {
-			if (tile.x === target.x && target.y === tile.y) {
-				return true;
-			}
-		});
-		return result;
-	}
 
 	find (start, target) {
+		/** if start object or target object not provided exit function **/
 		if (!start || !target) return false;
+		/** attempt to calculate a path and break if target was found **/
 		var result = this.search(start, function (tile) {
+			/** confirm this tiles coordinates are to that of the requested tile **/
 			if (tile.x === target.x && target.y === tile.y) {
+				/** break handler for search **/
 				return true;
 			}
 		});
+		/** return result of find attempt **/
 		return result;
 	}
 
-	search (index, callback) {
+	assert (start, target) {
+		var result = this.calculate(target, start);
+		return result
+	}
+
+	calculate (index, target) {
+		/** set base heuristic **/
+		index.heuristic = 0;
 		/** base starting position added to call stack queue **/
 		var queue = [index];
 		/** visited tiles **/
@@ -35,8 +38,43 @@ class Path extends Tiles {
 				for (var i = 0, len = tiles.length; i < len; i++) {
 					/** confirm that array does not container this tile square instance **/
 					if (visited.indexOf(tiles[i]) === -1) {
-						/** set heuristic calculation value **/
-						tiles[i].heuristic = tiles[i].column - index.column + tiles[i].row - index.row;
+						/** calculate heuristic distance from position index **/
+						tiles[i].heuristic = Math.abs(tiles[i].column - index.column) + Math.abs(tiles[i].row - index.row)
+						/** enqueue task **/
+						queue.push(tiles[i]);
+						/** prevent revising **/
+						visited.push(tiles[i]);
+						/** callback **/
+						if (tiles[i].x === target.x && tiles[i].y === target.y) {
+							/** get visisted tiles **/
+							return visited;
+						}
+					}
+				}
+			}
+		}
+		/** exit **/
+		return false;
+	}
+
+
+	search (index, callback) {
+		/** set base heuristic **/
+		index.heuristic = 0;
+		/** base starting position added to call stack queue **/
+		var queue = [index];
+		/** visited tiles **/
+		var visited = [index];
+		/** process queue **/
+		while (queue.length) {
+			/** fetch tiles from queue tile reference **/
+			var tiles = this.getAdjacentFilteredTiles(queue.shift());
+			/** confirm that tiles are not empty **/
+			if (tiles.length) {
+				/** iterate over the collected tiles **/
+				for (var i = 0, len = tiles.length; i < len; i++) {
+					/** confirm that array does not container this tile square instance **/
+					if (visited.indexOf(tiles[i]) === -1) {
 						/** enqueue task **/
 						queue.push(tiles[i]);
 						/** prevent revising **/
