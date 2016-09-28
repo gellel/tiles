@@ -76,17 +76,16 @@ if (p) {
 	    if (p.length) {
 	    	var t = p.shift();
 
-
 	    	stage.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
 
 			paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"})
 	    }
 	    else {
-	    	myStopFunction()
+	    	clearTimer(myVar);
 	    }
 	}
-	function myStopFunction() {
-	    clearInterval(myVar);
+	function clearTimer (instance) {
+	    clearInterval(instance);
 	}
 }
 

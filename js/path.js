@@ -44,17 +44,12 @@ class Path extends Tiles {
 						queue.push(tiles[i]);
 						/** prevent revising **/
 						visited.push(tiles[i]);
-						/** callback **/
-						if (tiles[i].x === target.x && tiles[i].y === target.y) {
-							/** get visisted tiles **/
-							return visited;
-						}
 					}
 				}
 			}
 		}
 		/** exit **/
-		return false;
+		return visited;
 	}
 
 
