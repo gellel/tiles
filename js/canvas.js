@@ -9,7 +9,7 @@ class Canvas extends Grid {
 
 		* example initialisation:
 			config:
-				var config = Object.assign(Grid().__this__(), { node: document.getElementById("canvas"), attributes: { class: "hello"} });
+				var config = Object.assign(Grid().__this__(), { node: document.getElementById("canvas"), attributes: { class: "hello" } });
 			class:
 				var canvas = new Canvas(config);
 	*/
