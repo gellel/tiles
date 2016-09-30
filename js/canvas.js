@@ -6,6 +6,12 @@ class Canvas extends Grid {
 		* constructor parameters:
 			config: typeof Object {}
 				required object origin: [GridClassInstance].__this__();
+
+		* example initialisation:
+			config:
+				var config = Object.assign(Grid().__this__(), { node: document.getElementById("canvas"), attributes: { class: "hello"} });
+			class:
+				var canvas = new Canvas(config);
 	*/
 
 	static ALPHA (minimum, maximum, floatminimum, floatmaximum) {

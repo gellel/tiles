@@ -6,6 +6,12 @@ class MapTile extends Tile {
 		* constructor parameters:
 			config: typeof Object {}
 				required object origin: [GridClassInstance].__this__();
+
+		* example initialisation:
+			config:
+				var config = Object.assign(new Grid().__this__(), { imageSource: "path/to/img/file/pic.jpg", canUseTile: true, tileType: "example", tileBaseColour: "orange" });
+			class:
+				var maptile = new MapTile(config);
 	*/
 
 	static getRandomUsed (min, max, used) {

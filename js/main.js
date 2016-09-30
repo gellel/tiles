@@ -71,14 +71,13 @@ var e = path.getTile(59, 5);
 
 var path_to = path.getPath(s, e);
 
-console.log(path_to);
 
 if (path_to) {
 	for (var i = 0; i < path_to.length; i++) {
 		paths.drawGeometry("fill", path_to[i].x,  path_to[i].y,  path_to[i].width,  path_to[i].height, {fillStyle:"cyan"});
 	}
 
-	var character = new Character(Object.assign(path.__this__(), { column: 0, row: 0, plotted: path_to }));
+	var character = new Character(Object.assign(path.__this__(), { column: 0, row: 0, speed: 2, plotted: path_to }));
 
 	keyframe.start(function () {
 

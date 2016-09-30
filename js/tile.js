@@ -6,6 +6,9 @@ class Tile extends Grid {
 		* constructor parameters:
 			config: typeof Object {}
 				required object inclusion: [GridClassInstance].__this__();
+
+		* this class is designed as an extension class for maptiles.js and character.js
+		* please see those files for init
 	*/
 
 	getLeftPoint () {

@@ -6,6 +6,12 @@ class Grid {
 		* constructor parameters:
 			config: typeof Object {}
 				required object origin: None
+
+		* example initialisation:
+			config:
+				var config = { columns: 20, rows: 10, scale: 20 };
+			class:
+				var grid = new Grid(config);
 	*/
 
 	__this__ () {

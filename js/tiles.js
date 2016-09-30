@@ -6,6 +6,12 @@ class Tiles extends Grid {
 		* constructor parameters:
 			config: typeof Object {}
 				required object origin: [GridClassInstance].__this__();
+
+		* example initialisation:
+			config:
+				var config = Object.assign(new Grid().__this__(), { map: [[]], directions: ["top", "right", "bottom", "left"] });
+			class:
+				var tiles = new Tiles(config);
 	*/
 
 	getRandomDirectionString () {

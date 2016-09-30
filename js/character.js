@@ -6,6 +6,12 @@ class Character extends Tile {
 		* constructor parameters:
 			config: typeof Object {}
 				required object origin: [GridClassInstance].__this__();
+
+		* example initialisation:
+			config:
+				var config = Object.assign(new Grid().__this__(), { imageSource: "path/to/img/file/pic.jpg", tileBaseColour: "orange", directions: ["top", "right", "bottom", "left"], speed: 1, plotted: [{tileMapObject}] });
+			class:
+				var grid = new Character(config);
 	*/
 
 
