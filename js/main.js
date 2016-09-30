@@ -56,60 +56,64 @@ collisions.getTiles(function (tile) {
 });
 
 
+var numCharacters = 50;
+var allCharacters = [];
 
 
+for (var i = 0; i < numCharacters; i++) {
 
+	var path = new Path(collisions.__this__());
+	var start = path.getRandomTile();
+	var target = path.getRandomTile();
 
+	if (start && target) {
 
+		var path_exists = path.find(start, target);
 
+		if (path_exists) {
 
-/*** SOMETIMES YOU ARE SEEING A FALSE NEGATIVE . FETCH TILES CAN BE SET TO USED TILES THEREFORE RETURNING NO PATH **/
-var path = new Path(collisions.__this__());
+			var plotted = path.getPath(start, target);
+			var character = new Character(Object.assign(path.__this__(), { column: start.column, row: start.row, speed: 2, plotted: plotted }));
 
-var s = path.getRandomTile();
-var e = path.getRandomTile();
-
-
-if (s && e) {
-	var path_to = path.getPath(s, e, true);
-
-	if (path_to) {
-
-		var search = path.search(e, function (tile) { if (tile.column === s.column && tile.row === s.row) return true; });
-
-		function fill_tiles () {
-			if (search.length) {
-				var t = search.shift();
-				paths.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
-				paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 8px/normal sans-serif", {fillStyle: "black"});
-			    paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
-				paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
-			}
-			else {
-				clearInterval(fill_interval);
-
-				for (var i = 0; i < path_to.length; i++) {
-					paths.drawGeometry("fill", path_to[i].x,  path_to[i].y,  path_to[i].width,  path_to[i].height, {fillStyle:"cyan"});
-				}
-
-				var character = new Character(Object.assign(path.__this__(), { column: s.column, row: s.row, speed: 2, plotted: path_to }));
-
-				keyframe.start(function () {
-
-					stage.drawGeometry("clear", character.x, character.y, character.width, character.height);
-
-					character.c();
-
-					stage.drawGeometry("fill", character.x, character.y, character.width, character.height, {fillStyle: "pink"});
-				});
-			}
+			allCharacters.push({start: start, target: target, path: plotted, character: character});
 		}
-		var fill_interval = setInterval(function () { fill_tiles(); }, 20);
-
-		
 	}
 }
 
+for (var i = 0; i < allCharacters.length; i++) {
+
+	paths.drawGeometry("fill", allCharacters[i].start.x, allCharacters[i].start.y, allCharacters[i].start.width, allCharacters[i].start.height, {fillStyle:"yellow"});
+	paths.drawGeometry("fill", allCharacters[i].target.x, allCharacters[i].target.y, allCharacters[i].target.width, allCharacters[i].target.height, {fillStyle:"cyan"});
+	for (var j = 0; j < allCharacters[i].path.length; j++) {
+		paths.drawGeometry("fill", allCharacters[i].path[j].x, allCharacters[i].path[j].y, allCharacters[i].path[j].width, allCharacters[i].path[j].height, {fillStyle:"rgba(255,255,0,0.5)"})
+	}
+};
+
+keyframe.start(function () {
+	for (var i = 0; i < allCharacters.length; i++) {
+		stage.drawGeometry("clear", allCharacters[i].character.x, allCharacters[i].character.y, allCharacters[i].character.width, allCharacters[i].character.height, {fillStyle:"orange"});
+		allCharacters[i].character.c();
+		stage.drawGeometry("fill", allCharacters[i].character.x, allCharacters[i].character.y, allCharacters[i].character.width, allCharacters[i].character.height, {fillStyle:"orange"});
+	}
+})
+console.log(allCharacters)
+
+/**
+function fill_tiles () {
+	if (asserted.length) {
+		var t = asserted.shift();
+		paths.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
+		paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"});
+	    paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
+		paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
+	}
+	else {
+		clearInterval(fill_interval);
+	}
+}
+
+var fill_interval = setInterval(function () { fill_tiles(); }, 100);
+**/
 
 
 
