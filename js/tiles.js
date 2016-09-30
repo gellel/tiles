@@ -128,6 +128,20 @@ class Tiles extends Grid {
 		}
 	}
 
+	getRandomTile (map) {
+		  /***************************************************************************/
+	 	 /** function selecting a random tile within the supplied or base grid map **/
+		/***************************************************************************/
+		/** set map to argument or base map of class instance **/
+		var map = map || this.map;
+		/** set base variable for column from random number selected from tile map **/
+		var column = (Math.floor(Math.random() * ((map.length - 1) - 0 + 1)) + 0);
+		/** set base variable for rowm from random number selected from tile map random column **/
+		var row = (Math.floor(Math.random() * ((map[column].length -1) - 0 + 1)) + 0);
+		/** return result of random tile selection **/
+		return this.getTile(column, row);
+	}
+
 	editTile () {
 		  /*************************************************************************/
 	 	 /** function for editing tile within grid using column and row integers **/
