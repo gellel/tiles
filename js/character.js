@@ -245,6 +245,30 @@ class Character extends Tile {
 			this.setTargetCoordinatePosition(tile.x, tile.y);
 		}
 	}
+
+	c () {
+		  /************************************************************************************************/
+	 	 /** function for consuming characters movement path towards target position using defined path **/
+		/************************************************************************************************/
+		if (this.canMove()) return this.incrementCoordinatePosition(this.velocityX, this.velocityY);
+		/** confirm that character has intersected its destination tile **/
+		if (this.tileCollision()) {
+			/** reset character velocities to prevent additional movement **/
+			this.setVelocityIntegers(0, 0);
+			/** **/
+			if (!this.plotted || !this.plotted.length) return;
+			/** set tile from plotted path **/
+			var tile = this.plotted.shift();
+			/** set velocity integers for corner check and movement **/
+			var velocity = this.getVelocityIntegers(this.getDirectionIntegers(this.getNextTileDirection(tile)));
+			/** set movement velocity **/
+			this.setVelocityIntegers(velocity.x, velocity.y);
+			/** set character position within grid columns and rows **/
+			this.setGridReference(tile.column, tile.row);
+			/** set tile to new destination tile **/
+			this.setTargetCoordinatePosition(tile.x, tile.y);
+		}
+	}
 	
 	constructor (config) {
 		  /************************************/
@@ -272,5 +296,7 @@ class Character extends Tile {
 		this.targetX = this.x;
 		/** set class character base target y position **/
 		this.targetY = this.y;
+		/** set class character base path **/
+		this.plotted = config.plotted || [];
 	}
 }

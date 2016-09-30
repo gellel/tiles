@@ -77,9 +77,18 @@ if (path_to) {
 	for (var i = 0; i < path_to.length; i++) {
 		paths.drawGeometry("fill", path_to[i].x,  path_to[i].y,  path_to[i].width,  path_to[i].height, {fillStyle:"cyan"});
 	}
+
+	var character = new Character(Object.assign(path.__this__(), { column: 0, row: 0, plotted: path_to }));
+
+	keyframe.start(function () {
+
+		stage.drawGeometry("clear", character.x, character.y, character.width, character.height);
+
+		character.c();
+
+		stage.drawGeometry("fill", character.x, character.y, character.width, character.height, {fillStyle: "pink"});
+	});
 }
-
-
 
 
 
