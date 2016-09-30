@@ -1,6 +1,9 @@
 class Path extends Tiles {
 
 	find (start, target) {
+		  /************************************************************************************************/
+	 	 /** function for confirming whether a path to the target tile exists from starting destination **/
+		/************************************************************************************************/
 		/** if start object or target object not provided exit function **/
 		if (!start || !target) return false;
 		/** attempt to calculate a path and break if target was found **/
@@ -16,10 +19,17 @@ class Path extends Tiles {
 	}
 
 	assert (start, target) {
+		  /******************************************************************************************/
+	 	 /** function for obtaining path to target tile from supplied using heursitic calculation **/
+		/******************************************************************************************/
+		/** return array of collected titles from heuristic calculation **/
 		return this.calculate(target, start);
 	}
 
 	calculate (index) {
+		  /************************************************************************/
+	 	 /** function for obtaining tiles heursitic distance from supplied tile **/
+		/************************************************************************/
 		/** set base heuristic **/
 		index.heuristic = 0;
 		/** base starting position added to call stack queue **/
@@ -52,6 +62,9 @@ class Path extends Tiles {
 	}
 
 	search (index, callback) {
+		  /*********************************************************/
+	 	 /** function for searching for path to tile within grid **/
+		/*********************************************************/
 		/** set base heuristic **/
 		index.heuristic = 0;
 		/** base starting position added to call stack queue **/
@@ -89,6 +102,9 @@ class Path extends Tiles {
 	}
 
 	constructor (config) {
+		  /************************************/
+	 	 /** function for class constructor **/
+		/************************************/
 		super(config);
 	}
 }

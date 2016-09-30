@@ -9,16 +9,25 @@ class Tiles extends Grid {
 	*/
 
 	getRandomDirectionString () {
+		  /****************************************************************************/
+	 	 /** function for selecting random direction string from defined directions **/
+		/****************************************************************************/
 		/** set and return random string from selection **/
 		return this.directions[Math.floor(Math.random() * this.directions.length)];
 	}
 
 	getDirectionIntegers (direction) {
+		  /***********************************************************************************/
+	 	 /** function for obtaining tiles column and row offsets as an integer from string **/
+		/***********************************************************************************/
 		/** set and return direction object based on direction string; object contains both x and y offsets **/
 		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
 	}
 
 	getAdjacentTiles (tile) {
+		  /***************************************************************/
+	 	 /** function for obtaining tiles surrounding tile within grid **/
+		/***************************************************************/
 		/** set base array to hold found tiles **/
 		var tiles = [];
 		/** iterate over direction options **/
@@ -31,6 +40,9 @@ class Tiles extends Grid {
 	}
 
 	getSpecificAdjacentTile (direction, tile) {
+		  /******************************************************************************************************/
+	 	 /** function for obtaining specific tile within grid from supplied direction string adjacent to tile **/
+		/******************************************************************************************************/
 		/** set offset integers to find tile next to supplied tile **/
 		var integers = this.getDirectionIntegers(direction);
 		/** attempt to find tile **/
@@ -40,11 +52,17 @@ class Tiles extends Grid {
 	}
 
 	getAdjacentFilteredTiles (tile) {
+		  /******************************************************************************************************/
+	 	 /** function for reducing array of tiles based on whether they were found in the grid and are usable **/
+		/******************************************************************************************************/
 		/** return reduced filtered array from adjacent tiles from tile source **/
 		return this.getAdjacentTiles(tile).filter(function (i) { return i && i.canUseTile ? i : !1; });
 	}
 
 	getSurroundingTiles (tile) {
+		  /*******************************************************************/
+	 	 /** function for obtaining all tiles surrounding tile within grid **/
+		/*******************************************************************/
 		/** set offset integers to fine tile next to supplied tile **/
 		var integers = [{x: -1, y:-1}, {x: 0, y: -1}, {x: 1, y: -1}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: -1, y: 1}, {x: -1, y: 0}];
 		/** set base array to hold found tiles **/
@@ -58,6 +76,9 @@ class Tiles extends Grid {
 	}
 
 	getTile () {
+		  /***************************************************************************/
+	 	 /** function for obtaining tile within grid using column and row integers **/
+		/***************************************************************************/
 		/** collect arguments and set to the instance **/
 		var parameters = Array.prototype.slice.call(arguments);
 		/** set map instance from supplied or local map **/
@@ -79,6 +100,9 @@ class Tiles extends Grid {
 	}
 
 	getTiles () {
+		  /************************************************************************************/
+	 	 /** function for collecting all tiles within grid and processing them individually **/
+		/************************************************************************************/
 		/** collect arguments and set to the instance **/
 		var parameters = Array.prototype.slice.call(arguments);
 		/** fetch first argument **/
@@ -99,6 +123,9 @@ class Tiles extends Grid {
 	}
 
 	editTile () {
+		  /*************************************************************************/
+	 	 /** function for editing tile within grid using column and row integers **/
+		/*************************************************************************/
 		/** collect arguments and set to the instance **/
 		var parameters = Array.prototype.slice.call(arguments);
 		/** set map instance from supplied or local map **/
@@ -114,6 +141,9 @@ class Tiles extends Grid {
 	}
 
 	editTiles () {
+		  /************************************************/
+	 	 /** function for editing all tiles within grid **/
+		/************************************************/
 		/** collect arguments and set to the instance **/
 		var parameters = Array.prototype.slice.call(arguments);
 		/** fetch first argument **/
@@ -134,6 +164,9 @@ class Tiles extends Grid {
 	}
 
 	create () {
+		  /***************************************************************************/
+	 	 /** function for creating tile map array with base or defined class tiles **/
+		/***************************************************************************/
 		/** collect arguments and set to the instance **/
 		var parameters = Array.prototype.slice.call(arguments);
 		/** set empty variable to hold potential constructor function **/
@@ -182,6 +215,9 @@ class Tiles extends Grid {
 	}
 
 	constructor (config) {
+		  /************************************/
+	 	 /** function for class constructor **/
+		/************************************/
 		/** set base object for constructor **/
 		config = config || {};
 		/** super will configure the matrix if not defined **/

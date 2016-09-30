@@ -10,56 +10,89 @@ class Character extends Tile {
 
 
 	tileCollision () {
+		  /***************************************************************************************************/
+	 	 /** function for confirmin whether the character has reached the supplied target x and y position **/
+		/***************************************************************************************************/
 		/** confirm that the drawing coordinates for the character and the tile intersect **/
 		return (this.x === this.targetX && this.y === this.targetY) ? true : false;
 	}
 
 	canMoveTop () {
+		  /*******************************************************************************************************/
+	 	 /** function confirming whether the character can move towards y position target without overshooting **/
+		/*******************************************************************************************************/
 		/** confirm that the top side of the character has collided with the target tile **/
 		return this.targetY <= (this.y + this.velocityY) ? true : false;
 	}
 
 	canMoveBottom () {
+		  /*******************************************************************************************************/
+	 	 /** function confirming whether the character can move towards y position target without overshooting **/
+		/*******************************************************************************************************/
 		/** confirm that the bottom side of the character has collided with the target tile **/
 		return ((this.y + this.height) + this.velocityY) <= this.targetY + this.height ? true : false;
 	}
 
 	canMoveLeft () {
+		  /*******************************************************************************************************/
+	 	 /** function confirming whether the character can move towards x position target without overshooting **/
+		/*******************************************************************************************************/
 		/** confirm that the left side of the character has collided with the target tile **/
 		return (this.x + this.velocityX) >= this.targetX ? true : false;
 	}
 
 	canMoveRight () {
+		  /*******************************************************************************************************/
+	 	 /** function confirming whether the character can move towards x position target without overshooting **/
+		/*******************************************************************************************************/
 		/** confirm that the right side of the character has collided with the target tile **/
 		return ((this.x + this.width) + this.velocityX) <= this.targetX + this.width ? true : false;
 	}
 
 	canMove () {
+		  /*********************************************************************************************************/
+	 	 /** function for confirming whether the character can move towards the direction with supplied velocity **/
+		/*********************************************************************************************************/
 		/** confirm for the axis that the character can move **/
 		return this.velocityX || this.velocityY ? 0 !== this.velocityX ? this.velocityX < 0 ? this.canMoveLeft() : this.canMoveRight() : this.velocityY < 0 ? this.canMoveTop() : this.canMoveBottom() : false;
 	}
 
 	getRandomDirectionString () {
+		  /*****************************************************************************************/
+	 	 /** function for selecting direction string for assigning character movement assignment **/
+		/*****************************************************************************************/
 		/** set and return random string from selection **/
 		return this.directions[Math.floor(Math.random() * this.directions.length)];
 	}
 
 	getDirectionIntegers (direction) {
+		  /**************************************************************************/
+	 	 /** function for obtaining character direction as an integer from string **/
+		/**************************************************************************/
 		/** set and return direction object based on direction string; object contains both x and y offsets **/
 		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
 	}
 
 	getVelocityIntegers (integers) {
+		  /**********************************************************************************/
+	 	 /** function for obtaining character speed as an integer from direction integers **/
+		/**********************************************************************************/
 		/** set and return velocity object based on direction integers; object contains both x and y offsets **/
 		return 0 !== integers.x ? integers.x < 0 ? integers.x = -this.speed : integers.x = this.speed : integers.y < 0 ? integers.y = -this.speed : integers.y = this.speed, integers;
 	}
 
 	getNextTileDirection (tile) {
+		  /**************************************************************************************/
+	 	 /** function for obtaining character direction as a string from supplied tile object **/
+		/**************************************************************************************/
 		/** set and return result from tile position **/
 		return tile.column === this.column ? tile.row < this.row ? "top" : "bottom" : tile.column < this.column ? "left" : "right";
 	}
 
 	getAdjacentTiles (map) {
+		  /***************************************************************************************************/
+	 	 /** function for obtaining tiles surrounding character as current position from supplied tile map **/
+		/***************************************************************************************************/
 		/** set base array to hold found tiles **/
 		var tiles = [];
 		/** iterate over direction options **/
@@ -72,6 +105,9 @@ class Character extends Tile {
 	}
 
 	getSpecificAdjacentTile (map, direction) {
+		  /****************************************************************************/
+	 	 /** function for selecting nearby tile with direction string from tile map **/
+		/****************************************************************************/
 		/** set offset integers to find tile next to character **/
 		var integers = this.getDirectionIntegers(direction);
 		/** attempt to find tile **/
@@ -81,6 +117,9 @@ class Character extends Tile {
 	}
 
 	getRandomAjacentTile (map) {
+		  /***********************************************************************/
+	 	 /** function for selecting random nearby adjacent tiles from tile map **/
+		/***********************************************************************/
 		/** collect array of tiles near character **/
 		var tiles = this.getAdjacentTiles(map).filter(function (i) { if (i) return i });
 		/** set temporary array to hold filtered from object values **/
@@ -101,6 +140,9 @@ class Character extends Tile {
 	}
 
 	incrementCoordinatePosition (x, y) {
+		  /************************************************************************/
+	 	 /** function for incrimenting characters position by supplied integers **/
+		/************************************************************************/
 		/** increment this current x position by the value of supplied x position **/
 		this.x = this.x + x;
 		/** increment this current y position by the value of supplied y position **/
@@ -108,6 +150,9 @@ class Character extends Tile {
 	}
 
 	setTargetCoordinatePosition (x, y) {
+		  /*******************************************************************************/
+	 	 /** function for setting characters next target position by supplied integers **/
+		/*******************************************************************************/
 		/** set this current target x position to new target x position **/
 		this.targetX = x;
 		/** set this current target y position to new targety position **/
@@ -115,6 +160,9 @@ class Character extends Tile {
 	}
 
 	setVelocityIntegers (velocityX, velocityY) {
+		  /*******************************************************************/
+	 	 /** function for setting characters velocity by supplied integers **/
+		/*******************************************************************/
 		/** set this characters x velocity to defined integer or float **/
 		this.velocityX = velocityX;
 		/** set this characters y velocity to defined integer or float **/
@@ -122,6 +170,9 @@ class Character extends Tile {
 	}
 
 	setCoordinatePosition (x, y) {
+		  /*******************************************************************/
+	 	 /** function for setting characters position by supplied integers **/
+		/*******************************************************************/
 		/** set this current x position to new x position **/
 		this.x = x;
 		/** set this current y position to new y position **/
@@ -129,6 +180,9 @@ class Character extends Tile {
 	}
 
 	setGridReference (column, row) {
+		  /****************************************************************************************/
+	 	 /** function for setting characters position within tile map grid by supplied integers **/
+		/****************************************************************************************/
 		/** set this characters column position within grid to new column position **/
 		this.column = column;
 		/** set this characters row position within grid to new row position **/
@@ -136,6 +190,9 @@ class Character extends Tile {
 	}
 
 	g (map) {
+		  /***************************************************************************/
+	 	 /** function for plotting characters movement using random tile selection **/
+		/***************************************************************************/
 		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
 		if (this.canMove()) return this.incrementCoordinatePosition(this.velocityX, this.velocityY);
 		/** confirm that character has intersected its destination tile **/
@@ -160,6 +217,9 @@ class Character extends Tile {
 	}
 
 	p (map) {
+		  /****************************************************************************************/
+	 	 /** function for plotting characters movement towards target position using path class **/
+		/****************************************************************************************/
 		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
 		if (this.canMove()) return this.incrementCoordinatePosition(this.velocityX, this.velocityY);
 		/** confirm that character has intersected its destination tile **/
@@ -190,6 +250,9 @@ class Character extends Tile {
 	}
 	
 	constructor (config) {
+		  /************************************/
+	 	 /** function for class constructor **/
+		/************************************/
 		/** set base object for constructor **/
 		config = config || {};
 		/** super will configure the matrix if not defined **/

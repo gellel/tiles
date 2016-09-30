@@ -9,6 +9,9 @@ class Grid {
 	*/
 
 	__this__ () {
+		  /****************************************************************/
+	 	 /** function for creating config object for grid based classes **/
+		/****************************************************************/
 		/** set base object for all "this" keys **/
 		var __self__ = {};
 		/** iterate over keys of "this" class **/
@@ -21,6 +24,9 @@ class Grid {
 	}
 
 	constructor (config) {
+		  /************************************/
+	 	 /** function for class constructor **/
+		/************************************/
 		/** set base object for constructor **/
 		config = config || {};
 		/** set class columns reference from config object **/

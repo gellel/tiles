@@ -9,11 +9,17 @@ class MapTile extends Tile {
 	*/
 
 	static getRandomUsed (min, max, used) {
+		  /*************************************************************************************/
+	 	 /** function for setting tiles chance to be randomly set as a used or free map tile **/
+		/*************************************************************************************/
 		/** return boolean based on whether integer 0 was randomed from pseudo random number generator **/
 		return ((Math.floor(Math.random() * (max - min + 1)) + min) === used) ? false : true;
 	}
 	
 	constructor (config) {
+		  /************************************/
+	 	 /** function for class constructor **/
+		/************************************/
 		/** set base object for constructor **/
 		config = config || {};
 		/** super will configure the matrix if not defined **/
