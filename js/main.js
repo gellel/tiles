@@ -69,49 +69,13 @@ var path = new Path(collisions.__this__());
 var s = path.getTile(0, 0);
 var e = path.getTile(59, 5);
 
+var path_to = path.getPath(s, e);
 
-/** path needs to be asserted **/
+console.log(path_to);
 
-
-var p = path.assert(s, e);
-
-if (p) {
-	var myVar = setInterval(function(){ myTimer() }, 00);
-	function myTimer() {
-	    if (p.length) {
-	    	var t = p.shift();
-
-	    	paths.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
-
-			paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"});
-
-			
-		    paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
-
-			paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
-
-
-	    }
-	    else {
-	    	clearTimer(myVar);
-	    }
-	}
-	function clearTimer (instance) {
-	    clearInterval(instance);
-
-	    var character = new Character(Object.assign(path.__this__(), { column: 0, row: 0 }))
-
-		keyframe.start(function () {
-
-		stage.drawGeometry("clear", character.x, character.y, character.width, character.height)
-	
-		character.p(path)
-
-		stage.drawGeometry("fill", character.x, character.y, character.width, character.height, {fillStyle: "pink"})
-
-});
-
-
+if (path_to) {
+	for (var i = 0; i < path_to.length; i++) {
+		paths.drawGeometry("fill", path_to[i].x,  path_to[i].y,  path_to[i].width,  path_to[i].height, {fillStyle:"cyan"});
 	}
 }
 

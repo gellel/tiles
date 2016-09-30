@@ -1,5 +1,42 @@
 class Path extends Tiles {
 
+	getPath (start, target) {
+		  /********************************************************************************/
+	 	 /** function for getting precalculated path from start to target without noise **/
+		/********************************************************************************/
+		/** attempt to get heuristic path **/
+		var path = this.find(start, target);
+		/** confirm path was found **/
+		if (path) {
+			/** set heuristic **/
+			this.assert(start, target);
+			/** set path map for plotted path **/
+			var plotted = [];
+			/** set queue for finding tiles **/
+			var queue = [start];
+			/** **/
+			while (queue.length) {
+				/** fetch tiles from queue tile reference **/
+				var tiles = this.getAdjacentFilteredTiles(queue.shift());
+				/** reduce heuristic value **/
+				var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }))
+				/** reduce tiles from heuristic **/
+				var tile = tiles.find(function(i) { return i.heuristic === res; });
+				/** **/
+				if (!tile || tile.heuristic === 0) {
+					/** append last tile to stack **/
+					plotted.push(target);
+					/** return plotted path **/
+					return plotted;	
+				}			
+				/** add plotted tile to array **/
+				plotted.push(tile);
+				/** enqueue tile for processing **/
+				queue.push(tile);
+			}
+		}
+	}
+
 	find (start, target) {
 		  /************************************************************************************************/
 	 	 /** function for confirming whether a path to the target tile exists from starting destination **/
@@ -38,6 +75,7 @@ class Path extends Tiles {
 		var visited = [index];
 		/** process queue **/
 		while (queue.length) {
+			/** extract tile from queue **/
 			var tile = queue.shift();
 			/** fetch tiles from queue tile reference **/
 			var tiles = this.getAdjacentFilteredTiles(tile);
