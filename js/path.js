@@ -73,8 +73,9 @@ class Path extends Tiles {
 		  /******************************************************************************************/
 	 	 /** function for obtaining path to target tile from supplied using heursitic calculation **/
 		/******************************************************************************************/
+		this.asserted = this.calculate(target, start);
 		/** return array of collected titles from heuristic calculation **/
-		return this.calculate(target, start);
+		return this.asserted;
 	}
 
 	calculate (index) {

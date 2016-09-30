@@ -1,11 +1,11 @@
 /** set base columns **/
-const columns = 60;
+const columns = 70;
 
 /** set base rows **/
-const rows = 20;
+const rows = 50;
 
 /** set base tile scale **/
-const scale = 20;
+const scale = 10;
 
 
 
@@ -66,28 +66,51 @@ collisions.getTiles(function (tile) {
 /*** SOMETIMES YOU ARE SEEING A FALSE NEGATIVE . FETCH TILES CAN BE SET TO USED TILES THEREFORE RETURNING NO PATH **/
 var path = new Path(collisions.__this__());
 
-var s = path.getTile(0, 0);
-var e = path.getTile(59, 5);
-
-var path_to = path.getPath(s, e);
+var s = path.getRandomTile();
+var e = path.getRandomTile();
 
 
-if (path_to) {
-	for (var i = 0; i < path_to.length; i++) {
-		paths.drawGeometry("fill", path_to[i].x,  path_to[i].y,  path_to[i].width,  path_to[i].height, {fillStyle:"cyan"});
+if (s && e) {
+	var path_to = path.getPath(s, e, true);
+
+	if (path_to) {
+
+		var search = path.search(s, function (tile) { if (tile.column === e.column && tile.row === e.row) return true; });
+
+		function fill_tiles () {
+			if (search.length) {
+				var t = search.shift();
+				paths.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
+				paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 8px/normal sans-serif", {fillStyle: "black"});
+			    paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
+				paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
+			}
+			else {
+				clearInterval(fill_interval);
+
+				for (var i = 0; i < path_to.length; i++) {
+					paths.drawGeometry("fill", path_to[i].x,  path_to[i].y,  path_to[i].width,  path_to[i].height, {fillStyle:"cyan"});
+				}
+
+				var character = new Character(Object.assign(path.__this__(), { column: s.column, row: s.row, speed: 2, plotted: path_to }));
+
+				keyframe.start(function () {
+
+					stage.drawGeometry("clear", character.x, character.y, character.width, character.height);
+
+					character.c();
+
+					stage.drawGeometry("fill", character.x, character.y, character.width, character.height, {fillStyle: "pink"});
+				});
+			}
+		}
+		var fill_interval = setInterval(function () { fill_tiles(); }, 20);
+
+		
 	}
-
-	var character = new Character(Object.assign(path.__this__(), { column: 0, row: 0, speed: 2, plotted: path_to }));
-
-	keyframe.start(function () {
-
-		stage.drawGeometry("clear", character.x, character.y, character.width, character.height);
-
-		character.c();
-
-		stage.drawGeometry("fill", character.x, character.y, character.width, character.height, {fillStyle: "pink"});
-	});
 }
+
+
 
 
 
