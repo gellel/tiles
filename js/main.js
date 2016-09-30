@@ -75,7 +75,7 @@ if (s && e) {
 
 	if (path_to) {
 
-		var search = path.search(s, function (tile) { if (tile.column === e.column && tile.row === e.row) return true; });
+		var search = path.search(e, function (tile) { if (tile.column === s.column && tile.row === s.row) return true; });
 
 		function fill_tiles () {
 			if (search.length) {
