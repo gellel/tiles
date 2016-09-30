@@ -1,5 +1,19 @@
 class Path extends Tiles {
 
+	/*
+		* about class: create and check for paths between tiles on the grid map
+
+		* constructor parameters:
+			config: typeof Object {}
+				required object origin: [Tiles].__this__();
+
+		* example initialisation:
+			config:
+				var config = Object.assign(new Tiles().__this__());
+			class:
+				var path = new Path(config);
+	*/
+
 	getPath (start, target) {
 		  /********************************************************************************/
 	 	 /** function for getting precalculated path from start to target without noise **/
@@ -143,6 +157,7 @@ class Path extends Tiles {
 		  /************************************/
 	 	 /** function for class constructor **/
 		/************************************/
+		/** super will configure the matrix if not defined **/
 		super(config);
 	}
 }
