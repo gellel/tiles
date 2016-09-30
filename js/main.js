@@ -1,8 +1,8 @@
 /** set base columns **/
-const columns = 70;
+const columns = 160;
 
 /** set base rows **/
-const rows = 50;
+const rows = 60;
 
 /** set base tile scale **/
 const scale = 10;
