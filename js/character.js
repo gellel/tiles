@@ -262,9 +262,9 @@ class Character extends Tile {
 			/** reset character velocities to prevent additional movement **/
 			this.setVelocityIntegers(0, 0);
 			/** **/
-			if (!this.plotted || !this.plotted.length) return;
+			if (!this.path || !this.path.length) return;
 			/** set tile from plotted path **/
-			var tile = this.plotted.shift();
+			var tile = this.path.shift();
 			/** set velocity integers for corner check and movement **/
 			var velocity = this.getVelocityIntegers(this.getDirectionIntegers(this.getNextTileDirection(tile)));
 			/** set movement velocity **/
@@ -289,7 +289,13 @@ class Character extends Tile {
 		/** set class tile type from config object **/
 		this.tileType = "character";
 		/** set class base colour from config object **/
-		this.tileBaseColour = config.tileBaseColour || "rgb(0, 255, 255)";
+		this.tileBaseColour = config.tileBaseColour || Canvas.RGB(Canvas.INT(), Canvas.INT(), Canvas.INT()) || "rgb(0, 255, 255)";
+		/** set class path colour from config object **/
+		this.tilePathColour = config.tilePathColour || Canvas.RGBA(Canvas.INT(), Canvas.INT(), Canvas.INT(), "0.5") || "rgba(255, 0, 255, 0.5)";
+		/** set class path colour from config object **/
+		this.tileStartColour = config.tileStartColour || Canvas.RGBA(Canvas.INT(), Canvas.INT(), Canvas.INT(), "1") || "rgba(155, 220, 155, 1)";
+		/** set class target colour from config object **/
+		this.tileTargetColour = config.tileTargetColour || Canvas.RGBA(Canvas.INT(), Canvas.INT(), Canvas.INT(), "1") || "rgba(255, 110, 55, 1)";
 		/** set class character moveable directions **/
 		this.directions = config.directions || ["top", "right", "bottom", "left"];
 		/** set class character base movement speed **/
@@ -303,6 +309,10 @@ class Character extends Tile {
 		/** set class character base target y position **/
 		this.targetY = this.y;
 		/** set class character base path **/
-		this.plotted = config.plotted || [];
+		this.path = config.path || [];
+		/** set class character first tile **/
+		this.startTile = config.startTile || "startTileIsGridPosition";
+		/** set class target tile **/
+		this.targetTile = config.targetTile || "targetTileIsUnknown"; 
 	}
 }

@@ -128,6 +128,34 @@ class Tiles extends Grid {
 		}
 	}
 
+	getRandomColumn () {
+		  /***************************************************************************/
+	 	 /** function selecting a random tile within the supplied or base grid map **/
+		/***************************************************************************/
+		/** set map to argument or base map of class instance **/
+		var map = map || this.map;
+		/** set base variable for column from random number selected from tile map **/
+		var column = (Math.floor(Math.random() * ((map.length - 1) - 0 + 1)) + 0);
+		/** return result of random column selection **/
+		return map[column];
+	}
+
+	getRandomRow () {
+		  /*************************************************************************/
+	 	 /** function for editing tile within grid using column and row integers **/
+		/*************************************************************************/
+		/** collect arguments and set to the instance **/
+		var parameters = Array.prototype.slice.call(arguments);
+		/** set map instance from supplied or local map **/
+		var map = (typeof parameters[0] === "object") ? parameters.shift() : this.map;
+		/** set column from arguments list **/
+		var column = parameters.shift();
+		/** set base variable for row from random number selected from tile map random column **/
+		var row = (Math.floor(Math.random() * ((map[column].length -1) - 0 + 1)) + 0);
+		/** return result of random tile selection **/
+		return this.getTile(map, column, row);
+	}
+
 	getRandomTile (map) {
 		  /***************************************************************************/
 	 	 /** function selecting a random tile within the supplied or base grid map **/
@@ -136,10 +164,10 @@ class Tiles extends Grid {
 		var map = map || this.map;
 		/** set base variable for column from random number selected from tile map **/
 		var column = (Math.floor(Math.random() * ((map.length - 1) - 0 + 1)) + 0);
-		/** set base variable for rowm from random number selected from tile map random column **/
+		/** set base variable for row from random number selected from tile map random column **/
 		var row = (Math.floor(Math.random() * ((map[column].length -1) - 0 + 1)) + 0);
 		/** return result of random tile selection **/
-		return this.getTile(column, row);
+		return this.getTile(map, column, row);
 	}
 
 	editTile () {

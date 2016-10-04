@@ -78,6 +78,36 @@ class Path extends Tiles {
 		return this.asserted;
 	}
 
+	reduce (start) {
+		  /*********************************************************************************************/
+	 	 /** function for obtaining path to target tile; assumes heursitic calculation was completed **/
+		/*********************************************************************************************/
+		/** set path map for plotted path **/
+		var plotted = [];
+		/** set queue for finding tiles **/
+		var queue = [start];
+		/** **/
+		while (queue.length) {
+			/** fetch tiles from queue tile reference **/
+			var tiles = this.getAdjacentFilteredTiles(queue.shift());
+			/** reduce heuristic value **/
+			var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }))
+			/** reduce tiles from heuristic **/
+			var tile = tiles.find(function(i) { return i.heuristic === res; });
+			/** **/
+			if (!tile || tile.heuristic === 0) {
+				/** append last tile to stack **/
+				plotted.push(target);
+				/** return plotted path **/
+				return plotted;	
+			}			
+			/** add plotted tile to array **/
+			plotted.push(tile);
+			/** enqueue tile for processing **/
+			queue.push(tile);
+		}
+	}
+
 	calculate (index) {
 		  /************************************************************************/
 	 	 /** function for obtaining tiles heursitic distance from supplied tile **/
@@ -126,14 +156,18 @@ class Path extends Tiles {
 		var visited = [index];
 		/** process queue **/
 		while (queue.length) {
+			/** extract tile from queue **/
+			var tile = queue.shift();
 			/** fetch tiles from queue tile reference **/
-			var tiles = this.getAdjacentFilteredTiles(queue.shift());
+			var tiles = this.getAdjacentFilteredTiles(tile);
 			/** confirm that tiles are not empty **/
 			if (tiles.length) {
 				/** iterate over the collected tiles **/
 				for (var i = 0, len = tiles.length; i < len; i++) {
 					/** confirm that array does not container this tile square instance **/
 					if (visited.indexOf(tiles[i]) === -1) {
+						/** calculate heuristic distance from position index **/
+						tiles[i].heuristic = tile.heuristic + 1;
 						/** enqueue task **/
 						queue.push(tiles[i]);
 						/** prevent revising **/

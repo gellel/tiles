@@ -1,8 +1,8 @@
 /** set base columns **/
-const columns = 160;
+const columns = 140;
 
 /** set base rows **/
-const rows = 60;
+const rows = 80;
 
 /** set base tile scale **/
 const scale = 10;
@@ -56,66 +56,36 @@ collisions.getTiles(function (tile) {
 });
 
 
-var numCharacters = 50;
-var allCharacters = [];
-
-
-for (var i = 0; i < numCharacters; i++) {
-
-	var path = new Path(collisions.__this__());
-	var start = path.getRandomTile();
-	var target = path.getRandomTile();
-
-	if (start && target) {
-
-		var path_exists = path.find(start, target);
-
-		if (path_exists) {
-
-			var plotted = path.getPath(start, target);
-			var character = new Character(Object.assign(path.__this__(), { column: start.column, row: start.row, speed: 2, plotted: plotted }));
-
-			allCharacters.push({start: start, target: target, path: plotted, character: character});
-		}
-	}
+function set (grid, tile, start, target) {
+	var t = { start: tile.getRandomRow(start), target: tile.getRandomRow(target) };
+	if (!t.start || !t.target) set(grid, tile, start, target);
+	var p = new Path(tile.__this__()).getPath(t.start, t.target);
+	if (!p) return false;
+	return new Character(Object.assign(grid.__this__(), { column: t.start.column, row: t.start.row, path: p, startTile: t.start, targetTile: t.target, speed: 1 }));
 }
 
-for (var i = 0; i < allCharacters.length; i++) {
+function draw (character) {
+	for (var i = 0; i < character.path.length; i++) {
+		paths.drawGeometry("fill", character.path[i].x, character.path[i].y, character.path[i].width, character.path[i].height, {fillStyle: character.tilePathColour})
+	}
+	paths.drawGeometry("fill", character.startTile.x, character.startTile.y, character.startTile.width, character.startTile.height, {fillStyle: character.tileStartColour });
+	paths.drawGeometry("fill", character.targetTile.x, character.targetTile.y, character.targetTile.width, character.targetTile.height, {fillStyle: character.tileTargetColour });
 
-	paths.drawGeometry("fill", allCharacters[i].start.x, allCharacters[i].start.y, allCharacters[i].start.width, allCharacters[i].start.height, {fillStyle:"yellow"});
-	paths.drawGeometry("fill", allCharacters[i].target.x, allCharacters[i].target.y, allCharacters[i].target.width, allCharacters[i].target.height, {fillStyle:"cyan"});
-	for (var j = 0; j < allCharacters[i].path.length; j++) {
-		paths.drawGeometry("fill", allCharacters[i].path[j].x, allCharacters[i].path[j].y, allCharacters[i].path[j].width, allCharacters[i].path[j].height, {fillStyle:"rgba(255,255,0,0.5)"})
-	}
-};
-
-keyframe.start(function () {
-	for (var i = 0; i < allCharacters.length; i++) {
-		stage.drawGeometry("clear", allCharacters[i].character.x, allCharacters[i].character.y, allCharacters[i].character.width, allCharacters[i].character.height, {fillStyle:"orange"});
-		allCharacters[i].character.c();
-		stage.drawGeometry("fill", allCharacters[i].character.x, allCharacters[i].character.y, allCharacters[i].character.width, allCharacters[i].character.height, {fillStyle:"orange"});
-	}
-})
-console.log(allCharacters)
-
-/**
-function fill_tiles () {
-	if (asserted.length) {
-		var t = asserted.shift();
-		paths.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "gray"});
-		paths.drawFillText(t.x, t.y + t.halfHeight, t.heuristic, "normal 10px/normal sans-serif", {fillStyle: "black"});
-	    paths.drawGeometry("fill", s.x, s.y, s.width, s.height, {fillStyle: "rgba(255, 255, 0, 1)"});
-		paths.drawGeometry("fill", e.x, e.y, e.width, e.height, {fillStyle: "rgba(0, 255, 255, 1)"});
-	}
-	else {
-		clearInterval(fill_interval);
-	}
 }
 
-var fill_interval = setInterval(function () { fill_tiles(); }, 100);
-**/
+var p = set(grid, collisions, 0, (collisions.map.length - 1));
 
+if (p) {
+	for (var i = 0; i < p.path.length; i++) {
+		paths.drawGeometry("fill", p.path[i].x, p.path[i].y, p.path[i].width, p.path[i].height, {fillStyle: p.tilePathColour})
+	}
+	paths.drawGeometry("fill", p.startTile.x, p.startTile.y, p.startTile.width, p.startTile.height, {fillStyle: p.tileBaseColour});
+	paths.drawGeometry("fill", p.targetTile.x, p.targetTile.y, p.targetTile.width, p.targetTile.height, {fillStyle: "rgb(255,100,0)"});
 
-
-
-
+	keyframe.start(function () {
+		stage.drawGeometry("clear", p.x, p.y, p.width, p.height);
+		p.c();
+		stage.drawGeometry("fill", p.x, p.y, p.width, p.height, {fillStyle: Canvas.RGB(Canvas.INT(), Canvas.INT(), Canvas.INT())});
+		if (p.x === p.targetTile.x && p.y === p.targetTile.y) keyframe.abort = true;
+	});
+}
