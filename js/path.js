@@ -25,30 +25,35 @@ class Path extends Tiles {
 			/** set heuristic **/
 			this.assert(start, target);
 			/** set path map for plotted path **/
-			var plotted = [];
+			var plotted = [start];
 			/** set queue for finding tiles **/
 			var queue = [start];
-			/** **/
+			/** confirm that search did not fail **/
+			if (start.heuristic === 0) return false;
+			/** begin reduction **/
 			while (queue.length) {
+				/** fetch tile from queue **/
+				var tile = queue.shift();
 				/** fetch tiles from queue tile reference **/
-				var tiles = this.getAdjacentFilteredTiles(queue.shift());
+				var tiles = this.getAdjacentFilteredTiles(tile);
 				/** reduce heuristic value **/
-				var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }))
+				var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }));
 				/** reduce tiles from heuristic **/
-				var tile = tiles.find(function(i) { return i.heuristic === res; });
+				var next = tiles.find(function(i) { return i.heuristic === res; });
 				/** **/
-				if (!tile || tile.heuristic === 0) {
+				if (!next || next.heuristic === 0) {
 					/** append last tile to stack **/
 					plotted.push(target);
 					/** return plotted path **/
 					return plotted;	
 				}			
 				/** add plotted tile to array **/
-				plotted.push(tile);
+				plotted.push(next);
 				/** enqueue tile for processing **/
-				queue.push(tile);
+				queue.push(next);
 			}
 		}
+		return false;
 	}
 
 	find (start, target) {

@@ -1,8 +1,8 @@
 /** set base columns **/
-const columns = 140;
+const columns = 80;
 
 /** set base rows **/
-const rows = 80;
+const rows = 40;
 
 /** set base tile scale **/
 const scale = 10;
@@ -56,36 +56,54 @@ collisions.getTiles(function (tile) {
 });
 
 
-function set (grid, tile, start, target) {
-	var t = { start: tile.getRandomRow(start), target: tile.getRandomRow(target) };
-	if (!t.start || !t.target) set(grid, tile, start, target);
-	var p = new Path(tile.__this__()).getPath(t.start, t.target);
-	if (!p || !p.length) set(grid, tile, start, target);
-	return new Character(Object.assign(grid.__this__(), { column: t.start.column, row: t.start.row, path: p, startTile: t.start, targetTile: t.target, speed: 1 }));
-}
-
-function draw (character) {
-	for (var i = 0; i < character.path.length; i++) {
-		paths.drawGeometry("fill", character.path[i].x, character.path[i].y, character.path[i].width, character.path[i].height, {fillStyle: character.tilePathColour})
+var init = {
+	tile: {
+		random: {
+			attempts: 0,
+			row: function (map, column, attempts) {
+				/** incriment attempt counter **/
+				this.attempts = this.attempts + 1;
+				/** attempt to find tile **/
+				var t = map.getRandomRow(column);
+				/** print to console the attempt count for debugging */
+				if (attempts) console.log(this.attempts);
+				/** return the found tile if it is usable otherwise recall **/
+				return t && t.canUseTile ? t : this.row(map, column);
+			}
+		},
+		path: {
+			attempts: 0,
+			get: function (map, start, target, limit, attempts) {
+				/** confirm that limit of checks has not been acheived **/
+				if (this.attempts === (limit || 3)) return false;
+				/** attempt to plot path **/
+				var p = new Path(map.__this__()).getPath(init.tile.random.row(collisions, start), init.tile.random.row(collisions, target));
+				/** incriment attempt counter **/
+				this.attempts = this.attempts + 1;
+				/** print to console the attempt count for debugging */
+				if (attempts) console.log(this.attempts);
+				/** return the found path if it was plotted **/
+				if (p) return p;
+				/** recall function if path not achieved **/
+				this.get(map, start, target, limit, attempts);
+			}
+		}
+	},
+	draw: {
+		path: function (canvas, path, fillStyle) {
+			/** confirm that canvas and path were supplied **/
+			if (!canvas || !path) return false;
+			/** set base fill style for illustration **/
+			if (!fillStyle) fillStyle = "rgba(255, 255, 0, 0.5)";
+			/** iterate over path length until element is drawn **/
+			for (var i = 0; i < path.length; i++) {
+				/** draw tile to supplied canvas **/
+				canvas.drawGeometry("fill", path[i].x, path[i].y, path[i].width, path[i].height, {fillStyle: fillStyle});
+			}
+		}
 	}
-	paths.drawGeometry("fill", character.startTile.x, character.startTile.y, character.startTile.width, character.startTile.height, {fillStyle: character.tileStartColour });
-	paths.drawGeometry("fill", character.targetTile.x, character.targetTile.y, character.targetTile.width, character.targetTile.height, {fillStyle: character.tileTargetColour });
+};
 
-}
 
-var p = set(grid, collisions, 0, (collisions.map.length - 1));
 
-if (p) {
-	for (var i = 0; i < p.path.length; i++) {
-		paths.drawGeometry("fill", p.path[i].x, p.path[i].y, p.path[i].width, p.path[i].height, {fillStyle: p.tilePathColour})
-	}
-	paths.drawGeometry("fill", p.startTile.x, p.startTile.y, p.startTile.width, p.startTile.height, {fillStyle: p.tileBaseColour});
-	paths.drawGeometry("fill", p.targetTile.x, p.targetTile.y, p.targetTile.width, p.targetTile.height, {fillStyle: "rgb(255,100,0)"});
-
-	keyframe.start(function () {
-		stage.drawGeometry("clear", p.x, p.y, p.width, p.height);
-		p.c();
-		stage.drawGeometry("fill", p.x, p.y, p.width, p.height, {fillStyle: p.tileBaseColour});
-		if (p.x === p.targetTile.x && p.y === p.targetTile.y) keyframe.abort = true;
-	});
-}
+init.draw.path(paths, init.tile.path.get(collisions, 0, collisions.map.length - 1, 3, true))
