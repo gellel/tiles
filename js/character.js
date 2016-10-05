@@ -145,6 +145,26 @@ class Character extends Tile {
 		return filtered[Math.floor(Math.random() * filtered.length)];
 	}
 
+	getFloatInteger (number, decimalPlaces) {
+		  /*************************************************************************************/
+	 	 /** function for correcting supplied number to a float from supplied decimal places **/
+		/*************************************************************************************/
+		/** return edited number object as float using supplied decimal places as floating index **/
+		return number.toFixed(decimalPlaces);
+	}
+
+	getDecimalPlaces (floatingNumber) {
+		  /************************************************************************************************************/
+	 	 /** function for obtaining supplied decimal places as integer from supplied floating integer or expression **/
+		/************************************************************************************************************/
+		/** set match from regular expression if matching expression if including scientific integers **/
+		var match = ('' + floatingNumber).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+		/** return base zero if no decimal places found **/
+		if (!match) { return 0; }
+		/** return position of decimal as an integer within string; subtract difference if number is scientific expression **/
+		return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
+	}
+
 	incrementCoordinatePosition (x, y) {
 		  /************************************************************************/
 	 	 /** function for incrimenting characters position by supplied integers **/

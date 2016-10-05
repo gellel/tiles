@@ -60,7 +60,7 @@ function set (grid, tile, start, target) {
 	var t = { start: tile.getRandomRow(start), target: tile.getRandomRow(target) };
 	if (!t.start || !t.target) set(grid, tile, start, target);
 	var p = new Path(tile.__this__()).getPath(t.start, t.target);
-	if (!p) return false;
+	if (!p || !p.length) set(grid, tile, start, target);
 	return new Character(Object.assign(grid.__this__(), { column: t.start.column, row: t.start.row, path: p, startTile: t.start, targetTile: t.target, speed: 1 }));
 }
 
@@ -85,7 +85,7 @@ if (p) {
 	keyframe.start(function () {
 		stage.drawGeometry("clear", p.x, p.y, p.width, p.height);
 		p.c();
-		stage.drawGeometry("fill", p.x, p.y, p.width, p.height, {fillStyle: Canvas.RGB(Canvas.INT(), Canvas.INT(), Canvas.INT())});
+		stage.drawGeometry("fill", p.x, p.y, p.width, p.height, {fillStyle: p.tileBaseColour});
 		if (p.x === p.targetTile.x && p.y === p.targetTile.y) keyframe.abort = true;
 	});
 }
