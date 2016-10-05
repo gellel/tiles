@@ -2,7 +2,7 @@
 const columns = 80;
 
 /** set base rows **/
-const rows = 40;
+const rows = 10;
 
 /** set base tile scale **/
 const scale = 10;
@@ -60,32 +60,72 @@ var init = {
 	tile: {
 		random: {
 			attempts: 0,
-			row: function (map, column, attempts) {
-				/** incriment attempt counter **/
-				this.attempts = this.attempts + 1;
+			row: function (map, column) {
 				/** attempt to find tile **/
 				var t = map.getRandomRow(column);
-				/** print to console the attempt count for debugging */
-				if (attempts) console.log(this.attempts);
 				/** return the found tile if it is usable otherwise recall **/
-				return t && t.canUseTile ? t : this.row(map, column);
+				return t && t.canUseTile ? t : this.row(map, column);	
 			}
 		},
-		path: {
+		linear: {
+			row: function (map, column, row) {
+				/** attempt to find tile **/
+				var t = map.getTile(column, row);
+				/** return if tile was returned as false (assumed out of length) **/
+				if (!t) return false;
+				/** return the found tile if it is usable otherwise recall **/
+				return t && t.canUseTile ? t : this.row(map, column, (row + 1));	
+			}
+		}
+	},
+	path: {
+		random: {
 			attempts: 0,
-			get: function (map, start, target, limit, attempts) {
-				/** confirm that limit of checks has not been acheived **/
-				if (this.attempts === (limit || 3)) return false;
-				/** attempt to plot path **/
-				var p = new Path(map.__this__()).getPath(init.tile.random.row(collisions, start), init.tile.random.row(collisions, target));
+			get: function (pathClass, startColumn, targetColumn, limit, attempts) {
+				/** set base limit for limit break **/
+				if (limit === undefined) limit = 5;
+				/** confirm that limit was reached and exit recursion **/
+				if (this.attempts === limit) return false;
+				/** get tile from random row selection **/
+				var s = init.tile.random.row(pathClass, startColumn);
+				/** get tile from random row selection **/
+				var t = init.tile.random.row(pathClass, targetColumn);
+				/** attempt to get path from start to finish **/
+				var p = pathClass.getPath(s, t);
 				/** incriment attempt counter **/
 				this.attempts = this.attempts + 1;
 				/** print to console the attempt count for debugging */
 				if (attempts) console.log(this.attempts);
-				/** return the found path if it was plotted **/
-				if (p) return p;
-				/** recall function if path not achieved **/
-				this.get(map, start, target, limit, attempts);
+				/** return path if found otherwise recall **/
+				return p ? p : this.get(pathClass, startColumn, targetColumn, limit, attempts);
+			}
+		},
+		linear: {
+			attempts: 0,
+			get: function (pathClass, startColumn, startRow, targetColumn, targetRow, limit) {
+				/** set base limit for limit break **/
+				if (limit === undefined) limit = 5;
+				/** confirm that limit was reached and exit recursion **/
+				if (this.attempts === limit) return false;
+				/** get tile from linear row selection **/
+				var s = init.tile.linear.row(pathClass, startColumn, startRow);
+				/** return false if starting tile not found **/
+				if (!s) return false;
+				/** iterate over target column rows **/
+				for (var i = targetRow, len = pathClass.map[targetColumn].length; i < len; i++) {
+					/** get tile from linear row selection **/
+					var t = init.tile.linear.row(pathClass, targetColumn, i);
+					/** return false if target tile not found **/
+					if (!t) return false;
+					/** attempt to find path from map **/
+					var x = pathClass.getPath(s, t);
+					/** **/
+					if (x) return x;
+				}
+				/** **/
+				this.attempts = this.attempts + 1;
+				/** **/
+				this.get(pathClass, startColumn, s.row, targetColumn, targetRow, limit);
 			}
 		}
 	},
@@ -104,6 +144,10 @@ var init = {
 	}
 };
 
+var path1 = init.path.random.get(new Path(collisions.__this__()), 0, (collisions.map.length - 1));
 
+var path2 = init.path.linear.get(new Path(collisions.__this__()), 0, 0, (collisions.map.length - 1), 0, collisions.map[0].length);
 
-init.draw.path(paths, init.tile.path.get(collisions, 0, collisions.map.length - 1, 3, true))
+init.draw.path(paths, path1, "rgba(0, 0, 255, 0.3)")
+
+init.draw.path(paths, path2, "rgba(255, 0, 0, 0.3)")

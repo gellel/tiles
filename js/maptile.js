@@ -35,7 +35,7 @@ class MapTile extends Tile {
 		/** set class useable status from config object **/
 		this.canUseTile = config.canUseTile || MapTile.getRandomUsed(1, 4, 1);
 		/** set class tile type from config object **/
-		this.tileType = config.tileType || (config.canUseTile) ? "emptyTile" : "occupiedTile";
+		this.tileType = config.tileType || this.canUseTile === true ? "emptyTile" : "occupiedTile";
 		/** set class base colour from config object **/
 		this.tileBaseColour = config.tileBaseColour || "transparent";
 	}
