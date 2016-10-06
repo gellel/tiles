@@ -89,49 +89,29 @@ class Tiles extends Grid {
 		return tiles;
 	}
 
-	getTile () {
+	getTile (column, row) {
 		  /***************************************************************************/
 	 	 /** function for obtaining tile within grid using column and row integers **/
 		/***************************************************************************/
-		/** collect arguments and set to the instance **/
-		var parameters = Array.prototype.slice.call(arguments);
-		/** set map instance from supplied or local map **/
-		var map = (typeof parameters[0] === "object") ? parameters.shift() : this.map;
-		/** set column from arguments list **/
-		var column = parameters.shift();
-		/** set row from arguments list **/
-		var row = parameters.shift();
-		/** confirm map **/
-		if (map) {
-			/** confirm that object was found in map column **/
-			if (map[column]) {
-				/** confirm that object was found in map column and row and return object **/
-				if (map[column][row]) return map[column][row];
-			}
+		/** confirm that object was found in map column **/
+		if (this.map[column]) {
+			/** confirm that object was found in map column and row and return object **/
+			if (this.map[column][row]) return this.map[column][row];
 		}
 		/** failed outcome **/
 		return false;
 	}
 
-	getTiles () {
+	getTiles (callback) {
 		  /************************************************************************************/
 	 	 /** function for collecting all tiles within grid and processing them individually **/
 		/************************************************************************************/
-		/** collect arguments and set to the instance **/
-		var parameters = Array.prototype.slice.call(arguments);
-		/** fetch first argument **/
-		var arg = parameters[0];
-		/** assign array map to variable **/
-		var map = (typeof arg !== "function") ? parameters[0] : this.map;
-		/** assign function handler to variable **/
-		if (typeof parameters.slice(-1)[0] === "function") {
-			/** iterate over the defined columns of the map **/
-			for (var column = 0; column < this.columns; column++) {
-				/** iterate over the defined rows of the map **/
-				for (var row = 0; row < this.rows; row++) {
-					/** process the tile with callback **/
-					parameters.slice(-1)[0](map[column][row]);
-				}
+		/** iterate over the defined columns of the map **/
+		for (var column = 0; column < this.columns; column++) {
+			/** iterate over the defined rows of the map **/
+			for (var row = 0; row < this.rows; row++) {
+				/** process the tile with callback **/
+				if (callback) callback(this.map[column][row]);
 			}
 		}
 	}
@@ -140,81 +120,58 @@ class Tiles extends Grid {
 		  /***************************************************************************/
 	 	 /** function selecting a random tile within the supplied or base grid map **/
 		/***************************************************************************/
-		/** set map to argument or base map of class instance **/
-		var map = map || this.map;
-		/** set base variable for column from random number selected from tile map **/
-		var column = (Math.floor(Math.random() * ((map.length - 1) - 0 + 1)) + 0);
 		/** return result of random column selection **/
-		return map[column];
+		return this.map[(Math.floor(Math.random() * ((this.columns - 1) - 0 + 1)) + 0)];
 	}
 
-	getRandomRow () {
+	getRandomColumnInt () {
+		  /**********************************************************************/
+	 	 /** function returning random column integer from length of grid map **/
+		/**********************************************************************/
+		return (Math.floor(Math.random() * ((this.columns - 1) - 0 + 1)) + 0);
+	}
+
+	getRandomRow (column) {
 		  /*************************************************************************/
 	 	 /** function for editing tile within grid using column and row integers **/
 		/*************************************************************************/
-		/** collect arguments and set to the instance **/
-		var parameters = Array.prototype.slice.call(arguments);
-		/** set map instance from supplied or local map **/
-		var map = (typeof parameters[0] === "object") ? parameters.shift() : this.map;
-		/** set column from arguments list **/
-		var column = parameters.shift();
-		/** set base variable for row from random number selected from tile map random column **/
-		var row = (Math.floor(Math.random() * ((map[column].length -1) - 0 + 1)) + 0);
 		/** return result of random tile selection **/
-		return this.getTile(map, column, row);
+		return this.getTile(column, (Math.floor(Math.random() * ((this.rows - 1) - 0 + 1)) + 0));
 	}
 
-	getRandomTile (map) {
+	getRandomRowInt () {
+		  /*******************************************************************/
+	 	 /** function returning random row integer from height of grid map **/
+		/*******************************************************************/
+		return (Math.floor(Math.random() * ((this.rows - 1) - 0 + 1)) + 0);
+	}
+
+	getRandomTile () {
 		  /***************************************************************************/
 	 	 /** function selecting a random tile within the supplied or base grid map **/
 		/***************************************************************************/
-		/** set map to argument or base map of class instance **/
-		var map = map || this.map;
-		/** set base variable for column from random number selected from tile map **/
-		var column = (Math.floor(Math.random() * ((map.length - 1) - 0 + 1)) + 0);
-		/** set base variable for row from random number selected from tile map random column **/
-		var row = (Math.floor(Math.random() * ((map[column].length -1) - 0 + 1)) + 0);
 		/** return result of random tile selection **/
-		return this.getTile(map, column, row);
+		return this.getTile((Math.floor(Math.random() * ((this.columns - 1) - 0 + 1)) + 0), (Math.floor(Math.random() * ((this.rows - 1) - 0 + 1)) + 0));
 	}
 
-	editTile () {
+	editTile (column, row, method) {
 		  /*************************************************************************/
 	 	 /** function for editing tile within grid using column and row integers **/
 		/*************************************************************************/
-		/** collect arguments and set to the instance **/
-		var parameters = Array.prototype.slice.call(arguments);
-		/** set map instance from supplied or local map **/
-		var map = (typeof parameters[0] === "object") ? parameters.shift() : this.map;
-		/** set column from arguments list **/
-		var column = parameters.shift();
-		/** set row from arguments list **/
-		var row = parameters.shift();
-		/** set method from arguments list **/
-		var method = parameters.shift();
 		/** set map column row item to be the result of the returned data from the callback or the object **/
-		map[column][row] = (typeof method === "function") ? method({ columns: this.columns, rows: this.rows, scale: this.scale, gridWidth: this.gridWidth, gridHeight: this.gridHeight, column: column, row: row, self: map[column][row] }) : method;
+		this.map[column][row] = (typeof method === "function") ? method({ columns: this.columns, rows: this.rows, scale: this.scale, gridWidth: this.gridWidth, gridHeight: this.gridHeight, column: column, row: row, self: this.map[column][row] }) : method;
 	}
 
-	editTiles () {
+	editTiles (callback) {
 		  /************************************************/
 	 	 /** function for editing all tiles within grid **/
 		/************************************************/
-		/** collect arguments and set to the instance **/
-		var parameters = Array.prototype.slice.call(arguments);
-		/** fetch first argument **/
-		var arg = parameters[0];
-		/** assign array map to variable **/
-		var map = (typeof arg !== "function") ? parameters[0] : this.map;
-		/** assign function handler to variable **/
-		if (typeof parameters.slice(-1)[0] === "function") {
-			/** iterate over the defined columns of the map **/
-			for (var column = 0; column < this.columns; column++) {
-				/** iterate over the defined rows of the map **/
-				for (var row = 0; row < this.rows; row++) {
-					/** edit the tile **/
-					this.editTile(map, column, row, parameters.slice(-1)[0]);
-				}
+		/** iterate over the defined columns of the map **/
+		for (var column = 0; column < this.columns; column++) {
+			/** iterate over the defined rows of the map **/
+			for (var row = 0; row < this.rows; row++) {
+				/** edit the tile **/
+				if (callback) this.editTile(column, row, callback);
 			}
 		}
 	}
