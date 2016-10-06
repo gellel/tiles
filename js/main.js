@@ -77,7 +77,11 @@ var init = {
 			/** set tile for target **/
 			config.target = config.path.getTile(config.target.column, config.target.row);
 			/** set path attempt to handler **/
-			return config.type(config);
+			var result = config.type(config);
+			/** confirm if callback supplied and callback function **/
+			if (config.callback) callback(result, config);
+			/** return result of all attempted methods **/
+			return result;
 		},
 		method: {
 			direct: function (config) {
@@ -146,6 +150,38 @@ var init = {
 				};
 				/** fetch path from defined point to target **/
 				return f(p, s, t);
+			},
+			adjustBoth: function (config) {
+				/** confirm path requirement are defined **/
+				if (!config.start || !config.target) return false;
+				/** cache path **/
+				var p = config.path;
+				/** set start tile **/
+				var s = config.start;
+				/** set target tile **/
+				var t = config.target;
+				/** set find tile recursive caller **/
+				var g = function (path, tile) {
+					/** exit if tile was found found in grid **/
+					if (!tile) return false;
+					/** confirm whether tile can be used and return tile otherwise recall **/
+					return tile.canUseTile ? tile : g(path, path.getTile(tile.column, tile.row + 1));
+				};
+				/** set find path recursive caller **/
+				var f = function (path, start, target) {
+					/** set up start tile **/
+					start = g(path, start);
+					/** set up target tile **/
+					target = g(path, target);
+					/** confirm that there were issues either tile and exit **/
+					if (!start || !target) return false;
+					/** attempt to find path and store result **/
+					var r = path.getPath(start, target);
+					/** return result or recursively call function, incrementing row by 1 for the start and target position **/
+					return r ? r : f(path, path.getTile(start.column, start.row + 1), path.getTile(target.column, target.row + 1))
+				};
+				/** fetch path from defined point to target **/
+				return f(p, s, t);
 			}
 		}
 	},
@@ -173,7 +209,7 @@ var init = {
 
 var path = new Path(collisions.__this__());
 
-var t = init.path.fetch({ path: path, type: "adjustTarget", s: { column: 0, row: 0 }, t: { column: 79, row: 0 } });
+var t = init.path.fetch({ path: path, type: "adjustBoth", s: { column: 0, row: 0 }, t: { column: 79, row: 0 } });
 
 if (t) init.draw.path({ canvas: paths, path: t, style: { fillStyle: "rgba(255,255,0,0.5)" }})
 
