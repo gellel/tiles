@@ -2,7 +2,7 @@
 const columns = 80;
 
 /** set base rows **/
-const rows = 10;
+const rows = 40;
 
 /** set base tile scale **/
 const scale = 10;
@@ -130,24 +130,46 @@ var init = {
 		}
 	},
 	draw: {
-		path: function (canvas, path, fillStyle) {
-			/** confirm that canvas and path were supplied **/
-			if (!canvas || !path) return false;
-			/** set base fill style for illustration **/
-			if (!fillStyle) fillStyle = "rgba(255, 255, 0, 0.5)";
-			/** iterate over path length until element is drawn **/
-			for (var i = 0; i < path.length; i++) {
+		path: function (config) {
+			/** confirm config object has required attributes **/
+			if (!config || !config.canvas || !config.path) return;
+			/** set default drawing style if undefined **/
+			config.style = config.style || { fillStyle: "rgba(255, 255, 0, 0.5)" };
+			/** cache canvas **/
+			var c = config.canvas;
+			/** iterate over path **/
+			for (var i = 0, len = config.path.length, tiles = config.path; i < len; i++) {
+				/** cache tile **/
+				var t = tiles[i];
 				/** draw tile to supplied canvas **/
-				canvas.drawGeometry("fill", path[i].x, path[i].y, path[i].width, path[i].height, {fillStyle: fillStyle});
+				c.drawGeometry("fill", t.x, t.y, t.width, t.height, config.style);
 			}
+			/** confirm that callback was supplied **/
+			if (config.callback) config.callback();
 		}
 	}
 };
 
+
+
+
+
 var path1 = init.path.random.get(new Path(collisions.__this__()), 0, (collisions.map.length - 1));
+
+init.draw.path({ canvas: paths, path: path1, style: { fillStyle: "rgba(0, 0, 255, 1)" }});
 
 var path2 = init.path.linear.get(new Path(collisions.__this__()), 0, 0, (collisions.map.length - 1), 0, collisions.map[0].length);
 
-init.draw.path(paths, path1, "rgba(0, 0, 255, 0.3)")
+init.draw.path({ canvas: paths, path: path2, style: { fillStyle: "rgba(255, 0, 0, 1)" }});
 
-init.draw.path(paths, path2, "rgba(255, 0, 0, 0.3)")
+
+/*
+var p = new Path(collisions.__this__());
+
+var s = p.getTile(0, 0);
+var t = p.getTile(79, 0);
+
+var z = p.getPath(s, t);
+
+if (z) init.draw.path({ canvas: paths, path: z });
+*/

@@ -65,6 +65,14 @@ class Tiles extends Grid {
 		return this.getAdjacentTiles(tile).filter(function (i) { return i && i.canUseTile ? i : !1; });
 	}
 
+	getAdjacentHeuristicTiles (tile) {
+		  /******************************************************************************************************************************************/
+	 	 /** function for reducing array of tiles based on whether they were found in the grid and are usable as well as heuristically calculated **/
+		/******************************************************************************************************************************************/
+		/** return reduced filtered array from adjacent tiles from tile source **/
+		return this.getAdjacentTiles(tile).filter(function (i) { return i && i.canUseTile && i.heuristic !== undefined ? i : !1; });
+	}
+
 	getSurroundingTiles (tile) {
 		  /*******************************************************************/
 	 	 /** function for obtaining all tiles surrounding tile within grid **/

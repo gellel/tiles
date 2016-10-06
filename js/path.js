@@ -18,42 +18,14 @@ class Path extends Tiles {
 		  /********************************************************************************/
 	 	 /** function for getting precalculated path from start to target without noise **/
 		/********************************************************************************/
+		/** confirm both tiles are not in grid **/
+		if (!start || !target) return false;
+		/** confirm both tiles can be not be used **/
+		if (!start.canUseTile || !target.canUseTile) return false;
 		/** attempt to get heuristic path **/
-		var path = this.find(start, target);
-		/** confirm path was found **/
-		if (path) {
-			/** set heuristic **/
-			this.assert(start, target);
-			/** set path map for plotted path **/
-			var plotted = [start];
-			/** set queue for finding tiles **/
-			var queue = [start];
-			/** confirm that search did not fail **/
-			if (start.heuristic === 0) return false;
-			/** begin reduction **/
-			while (queue.length) {
-				/** fetch tile from queue **/
-				var tile = queue.shift();
-				/** fetch tiles from queue tile reference **/
-				var tiles = this.getAdjacentFilteredTiles(tile);
-				/** reduce heuristic value **/
-				var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }));
-				/** reduce tiles from heuristic **/
-				var next = tiles.find(function(i) { return i.heuristic === res; });
-				/** **/
-				if (!next || next.heuristic === 0) {
-					/** append last tile to stack **/
-					plotted.push(target);
-					/** return plotted path **/
-					return plotted;	
-				}			
-				/** add plotted tile to array **/
-				plotted.push(next);
-				/** enqueue tile for processing **/
-				queue.push(next);
-			}
-		}
-		return false;
+		var collection = this.search(target, function (tile) { return tile.x === start.x && tile.y === start.y ? true : false });
+		/** confirm that collection was populated and attempt to reduce array **/
+		return collection && collection.length ? this.reduce(start, target) : false;
 	}
 
 	find (start, target) {
@@ -83,34 +55,44 @@ class Path extends Tiles {
 		return this.asserted;
 	}
 
-	reduce (start) {
+	reduce (start, target) {
 		  /*********************************************************************************************/
 	 	 /** function for obtaining path to target tile; assumes heursitic calculation was completed **/
 		/*********************************************************************************************/
 		/** set path map for plotted path **/
-		var plotted = [];
+		var plotted = [start];
 		/** set queue for finding tiles **/
 		var queue = [start];
-		/** **/
+		/** set visited tiles **/
+		var visited = [];
+		/** process queue **/
 		while (queue.length) {
-			/** fetch tiles from queue tile reference **/
-			var tiles = this.getAdjacentFilteredTiles(queue.shift());
-			/** reduce heuristic value **/
-			var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }))
-			/** reduce tiles from heuristic **/
-			var tile = tiles.find(function(i) { return i.heuristic === res; });
+			/** dequeue tile **/
+			var tile = queue.shift();
+			/** collect tiles adjacent to tile **/
+			var tiles = this.getAdjacentHeuristicTiles(tile);
 			/** **/
-			if (!tile || tile.heuristic === 0) {
-				/** append last tile to stack **/
-				plotted.push(target);
-				/** return plotted path **/
-				return plotted;	
-			}			
-			/** add plotted tile to array **/
-			plotted.push(tile);
-			/** enqueue tile for processing **/
-			queue.push(tile);
+			if (tiles && tiles.length) {
+				/** reduce tile from minimum heuristic cost **/
+				tile = tiles.reduce(function (p, c) { return p.heuristic < c.heuristic ? p : c; });
+				/** confirm tile was found **/
+				if (tile) {
+					/** prevent stack overflow **/
+					if (visited.indexOf(tile) === -1) {
+						/** add plotted tile to array **/
+						plotted.push(tile);
+						/** prevent **/
+						visited.push(tile);
+						/** confirm tile heuristic is the target to break **/
+						if (tile.heuristic === 0) break;
+						/** enqueue tile for processing **/
+						queue.push(tile);
+					}
+				}
+			}
 		}
+		/** return array of plotted tiles **/
+		return plotted;
 	}
 
 	calculate (index) {
