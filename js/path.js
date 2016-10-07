@@ -19,7 +19,7 @@ class Path extends Tiles {
 		 /** function for searching for path using dijkstra's algorithm without reduction **/
 		/**********************************************************************************/
 		/** confirm that tiles are defined otherwise exit **/
-		if (start !== "object" || target !== "object") return false;
+		if (!start || !target) return false;
 		/** attempt to find dijkstras path **/
 		return this.dijkstra(target, function (tile) { return tile.x === start.x && tile.y === start.y ? true : false });
 	}
@@ -29,7 +29,7 @@ class Path extends Tiles {
 		 /** function for searching for path using dijkstra's algorithm **/
 		/****************************************************************/
 		/** confirm that tiles are defined otherwise exit **/
-		if (start !== "object" || target !== "object") return false;
+		if (!start || !target) return false;
 		/** attempt to find dijkstras path **/
 		var result = this.dijkstra(target, function (tile) { return tile.x === start.x && tile.y === start.y ? true : false });
 		/** confirm that path was plotted successfully and reduce otherwise exit **/
@@ -41,7 +41,7 @@ class Path extends Tiles {
 		 /** function for reducing array from calculation using dijkstra's algorithm **/
 		/*****************************************************************************/
 		/** confirm start and target tile were supplied **/
-		if (typeof start !== "object" || target !== "object") return false;
+		if (!start || !start) return false;
 		/** confirm that queue class is in window scope otherwise exit **/
 		if (!Queue) return false;
 		/** set highest heuristic **/
@@ -86,7 +86,7 @@ class Path extends Tiles {
 		/** caveate: this method will not reset tilemap heuristics after iteration leading to errors when sharing path class for new path array **/
 		/** solution: initialise new path per new calculation of path from adjust start to target **/
 		/** confirm that queue class is in window scope and index tile object provided otherwise exit **/
-		if (!Queue || typeof index !== "object") return false;
+		if (!Queue || !index) return false;
 		/** set index tile heuristic distance **/
 		index.heuristic = 0;
 		/** set queue instance for array processing **/

@@ -128,8 +128,10 @@ function adjustStepPath (tiles, start, target, limit, count) {
 }
 
 
-var sp = adjustStepPath(collisions, { column: 0, row: 0 }, { column: 79, row: 0 }, 5)
+var sp = adjustStartRow(collisions, { column: 0, row: 0 }, { column: 79, row: 0 })
 
+
+console.log(sp)
 
 if (sp && sp.path) {
 
