@@ -258,9 +258,8 @@ class Character extends Tile {
 			var res = Math.min.apply(Math, tiles.map(function(i){ return i.heuristic; }))
 			/** reduce tiles from heuristic **/
 			var tile = tiles.find(function(i) { return i.heuristic === res; });
-
+			/** if tile not found or heuristic is the target exit **/
 			if (!tile || tile.heuristic === 0) return;
-
 			/** set velocity integers for corner check and movement **/
 			var velocity = this.getVelocityIntegers(this.getDirectionIntegers(this.getNextTileDirection(tile)));
 			/** set movement velocity **/
@@ -302,6 +301,12 @@ class Character extends Tile {
 		/************************************/
 		/** set base object for constructor **/
 		config = config || {};
+		/** set base R colour **/
+		config.R = Canvas.INT();
+		/** set base G colour **/
+		config.G = Canvas.INT();
+		/** set base B colour **/
+		config.B = Canvas.INT();
 		/** super will configure the matrix if not defined **/
 		super(config);
 		/** set class image source reference from config object **/
@@ -309,13 +314,13 @@ class Character extends Tile {
 		/** set class tile type from config object **/
 		this.tileType = "character";
 		/** set class base colour from config object **/
-		this.tileBaseColour = config.tileBaseColour || Canvas.RGB(Canvas.INT(), Canvas.INT(), Canvas.INT()) || "rgb(0, 255, 255)";
+		this.tileBaseColour = config.tileBaseColour || Canvas.RGB(config.R, config.G, config.B);
 		/** set class path colour from config object **/
-		this.tilePathColour = config.tilePathColour || Canvas.RGBA(Canvas.INT(), Canvas.INT(), Canvas.INT(), "0.5") || "rgba(255, 0, 255, 0.5)";
+		this.tilePathColour = config.tilePathColour || Canvas.RGBA(config.R, config.G, config.B, 0.45);
 		/** set class path colour from config object **/
-		this.tileStartColour = config.tileStartColour || Canvas.RGBA(Canvas.INT(), Canvas.INT(), Canvas.INT(), "1") || "rgba(155, 220, 155, 1)";
+		this.tileStartColour = config.tileStartColour || Canvas.RGBA(config.R, config.G, config.B, 0.7);
 		/** set class target colour from config object **/
-		this.tileTargetColour = config.tileTargetColour || Canvas.RGBA(Canvas.INT(), Canvas.INT(), Canvas.INT(), "1") || "rgba(255, 110, 55, 1)";
+		this.tileTargetColour = config.tileTargetColour || Canvas.RGBA(config.R, config.G, config.B, 0.7);
 		/** set class character moveable directions **/
 		this.directions = config.directions || ["top", "right", "bottom", "left"];
 		/** set class character base movement speed **/

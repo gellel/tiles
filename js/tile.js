@@ -11,6 +11,14 @@ class Tile extends Grid {
 		* please see those files for init
 	*/
 
+	hasHeuristic () {
+		  /**************************************************/
+	 	 /** function for confirm that tile has heuristic **/
+		/**************************************************/
+		/** return boolean **/
+		return this.heuristic !== undefined ? true : false;
+	}
+
 	getLeftPoint () {
 		  /**************************************************/
 	 	 /** function for getting tiles left x coordinate **/

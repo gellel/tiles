@@ -40,7 +40,7 @@ map.getTiles(function (tile) {
 
 
 /** set collision tiles **/
-const collisions = new Tiles(Object.assign(grid.__this__(), { class: MapTile, config: {  } }));
+const collisions = new Tiles(Object.assign(grid.__this__(), { class: MapTile, config: {} }));
 /** get collision tiles **/
 collisions.getTiles(function (tile) {
 	/** confirm that tile can be used **/
@@ -56,181 +56,85 @@ collisions.getTiles(function (tile) {
 });
 
 
-var init = {
 
-	grid: {},
+function adjustStartRow (tiles, start, target) {
 
-	path: {
-		fetch: function (config) {
-			/** confirm config is defined **/
-			if (!config || !config.path || !config.type) return false;
-			/** set path search method default **/
-			config.type = this.method[config.type] || this.method.dptp;
-			/** set start tile object **/
-			config.start = config.a || config.s || config.start || false;
-			/** set target tile object **/
-			config.target = config.b || config.t || config.target || false;
-			/** confirm start and target was not defined **/
-			if (!config.start || !config.target) return false;
-			/** set tile for start **/
-			config.start = config.path.getTile(config.start.column, config.start.row);
-			/** set tile for target **/
-			config.target = config.path.getTile(config.target.column, config.target.row);
-			/** set path attempt to handler **/
-			var result = config.type(config);
-			/** confirm if callback supplied and callback function **/
-			if (config.callback) callback(result, config);
-			/** return result of all attempted methods **/
-			return result;
-		},
-		method: {
-			direct: function (config) {
-				  /*******************************************************************************************/
-				 /** function will attempt to find path once from supplied start and target grid reference **/
-				/*******************************************************************************************/
-				/** confirm path requirement are defined **/
-				if (!config.start || !config.target) return false;
-				/** cache path **/
-				var p = config.path;
-				/** set start tile **/
-				var s = config.start;
-				/** set target tile **/
-				var t = config.target;
-				/** confirm whether both tiles found **/
-				if (!s || !t) return false;
-				/** fetch path from defined point to target **/
-				return p.getPath(s, t);
-			},
-			adjustStart: function (config) {
-				  /***********************************************************************************************/
-				 /** function will try path to target from initial starting tile before changing starting tile **/
-				/***********************************************************************************************/
-				/** confirm path requirement are defined **/
-				if (!config.start || !config.target) return false;
-				/** cache path **/
-				var p = config.path;
-				/** set start tile **/
-				var s = config.start;
-				/** set target tile **/
-				var t = config.target;
-				/** set find path recursive caller **/
-				var f = function (path, start, target) {
-					/** confirm that start tile was found and that the recursion count has not reach the limit of available column rows **/
-					if (start && ((start.row + 1) !== start.rows)) {
-						/** attempt to find path and store result **/
-						var r = path.getPath(start, target);
-						/** return result or recursively call function, incrementing row by 1 for the starting position **/
-						return r ? r : f(path, path.getTile(start.column, start.row + 1), target);
-					}
-				};
-				/** fetch path from defined point to target **/
-				return f(p, s, t);
-			},
-			adjustTarget: function (config) {
-				  /*********************************************************************************************/
-				 /** function will try path to target from initial starting tile before changing target tile **/
-				/*********************************************************************************************/
-				/** confirm path requirement are defined **/
-				if (!config.start || !config.target) return false;
-				/** cache path **/
-				var p = config.path;
-				/** set start tile **/
-				var s = config.start;
-				/** set target tile **/
-				var t = config.target;
-				/** set find path recursive caller **/
-				var f = function (path, start, target) {
-					/** confirm that start tile was found and that the recursion count has not reach the limit of available column rows **/
-					if (target && ((target.row + 1) !== target.rows)) {
-						/** attempt to find path and store result **/
-						var r = path.getPath(start, target);
-						/** return result or recursively call function, incrementing row by 1 for the starting position **/
-						return r ? r : f(path, start, path.getTile(target.column, target.row + 1));
-					}
-				};
-				/** fetch path from defined point to target **/
-				return f(p, s, t);
-			},
-			adjustBoth: function (config) {
-				/** confirm path requirement are defined **/
-				if (!config.start || !config.target) return false;
-				/** cache path **/
-				var p = config.path;
-				/** set start tile **/
-				var s = config.start;
-				/** set target tile **/
-				var t = config.target;
-				/** set find tile recursive caller **/
-				var g = function (path, tile) {
-					/** exit if tile was found found in grid **/
-					if (!tile) return false;
-					/** confirm whether tile can be used and return tile otherwise recall **/
-					return tile.canUseTile ? tile : g(path, path.getTile(tile.column, tile.row + 1));
-				};
-				/** set find path recursive caller **/
-				var f = function (path, start, target) {
-					/** set up start tile **/
-					start = g(path, start);
-					/** set up target tile **/
-					target = g(path, target);
-					/** confirm that there were issues either tile and exit **/
-					if (!start || !target) return false;
-					/** attempt to find path and store result **/
-					var r = path.getPath(start, target);
-					/** return result or recursively call function, incrementing row by 1 for the start and target position **/
-					return r ? r : f(path, path.getTile(start.column, start.row + 1), path.getTile(target.column, target.row + 1))
-				};
-				/** fetch path from defined point to target **/
-				return f(p, s, t);
-			}
-		}
-	},
-	
-	draw: {
-		path: function (config) {
-			/** confirm config object has required attributes **/
-			if (!config || !config.canvas || !config.path) return;
-			/** set default drawing style if undefined **/
-			config.style = config.style || { fillStyle: "rgba(255, 255, 0, 0.5)" };
-			/** cache canvas **/
-			var c = config.canvas;
-			/** iterate over path **/
-			for (var i = 0, len = config.path.length, tiles = config.path; i < len; i++) {
-				/** cache tile **/
-				var t = tiles[i];
-				/** draw tile to supplied canvas **/
-				c.drawGeometry("fill", t.x, t.y, t.width, t.height, config.style);
-			}
-			/** confirm that callback was supplied **/
-			if (config.callback) config.callback();
-		}
-	}
-};
+	var s = tiles.getTileDepthSearch(start.column, start.row);
 
-var path = new Path(collisions.__this__());
+	var t = tiles.getTile(target.column, target.row);
 
-var t = init.path.fetch({ path: path, type: "adjustBoth", s: { column: 0, row: 0 }, t: { column: 79, row: 0 } });
+	if (!s || !t || !t.canUseTile) return false;
 
-if (t) init.draw.path({ canvas: paths, path: t, style: { fillStyle: "rgba(255,255,0,0.5)" }})
+	var p = new Path(tiles.__this__());
+
+	var r = p.dpath(s, t);
+
+	if (r) return { path: r, class: p };
+
+	return adjustStartRow(tiles, { column: s.column, row: s.row + 1 }, target);
+}
+
+function adjustTargetRow (tiles, start, target) {
+
+	var s = tiles.getTile(start.column, start.row);
+
+	var t = tiles.getTileDepthSearch(target.column, target.row);
+
+	if (!t || !s || !s.canUseTile) return false;
+
+	var p = new Path(tiles.__this__());
+
+	var r = p.dpath(s, t);
+
+	if (r) return { path: r, class: p };
+
+	return adjustTargetRow(tiles, start,  { column: t.column, row: t.row + 1 });
+}
+
+function adjustBothRow (tiles, start, target) {
+
+	var s = tiles.getTileDepthSearch(start.column, start.row);
+
+	var t = tiles.getTileDepthSearch(target.column, target.row);
+
+	if (!s || !t) return false;
+
+	var p = new Path(tiles.__this__());
+
+	var r = p.dpath(s, t);
+
+	if (r) return { path: r, class: p };
+
+	return adjustBothRow(tiles, { column: s.column, row: s.row + 1 }, { column: t.column, row: t.row + 1 });
+}
+
+function adjustStepPath (tiles, start, target, limit, count) {
+
+	if (!isNaN(count)) count = 0;
+
+	if (limit && limit === count) return false;
+
+	var s = adjustStartRow(tiles, start, target);
+
+	if (s) return s;
+
+	var t = adjustTargetRow(tiles, start, target);
+
+	if (t) return t;
+
+	count = count + 1;
+
+	return adjustStepPath(tiles, { column: start.column, row: start.row + 1 }, { column: target.column, row: target.row + 1 });
+}
 
 
-/*
-var path1 = init.path.random.get(new Path(collisions.__this__()), 0, (collisions.map.length - 1));
+var sp = adjustStepPath(collisions, { column: 0, row: 0 }, { column: 79, row: 0 }, 5)
 
-init.draw.path({ canvas: paths, path: path1, style: { fillStyle: "rgba(0, 0, 255, 1)" }});
 
-var path2 = init.path.linear.get(new Path(collisions.__this__()), 0, 0, (collisions.map.length - 1), 0, collisions.map[0].length);
+if (sp && sp.path) {
 
-init.draw.path({ canvas: paths, path: path2, style: { fillStyle: "rgba(255, 0, 0, 1)" }});
-*/
-
-/*
-var p = new Path(collisions.__this__());
-
-var s = p.getTile(0, 0);
-var t = p.getTile(79, 0);
-
-var z = p.getPath(s, t);
-
-if (z) init.draw.path({ canvas: paths, path: z });
-*/
+	new Queue(sp.path).process(function (t) {
+		paths.drawGeometry("fill", t.x, t.y, t.width, t.height, {fillStyle: "yellow"})
+	})
+}
+//console.log(sp)

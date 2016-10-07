@@ -83,6 +83,7 @@ class Tiles extends Grid {
 		var tiles = [];
 		/** iteraver over directions **/
 		for (var i = 0, len = integers.length; i < len; i++) {
+			/** append item to tiles array **/
 			tiles.push(this.getTile(tile.column + integers[i].x, tile.row + integers[i].y));
 		}
 		/** return tile data **/
@@ -114,6 +115,17 @@ class Tiles extends Grid {
 				if (callback) callback(this.map[column][row]);
 			}
 		}
+	}
+
+	getTileDepthSearch (column, index) {
+		  /***************************************************************/
+	 	 /** function to search row for usable tile until out of range **/
+		/***************************************************************/
+		if (!Queue || isNaN(column) || isNaN(index)) return false;
+		/** ensure within search **/
+		if (!this.map[column] || !this.map[column][index]) return false;
+		/** process queue **/
+		return new Queue(this.map[column].slice(index, this.map.length)).process(function (tile) { return typeof tile === "object" && tile.canUseTile ? tile : !1; });
 	}
 
 	getRandomColumn () {
@@ -176,55 +188,40 @@ class Tiles extends Grid {
 		}
 	}
 
-	create () {
+	create (config) {
 		  /***************************************************************************/
 	 	 /** function for creating tile map array with base or defined class tiles **/
 		/***************************************************************************/
-		/** collect arguments and set to the instance **/
-		var parameters = Array.prototype.slice.call(arguments);
-		/** set empty variable to hold potential constructor function **/
-		var construct;
-		/** set empty variable to hold potential config object **/
-		var config;
-		/** iterate over paramaters **/
-		for (var key in parameters) {
-			switch (typeof parameters[key]) {
-				case "function":
-					construct = parameters[key];
-					break;
-				case "object":
-					config = parameters[key];
-					break;
-			};
-		}
-		/** set base container for returned map **/
-		var gridarray = [];
-		/** iterate over the defined columns of the map **/
+		/** set base config object if undefined **/
+		config = config || {};
+		/** set base tile object if undefined **/
+		config.tile = config.tile || {};
+		/** set base class object if undefined; attempt to use map tile otherwise use nothing **/
+		config.tile.class = config.tile.class || MapTile || false;
+		/** set base config object for class if undefined **/
+		config.tile.config = config.tile.config || {};
+		/** set array for collection of columns based on grid columns total **/
+		var columns = [];
+		/** iterate over columns total **/
 		for (var column = 0; column < this.columns; column++) {
-			/** set base container for column in process **/
-			var position = [];
-			/** iterate over the defined rows of the map **/
+			/** set array for rows within current column **/
+			var rows = [];
+			/** iterate over rows total **/
 			for (var row = 0; row < this.rows; row++) {
-				/** create temporary parameter object **/
-				var para = Object.assign({ column: column, row: row }, this.__this__());
-				/** confirm that config object exists **/
-				if (config) {
-					/** extend object with configuration object data **/
-					para = Object.assign(para, config);
-				}
-				/** confirm that object constructor exists **/
-				if (construct) {
-					/** set para to be instance of constructor function **/
-					para = new construct(para);
-				}
-				/** updated column with row data **/
-				position.push(para);
+				/** set base config for use within row array position **/
+				var c = Object.assign({ column: column, row: row }, this.__this__());
+				/** extend c with config object **/
+				c = Object.assign(c, config.tile.config);
+				/** confirm the existence of a tile class and redefine c to class instance **/
+				if (config.tile.class) c = new config.tile.class(c);
+				/** append c to row position **/
+				rows.push(c);
 			}
-			/** append position array to main map **/
-			gridarray.push(position);
+			/** append rows to columns **/
+			columns.push(rows);
 		}
-		/** completed array map returned for handler **/
-		return gridarray;
+		/** return complete 2d array (grid [column[row]]) **/
+		return columns;
 	}
 
 	constructor (config) {
@@ -236,7 +233,7 @@ class Tiles extends Grid {
 		/** super will configure the matrix if not defined **/
 		super(config);
 		/** set class map array data from super config **/
-		this.map = config.map || this.create(config.class, config.config);
+		this.map = config.map || this.create({ tile: { class: config.class, config: config.config } });
 		/** set class character moveable directions **/
 		this.directions = config.directions || ["top", "right", "bottom", "left"];
 	}
