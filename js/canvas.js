@@ -83,10 +83,18 @@ class Canvas extends Grid {
 	drawGridSquare (config) {
 		/** @description: function for drawing object as grid square to canvas instance **/
 		/** @param: {config} @type: {object} **/
-		/** apply drawing styles for canvas **/
-		this.drawApplyStyle(config.style);
 		/** draw tile to canvas from object details **/
-		this.drawGeometry(config.fill, config.x, config.y, config.squareWidth, config.squareHeight);
+		this.drawGeometry(config.fill, config.x, config.y, config.squareWidth, config.squareHeight, config.style);
+	}
+
+	drawUsedTiles (tiles, style) {
+		for (var i = 0; i < tiles.length; i++) {
+			for (var j = 0; j < tiles[i].length; j++) {
+				if (!tiles[i][j].walkable) {
+					this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
+				}
+			}
+		}
 	}
 
 	drawRegExp (type) {

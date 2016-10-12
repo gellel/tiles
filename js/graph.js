@@ -230,12 +230,25 @@ class Graph extends Grid {
 		/** @param: {frequencyMin} @type: {integer} **/
 		/** @param: {frequencyMax} @type: {integer} **/
 		/** @param: {target} @type: {integer} **/
+		/** set defaults for distribution **/
+		/** set min distribution **/
+		frequencyMin = !isNaN(frequencyMin) ? frequencyMin : 0;
+		/** set max distribution **/
+		frequencyMax = !isNaN(frequencyMax) ? frequencyMax : 3;
+		/** set target integer **/
+		target = !isNaN(target) ? target : 0;
 		/** enumerate over grid columns **/
 		for (var i = 0; i < this.grid.length; i++) {
 			/** enumerate over grid rows **/
 			for (var j = 0; j < this.grid[i].length; j++) {
 				/** set base random **/
 				var result = Base.__random__(frequencyMin, frequencyMax);
+				/** confirm target was hit **/
+				if (result === target) {
+					console.log('col:', i, 'row:', j)
+					/** set tile to used **/
+					this.setTileUsed(i, j);
+				}
 			}
 		}
 	}
