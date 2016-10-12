@@ -58,6 +58,8 @@ class Path extends Graph {
 		var start = this.getTile(startColumn, startRow);
 		/** set target tile from grid **/
 		var target = this.getTile(endColumn, endRow);
+		/** early exit if both paths are not walkable **/
+		if (!start || !start.walkable || !target || !target.walkable) return false;
 		/** set maths absolute **/
 		var abs = Math.abs;
 		/** set math square root **/
@@ -97,9 +99,11 @@ class Path extends Graph {
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
 							/** set new graph weight for tile including the cost of movement to node **/
-							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2) + node.cost;
+							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
+							/** set weight from node **/
+							ng = ng + node.cost;
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/
-							if (!neighbour.opened || ng < neighbour.g) {
+							if (!neighbour.opened || ng < (neighbour.g || 0)) {
 								/** update graph weight **/
 								neighbour.g = ng;
 								/** update heuristic cost using distance offset **/

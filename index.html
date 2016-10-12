@@ -25,9 +25,9 @@
 
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
-			path.setRandomTilesUsed();
+			path.setRandomTilesUsed(0, 10, 0);
 
-			
+			path.setRandomTilesCost(0, 5, 0, 1);
 
 			var p = path.path("manhattan", 0, 6, 29, 5);
 
@@ -35,10 +35,13 @@
 			var canvas = new Canvas(grid.__this__());
 
 
-			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.5)" });
+			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(0, 0, 0, 1)" });
+
+			canvas.drawCostTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 1)" });
+
 
 			new Queue(p).process(function (tile) {
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 0, 0, 1)" }}));
+				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 0, 0.3)" }}));
 			});
 			
 			canvas.drawGridLines({ strokeStyle: "rgb(0, 0, 255)", fillStyle: "transparent" });

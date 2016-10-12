@@ -97,6 +97,16 @@ class Canvas extends Grid {
 		}
 	}
 
+	drawCostTiles (tiles, style) {
+		for (var i = 0; i < tiles.length; i++) {
+			for (var j = 0; j < tiles[i].length; j++) {
+				if (tiles[i][j].cost) {
+					this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
+				}
+			}
+		}
+	}
+
 	drawRegExp (type) {
 		/** @description: for selecting the correct drawing method from regular expression **/
 		/** @param type is type {string} **/

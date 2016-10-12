@@ -315,7 +315,7 @@ class Graph extends Grid {
 		if (tile) tile.cost = cost;
 	}
 
-	setRandomTilesUsed (frequencyMin, frequencyMax, target, cost) {
+	setRandomTilesCost (frequencyMin, frequencyMax, target, cost) {
 		/** @description: sets random tiles within grid to include cost **/
 		/** @param: {frequencyMin} is type {integer} **/
 		/** @param: {frequencyMax} is type {integer} **/
@@ -337,6 +337,7 @@ class Graph extends Grid {
 				var result = Base.__random__(frequencyMin, frequencyMax);
 				/** confirm target was hit **/
 				if (result === target) {
+					console.log(cost)
 					/** set tile to used **/
 					this.setTileCost(i, j, cost);
 				}
