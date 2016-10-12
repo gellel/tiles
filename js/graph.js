@@ -226,26 +226,21 @@ class Graph extends Grid {
 		tile.walkable = false;
 	}
 
-	setRandomTilesUsed (frequencyMin, frequencyMax, target) {
+	setRandomTilesUsed (frequencyMax, target) {
 		/** @description: sets random tiles within grid to unwalkable **/
-		/** @param: {frequencyMin} is type {integer} **/
 		/** @param: {frequencyMax} is type {integer} **/
 		/** @param: {target} is type {integer} **/
 		/** set defaults for distribution **/
-		/** set min distribution **/
-		frequencyMin = !isNaN(frequencyMin) ? frequencyMin : 0;
 		/** set max distribution **/
-		frequencyMax = !isNaN(frequencyMax) ? frequencyMax : 3;
-		/** set target integer **/
-		target = !isNaN(target) ? target : 0;
+		frequencyMax = !isNaN(frequencyMax) ? frequencyMax : 5;
 		/** enumerate over grid columns **/
 		for (var i = 0; i < this.grid.length; i++) {
 			/** enumerate over grid rows **/
 			for (var j = 0; j < this.grid[i].length; j++) {
 				/** set base random **/
-				var result = Base.__random__(frequencyMin, frequencyMax);
+				var result = Base.__random__(0, frequencyMax);
 				/** confirm target was hit **/
-				if (result === target) {
+				if (result === 0) {
 					/** set tile to used **/
 					this.setTileUsed(i, j);
 				}
@@ -315,18 +310,13 @@ class Graph extends Grid {
 		if (tile) tile.cost = cost;
 	}
 
-	setRandomTilesCost (frequencyMin, frequencyMax, target, cost) {
+	setRandomTilesCost (frequencyMax, cost) {
 		/** @description: sets random tiles within grid to include cost **/
-		/** @param: {frequencyMin} is type {integer} **/
 		/** @param: {frequencyMax} is type {integer} **/
 		/** @param: {target} is type {integer} **/
 		/** set defaults for distribution **/
 		/** set min distribution **/
-		frequencyMin = !isNaN(frequencyMin) ? frequencyMin : 0;
-		/** set max distribution **/
-		frequencyMax = !isNaN(frequencyMax) ? frequencyMax : 3;
-		/** set target integer **/
-		target = !isNaN(target) ? target : 0;
+		frequencyMax = !isNaN(frequencyMax) ? frequencyMax : 5;
 		/** set cost tile **/
 		cost = !isNaN(cost) ? cost : 1;
 		/** enumerate over grid columns **/
@@ -334,10 +324,9 @@ class Graph extends Grid {
 			/** enumerate over grid rows **/
 			for (var j = 0; j < this.grid[i].length; j++) {
 				/** set base random **/
-				var result = Base.__random__(frequencyMin, frequencyMax);
+				var result = Base.__random__(0, frequencyMax);
 				/** confirm target was hit **/
-				if (result === target) {
-					console.log(cost)
+				if (result === 0) {
 					/** set tile to used **/
 					this.setTileCost(i, j, cost);
 				}

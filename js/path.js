@@ -87,8 +87,15 @@ class Path extends Graph {
 			if (neighbours.length) {
 				/** filter neighbours for usable **/
 				neighbours = neighbours.filter(function (t) { return t && t.walkable ? t : false; });
+				/** filter neighbours if pather can use costed items **/
+				if (costs && costs.__filter__) {
+					/** filter out tiles with cost **/
+					neighbours = neighbours.filter(function (t) {
+						if (isNaN(t.cost) || t.cost === 0) return t;
+					});
+				}
 				/** confirm neighbours remain **/
-				if (neighbours.length) {
+				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
 					for (var i = 0, len = neighbours.length; i < len; i++) {
 						/** cache tile **/
@@ -99,20 +106,21 @@ class Path extends Graph {
 							var column = neighbour.column;
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
-							/** set new graph weight for tile including the cost of movement to node **/
-							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
-							
-							/** confirm that costs defined **/
-							if (costs instanceof Object) {
-								/** iterate over object **/
-								for (var key in costs) {
-									/** confirm key restriction **/
-									if (node[key]) {
+							/** confirm costs and costs has property types **/
+							if (costs && costs.types) {
+								/** enumerate over costs types array **/
+								for (var j = 0; j < costs.types.length; j++) {
+									/** confirm type of property is in neighbour **/
+									if (costs.types[j] in neighbour) {
 										/** set weight from node **/
-										ng = ng + node.cost;
+										node.g = node.g + node.cost;
 									}
 								}
 							}
+
+							/** set new graph weight for tile including the cost of movement to node **/
+							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
+
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/
 							if (!neighbour.opened || ng < (neighbour.g || 0)) {
 								/** update graph weight **/
