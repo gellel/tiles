@@ -111,7 +111,7 @@ class Path extends Graph {
 								/** enumerate over costs types array **/
 								for (var j = 0; j < costs.types.length; j++) {
 									/** confirm type of property is in neighbour **/
-									if (costs.types[j] in neighbour) {
+									if (neighbour[costs.types[j]]) {
 										/** set weight from node **/
 										node.g = node.g + node.cost;
 									}
