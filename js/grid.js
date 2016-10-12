@@ -1,49 +1,34 @@
-class Grid {
+class Grid extends Base {
+	
+	/** @description: set grid measurements for use as configuration within graphs and tiles **/
 
-	/*
-		* about class: defines all measurements for extended classes to create a grid based game
-
-		* constructor parameters:
-			config: typeof Object {}
-				required object origin: None
-
-		* example initialisation:
-			config:
-				var config = { columns: 20, rows: 10, scale: 20 };
-			class:
-				var grid = new Grid(config);
-	*/
-
-	__this__ () {
-		  /****************************************************************/
-	 	 /** function for creating config object for grid based classes **/
-		/****************************************************************/
-		/** set base object for all "this" keys **/
-		var __self__ = {};
-		/** iterate over keys of "this" class **/
-		for (var key in this) {
-			/** set key value pair **/
-			__self__[key] = this[key];
-		};
-		/** return object of class self to prevent base inherited from being updated **/
-		return __self__;
+	__grid__ (config) {
+		/** @description: private method for grid to organise expected {this} data **/
+		/** @param: config @type: {object} **/
+		/** set base object **/
+		config = config || {};
+		/** confirm that a base scale for width was defined or set default **/
+		this.squareWidth = config.squareWidth ? config.squareWidth : this.scale || 10;
+		/** confirm that a base scale for height was defined or set default **/
+		this.squareHeight = confirm.squareHeight ? config.squareHeight : this.scale || 10;
+		/** confirm that a config column length was defined or set default **/
+		this.columns = config.columns ? config.columns : this.columns || 30;
+		/** confirm that a config row length was define or set default **/
+		this.rows = config.rows ? config.rows : this.rows || 30;
+		/** confirm that columns and scale for width was defined and set the pixel size for grid **/
+		if (this.columns && this.squareWidth) this.gridWidth = this.columns * this.squareWidth;
+		/** confirm that columns and scale for width was defined and set the pixel size for grid **/
+		if (this.rows && this.squareHeight) this.gridHeight = this.rows * this.squareHeight;
 	}
 
 	constructor (config) {
-		  /************************************/
-	 	 /** function for class constructor **/
-		/************************************/
-		/** set base object for constructor **/
+		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
+		/** @param: config @type: {object} **/
+		/** set base config **/
 		config = config || {};
-		/** set class columns reference from config object **/
-		this.columns = config.columns || window.columns || 30;
-		/** set class rows reference from config object **/
-		this.rows = config.rows || window.rows || 20;
-		/** set class tile scale reference from config object **/
-		this.scale =  config.scale || window.scale || 20;
-		/** set class calculated width from instance data **/
-		this.gridWidth = this.columns * this.scale;
-		/** set class calculated height from instance data **/
-		this.gridHeight = this.rows * this.scale;
+		/** call super **/
+		super(config);
+		/** set call to this definition handler **/
+		this.__grid__();
 	}
 }

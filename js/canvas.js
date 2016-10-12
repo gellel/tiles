@@ -1,107 +1,115 @@
 class Canvas extends Grid {
 
-	/*
-		* about class: creates a HTML canvas with bound drawing attributes for that canvas
-
-		* constructor parameters:
-			config: typeof Object {}
-				required object origin: [GridClassInstance].__this__();
-
-		* example initialisation:
-			config:
-				var config = Object.assign(Grid().__this__(), { node: document.getElementById("canvas"), attributes: { class: "hello" } });
-			class:
-				var canvas = new Canvas(config);
-	*/
-
-	static ALPHA (minimum, maximum, floatminimum, floatmaximum) {
-		  /***********************************************************************/
-	 	 /** creates a 0 indexed floating point integer for alpha transparency **/
-		/***********************************************************************/
-		/** set default maximum if not defined **/
-		maximum = maximum || 0;
-		/** set default minimum if not defined **/
-		minimum = minimum || 0;
-		/** set default floatmaximum if not defined **/
-		floatmaximum = floatmaximum || 0;
-		/** set default minimum if not defined **/
-		floatminimum = floatmaximum || 0;
-		/** return value for alpha item **/
-		return "0" + "." + (Math.floor(Math.random() * (maximum - minimum + 1)) + minimum) + (Math.floor(Math.random() * (floatmaximum - floatminimum + 1)) + floatminimum);
-	}
-
-	static INT (minimum, maximum) {
-		  /********************************************************************/
-	 	 /** creates integer used for RGB colour channels between 0 and 255 **/
-		/********************************************************************/
-		/** set default maximum if not defined **/
-		maximum = maximum || 255;
-		/** set default minimum if not defined **/
-		minimum = minimum || 0;
-		/** adjust maximum if it is outside 255 (ceiling for RGB) **/
-		if (maximum > 255) maximum = maximum - (maximum - 255);
-		/** return value for RGB item **/
-		return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-	}
-
 	static RGB (red, green, blue) {
-		  /****************************************************************************/
-	 	 /** creates concatenated rgb string for use as a fill colour within canvas **/
-		/****************************************************************************/
-		/** public function: create RGB colour string for used as fillStyle **/
-		return "rgb(" + String(red) + "," + String(green) + "," + String(blue) + ")";
+		/** @description: creates a rgb string using supplied arguments **/
+		/** @param: red @type {integer} or {string} **/
+		/** @param: blue @type {integer} or {string} **/
+		/** @param: green @type {integer} or {string} **/
+		/** @return: @type {string} **/
+		return "rgb(" + red + "," + green + "," + blue + ")";
 	}
 
 	static RGBA (red, green, blue, alpha) {
-		  /*********************************************************************************************/
-	 	 /** function for creating a concatenated rgba string for use as a fill colour within canvas **/
-		/*********************************************************************************************/
-		/** public function: create RGBA colour string for used as fillStyle **/
-		return "rgba(" + String(red) + "," + String(green) + "," + String(blue) + "," + String(alpha) + ")";
+		/** @description: creates a rgb string using supplied arguments **/
+		/** @param: red @type {integer} or {string} **/
+		/** @param: blue @type {integer} or {string} **/
+		/** @param: green @type {integer} or {string} **/
+		/** @param: alpha @type {integer} or {string} **/
+		/** @return: @type {string} **/
+		return "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
+	}
+
+	static RandomRBGInt (min) {
+		/** @description: creates a rgb integer using supplied arguments with 255 as ceiling **/
+		/** @param: int @type {integer} **/
+		/** @return: @type {integer} **/
+		return Base.__random__(min, 255);
+	}
+
+	static RandomAlphaInt (pmin, pmax, smin, smax) {
+		/** @description: creates a alpha channel integer using supplied arguments with 1.0 as ceiling **/
+		/** @param: pmin @type {integer} **/
+		/** @param: pmax @type {integer} **/
+		/** @param: smin @type {integer} **/
+		/** @param: smax @type {integer} **/
+		/** @return: @type {string} **/
+		return "0" + "." + Base.__random__(pmin, pmax) + Base.__random__(smin, smax);
+	}
+
+	static attributes (grid) {
+		/** @description: returns base object for calculation **/
+		/** @param: grid @type {object} **/
+		/** @return: @type {object} **/
+		/** handle arguments **/
+		return grid && grid instanceof Object ? { width: grid.gridWidth, height: grid.gridHeight } : {};
 	}
 
 	save () {
-		  /*************************************************************************************************/
-	 	 /** function for saving the context configuration for canvas element as it is presently defined **/
-		/*************************************************************************************************/
-		/** store this classes instance of the canvas state **/
+		/** @description: store this classes instance of the canvas state **/
 		this.context.save();
 	}
 
 	restore () {
-		  /*****************************************************************************************************/
-	 	 /** function for restoring the context configuration for canvas element as it was presently defined **/
-		/*****************************************************************************************************/
-		/** restore this classes instance of the canvas state **/
+		/** @description: restore this classes instance of the canvas state **/
 		this.context.restore();
 	}
 
 	clear () {
-		  /*****************************************************************/
-	 	 /** function for clearing the entire width and height of canvas **/
-		/*****************************************************************/
+	 	/** @description: function for clearing the entire width and height of canvas **/
 		/** draw clearing rectangle across entire canvas instance **/
 		this.drawGeometry("clearRect", 0, 0, this.node.clientWidth, this.node.clientHeight);
 	}
 
+	drawGridLines (style, offset) {
+		/** @description: function for drawing grid layout to canvas context **/
+		/** @param: {style} @type: {object} **/
+		/** @param: {offset} @type: {boolean} **/
+		/** enumerate over columns **/
+		for (var i = 0; i < this.columns; i++) {
+			/** enumerate over rows **/
+			for (var j = 0; j < this.rows; j++) {
+				/** draw current column line **/
+				this.drawLine(i * this.squareWidth, (j * this.squareHeight), (i * this.squareWidth) + this.squareWidth, (j * this.squareHeight), style, offset);
+				/** draw current row line **/
+				this.drawLine((i * this.squareWidth) , j * this.squareHeight, (i * this.squareWidth), (j * this.squareHeight) + this.squareHeight, style, offset);
+			}
+		}
+		/** draw end column line **/
+		this.drawLine(this.gridWidth - 1, 0, this.gridWidth - 1, this.gridHeight, style, offset);
+		/** draw end row line **/
+		this.drawLine(0, this.gridHeight - 1, this.gridWidth, this.gridHeight - 1, style, offset);
+	}
+
+	drawGridSquare (config) {
+		/** @description: function for drawing object as grid square to canvas instance **/
+		/** @param: {config} @type: {object} **/
+		/** apply drawing styles for canvas **/
+		this.drawApplyStyle(config.style);
+		/** draw tile to canvas from object details **/
+		this.drawGeometry(config.fill, config.x, config.y, config.squareWidth, config.squareHeight);
+	}
+
 	drawRegExp (type) {
-		  /*******************************************************************************/
-	 	 /** function for selecting the correct drawing method from regular expression **/
-		/*******************************************************************************/
+		/** @description: for selecting the correct drawing method from regular expression **/
+		/** @param type @type {string} **/
 		/** define types of rectangle drawing methods with their expression and system definitions **/
 		var methods = [{ key: "fillRect", exp: new RegExp("^fill(Rect)?$", "gi") }, { key: "clearRect", exp: new RegExp("^clear(Rect)?$", "gi") }, { key: "strokeRect", exp: new RegExp("^stroke?Rect$", "gi" ) }];	
 		/** iterate over defined method data **/
 		for (var i = 0, len = methods.length; i < len; i++) {
 			/** return system definition of fill method **/
-			if (type.match(methods[i].exp)) return methods[i].key;
+			if (type && type.match(methods[i].exp)) return methods[i].key;
 		};
-		return undefined;
+		return "fillRect";
 	}
 
 	drawGeometry (type, positionX, positionY, width, height, style) {
-		  /***********************************************************************/
-	 	 /** function drawing rectangular shape of defined fill type to canvas **/
-		/***********************************************************************/
+	 	/** @description: function drawing rectangular shape of defined fill type to canvas **/
+	 	/** @param: {type} @type: {string} **/
+	 	/** @param: {positionX} @type: {integer} **/
+	 	/** @param: {positionY} @type: {integer} **/
+	 	/** @param: {width} @type: {integer} **/
+	 	/** @param: {height} @type: {integer} **/
+	 	/** @param: {style} @type: {object} **/
 		/** apply drawing styles for rectangle **/
 		if (style) this.drawApplyStyle(style);
 		/** draw rectangle using system method **/
@@ -109,17 +117,23 @@ class Canvas extends Grid {
 	}
 
 	drawImage (image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight) {
-		  /***********************************************************************/
-	 	 /** function drawing image to canvas using full clipping and position **/
-		/***********************************************************************/
+	 	/** @description: function drawing image to canvas using full clipping and position **/
+	 	/** @param: {image} @type: {string} **/
+	 	/** @param: {sourceX} @type: {integer} **/
+	 	/** @param: {sourceY} @type: {integer} **/
+	 	/** @param: {sourceWidth} @type: {integer} **/
+	 	/** @param: {sourceHeight} @type: {integer} **/
+	 	/** @param: {positionX} @type: {integer} **/
+	 	/** @param: {positionY} @type: {integer} **/
+	 	/** @param: {imageWidth} @type: {integer} **/
+	 	/** @param: {imageHeight} @type: {integer} **/
 		/** draw image to canvas from image source **/
 		this.context.drawImage(image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight)
 	}
 
 	drawApplyStyle (style) {
-		  /***************************************************************/
-	 	 /** function for applying drawing styles to context of canvas **/
-		/***************************************************************/
+	 	/** @description: function for applying drawing styles to context of canvas **/
+	 	/** @param: {style} @type: {object} **/
 		/** iterate over keys in style object **/
 		for (var key in style) {
 			/** apply 'style' to canvas context if key matches system definition **/
@@ -128,9 +142,16 @@ class Canvas extends Grid {
 	}
 
 	drawBezier (curveXStart, curveYStart, curveXEnd, curveYEnd, positionXStart, positionYStart, positionXEnd, positionYEnd, style) {
-		  /*********************************************************/
-	 	 /** function for drawing a single curved line to canvas **/
-		/*********************************************************/
+	 	/** @description: function for drawing a single curved line to canvas **/
+	 	/** @param: {curveXStart} @type: {integer} **/
+	 	/** @param: {curveYStart} @type: {integer} **/
+	 	/** @param: {curveXEnd} @type: {integer} **/
+	 	/** @param: {curveYEnd} @type: {integer} **/
+	 	/** @param: {positionXStart} @type: {integer} **/
+	 	/** @param: {positionYStart} @type: {integer} **/
+	 	/** @param: {positionXEnd} @type: {integer} **/
+	 	/** @param: {positionYEnd} @type: {integer} **/
+	 	/** @param: {style} @type: {object} **/
 		/** start line path **/
 		this.context.beginPath();
 		/** apply drawing styles for strokes **/
@@ -144,9 +165,7 @@ class Canvas extends Grid {
 	}
 
 	drawBeziers () {
-		  /**********************************************************/
-	 	 /** function for drawing multiple curved lines to canvas **/
-		/**********************************************************/
+	 	/** @description: function for drawing multiple curved lines to canvas **/
 		/** capture arguments to function **/
 		var parameters = Array.prototype.slice.call(arguments);
 		/** confirm if item can be iterated over **/
@@ -165,26 +184,30 @@ class Canvas extends Grid {
 		};
 	}
 
-	drawLine (positionXStart, positionYStart, positionXEnd, positionYEnd, style) {
-		  /***********************************************************/
-	 	 /** function for drawing a single straight line to canvas **/
-		/***********************************************************/
+	drawLine (positionXStart, positionYStart, positionXEnd, positionYEnd, style, offset) {
+	 	/** @description: function for drawing a single straight line to canvas **/
+	 	/** @param: {positionXStart} @type: {integer} **/
+	 	/** @param: {positionYStart} @type: {integer} **/
+	 	/** @param: {positionXEnd} @type: {integer} **/
+	 	/** @param: {positionYEnd} @type: {integer} **/
+	 	/** @param: {style} @type: {object} **/
+	 	/** @param: {offset} @type: {boolean} **/
 		/** start line path **/
 		this.context.beginPath();
 		/** apply drawing styles for strokes **/
 		if (style) this.drawApplyStyle(style);
+		/** set offset width if required **/
+		var offset = offset ? this.context.lineWidth : 0;
 		/** set line starting position **/
-		this.context.moveTo(positionXStart, positionYStart);
+		this.context.moveTo(positionXStart + offset + 0.5, positionYStart + offset + 0.5);
 		/** draw line **/
-		this.context.lineTo(positionXEnd, positionYEnd);
+		this.context.lineTo(positionXEnd + offset + 0.5, positionYEnd + offset + 0.5);
 		/** produce stroked line across line **/
 		this.context.stroke();
 	}
 
 	drawLines () {
-		  /************************************************************/
-	 	 /** function for drawing multiple straight lines to canvas **/
-		/************************************************************/
+	 	/** @description: function for drawing multiple straight lines to canvas **/
 		/** capture arguments to function **/
 		var parameters = Array.prototype.slice.call(arguments);
 		/** confirm if item can be iterated over **/
@@ -204,17 +227,19 @@ class Canvas extends Grid {
 	}
 
 	fontApplyAttributes (font) {
-		  /*************************************************************************/
-	 	 /** function for creating concatenated css font string from font object **/
-		/*************************************************************************/
+	 	/** @description: function for creating concatenated css font string from font object **/
+	 	/** @param: {font} @type {object} **/
 		/** create single line string as defined css standard for shorthand font **/
 		return (font.style || 'normal') + ' ' + (font.variant || 'normal') + ' ' + (font.weight || 'normal') + ' ' + (font.stretch || 'normal') + ' ' + (font.size || '14px') + '/' + (font.line || 'inherit') + ' ' + (font.family || 'sans-serif');
 	}
 
 	drawFillText (positionX, positionY, fontString, fontAttributes, fontStyle) {
-		  /********************************************************/
-	 	 /** function for drawing filled text to canvas element **/
-		/********************************************************/
+	 	/** @description: function for drawing filled text to canvas element **/
+	 	/** @param: {positionX} @type: {integer} **/
+	 	/** @param: {positionY} @type: {integer} **/
+	 	/** @param: {fontString} @type: {string} **/
+	 	/** @param: {fontAttributes} @type: {string} or {object} **/
+	 	/** @param: {fontStyle} @type: {object} **/
 		/** set font for canvas based on string as argument or object formatted to string **/
 		if (fontAttributes) this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
 		/** apply drawing styles for font **/
@@ -224,9 +249,12 @@ class Canvas extends Grid {
 	}
 
 	drawStrokeText (positionX, positionY, fontString, fontAttributes, fontStyle) {
-		  /*****************************************************/
-	 	 /** function drawing stroked text to canvas element **/
-		/*****************************************************/
+	 	/** @description: function drawing stroked text to canvas element **/
+		/** @param: {positionX} @type: {integer} **/
+		/** @param: {positionY} @type: {integer} **/
+		/** @param: {fontString} @type: {string} **/
+		/** @param: {fontAttributes} @type: {object} **/
+		/** @param: {fontStyle} @type: {object} **/
 		/** set font for canvas based on string as argument or object formatted to string **/
 		this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
 		/** apply drawing styles for font **/
@@ -235,58 +263,29 @@ class Canvas extends Grid {
 		this.context.strokeText(fontString, positionX, positionY);
 	}
 
-	setCanvasWidth () {
-		  /**********************************************/
-	 	 /** function for setting inline canvas width **/
-		/**********************************************/
-		/** set canvas to have required bitmap scale for width **/
-		this.node.width = this.columns * this.scale;
-	}
-
-	setCanvasHeight () {
-		  /***********************************************/
-	 	 /** function for setting inline canvas height **/
-		/***********************************************/
-		/** set canvas to have required bitmap scale for height **/
-		this.node.height = this.rows * this.scale;
-	}
-
-	setAttributes (attributes) {
-		  /*************************************************************/
-	 	 /** function for creating attributes object for HTML canavs **/
-		/*************************************************************/
-		/** set base object for defining attributes for canvas **/
-		attributes = attributes || {};
-		/** defined required width for node constructor **/
-		attributes.width = this.gridWidth || this.columns * this.scale;
-		/** defined required height for node constructor **/
-		attributes.height = this.gridHeight || this.rows * this.scale;
-		/** set and return formatted object for constructor **/
-		return attributes;
-	}
-
-	create (node, attributes) {
-		  /************************************************************/
-	 	 /** function for inserting canvas element into target node **/
-		/************************************************************/
-		/** set base attributes object if none supplied **/
-		attributes = attributes || {};
-		/** create html canvas element with attributes (requires prototypes.js) **/
-		return node.insertNode("canvas", attributes);
-	}
-
-	constructor (config) {
-		  /************************************/
-	 	 /** function for class constructor **/
-		/************************************/
-		/** set base object for constructor **/
+	__canvas__ (config) {
+		/** @description: initialises html canvas dom element and drawing methods **/
+		/** @param: {config} @type: {object} **/
+		/** set base config **/
 		config = config || {};
-		/** super will configure the matrix if not defined **/
-		super(config);
-		/** set class canvas node from config data **/
-		this.node = (config.target) ? config.target.insertNode("canvas", this.setAttributes(config.attributes || config.attr)) : (config.node) ? config.node.setMultipleAttributes(this.setAttributes(config.attributes || config.attr)) : document.body.insertNode("canvas", this.setAttributes(config.attributes || config.attr));
-		/** set class canvas context from class node **/
+		/** set canvas element for drawing context **/
+		this.node = config.canvas ? config.canvas : this.node ? this.node : config.parent ? config.parent.insertNode("canvas") : document.body.insertNode("canvas");
+		/** set context for drawing **/
 		this.context = this.node.getContext("2d");
+		/** set attributes for grid **/
+		this.__grid__(config);
+		/** set attributes for node **/
+		this.node.setMultipleAttributes(Object.assign(Canvas.attributes(this.__this__()), config.attributes));
 	}
-
-};
+	
+	constructor (config) {
+		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
+		/** @param: {config} @type: {object} **/
+		/** set base config **/
+		config = config || {};
+		/** call super **/
+		super(config);
+		/** set call to this definition handler **/
+		this.__canvas__(config);
+	}
+}

@@ -66,6 +66,13 @@ class Queue {
 		return this.queue.length < offset ? this.queue[offset] : false;
 	}
 
+	pop (index) {
+		  /******************************************/
+	 	 /** function for popping queue from base **/
+		/******************************************/
+		return this.queue.pop();
+	}
+
 	process (callback) {
 		  /********************************************************/
 	 	 /** function for dequeuing queue with callback handler **/
@@ -81,11 +88,21 @@ class Queue {
 		while (this.isPopulated()) {
 			/** dequeue self **/
 			var item = this.dequeue();
-			/** handle item from queue using callback and return if callback returns non falsey **/
-			if (callback(item)) return item;
+			/** handle item from queue using callback **/
+			var result = callback(item);
+			/** return if callback returns non falsey **/
+			if (result) return result;
 		}
-		/** return true for handler without callback returned **/
-		return true;
+	}
+
+	update (item) {
+		  /*******************************************************/
+	 	 /** function for updating queued with supplied object **/
+		/*******************************************************/
+		/** set reference **/
+		var index = this.queue.indexOf(item);
+		/** update item if not found in array **/
+		if (index !== -1) this.queue[index] = item;
 	}
 
 	constructor (queue) {
