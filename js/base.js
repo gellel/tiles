@@ -4,10 +4,10 @@ class Base {
 
 	static __random__ (min, max, enumerable) {
 		/** @description: create random number using range **/
-		/** @param: min @type: {integer} **/
-		/** @param: max @type: {integer} **/
-		/** @param: enumerable @optional @type: {array} **/
-		/** @return: s @type: {integer} or @type: {object} **/
+		/** @param: {min} is type {integer} **/
+		/** @param: {max} is type {integer} **/
+		/** @param: {enumerable} is type {array} and @optional **/
+		/** @return: is type {integer} or is type {object} **/
 		var result = Math.floor(Math.random() * (max - min + 1)) + min;
 		/** return result **/
 		return enumerable ? enumerable[result] : result;
@@ -15,8 +15,8 @@ class Base {
 
 	static __object__ (config) {
 		/** @description: create copy of config object **/
-		/** @param: config @type: {object} **/
-		/** @return: s @type: {object} or @type {class} **/
+		/** @param: {config} is type {object} **/
+		/** @return: is type {object} or is type {class} **/
 		/** set empty object to hold the clone keys **/
 		var s = {};
 		/** enumrate over keys in self **/
@@ -35,8 +35,7 @@ class Base {
 	
 	__this__ () {
 		/** @description: create copy of this self property with object from this keys **/
-		/** @param: void **/
-		/** @return: s @type: {object}
+		/** @return: is type {object}
 		/** clone object using this as its prototype **/
 		var self = this;
 		/** set empty object to hold the clones keys **/
@@ -55,7 +54,7 @@ class Base {
 
 	__init__ (config) {
 		/** @description: process configuration object and set properties to this **/
-		/** @param: {config} @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base object **/
 		config = config || {};
 		/** set base init key **/
@@ -72,7 +71,7 @@ class Base {
 
 	constructor (config) {
 		/** @description: initialise object this property using config object if supplied **/
-		/** @param: {config} @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** confirm that config exists, is object type and has __init__ key then initialise with self **/
 		if (config && config instanceof Object && config.__init__) this.__init__(config);
 	}

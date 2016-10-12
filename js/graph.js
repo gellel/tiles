@@ -2,31 +2,32 @@ class Graph extends Grid {
 
 	/** @description: obtain tiles in grid based on inherited grid measurement **/
 
-	static node (column, row, x, y, squareWidth, squareHeight, g, h, f, walkable, opened, closed, parent, __class__) {
+	static node (column, row, x, y, squareWidth, squareHeight, g, h, f, cost, walkable, opened, closed, parent, __class__) {
 		/** @description: initialises graph node from arguments and clones possible instances **/
-		/** @param: column @type: {integer} **/
-		/** @param: row @type: {integer} **/
-		/** @param: x @type: {integer} **/
-		/** @param: y @type: {integer} **/
-		/** @param: squareWidth @type: {integer} **/
-		/** @param: squareHeight @type: {integer} **/
-		/** @param: g @type: {integer} **/
-		/** @param: h @type: {integer} **/
-		/** @param: f @type: {integer} **/
-		/** @param: walkable @type: {boolean} **/
-		/** @param: opened @type: {boolean} **/
-		/** @param: closed @type: {boolean} **/
-		/** @param: parent @type: {object} **/
-		/** @param: __class__ @type: {class} **/
-		/** @return: @type: {object} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {x} is type {integer} **/
+		/** @param: {y} is type {integer} **/
+		/** @param: {squareWidth} is type {integer} **/
+		/** @param: {squareHeight} is type {integer} **/
+		/** @param: {g} is type {integer} **/
+		/** @param: {h} is type {integer} **/
+		/** @param: {f} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		/** @param: {walkable} is type {boolean} **/
+		/** @param: {opened} is type {boolean} **/
+		/** @param: {closed} is type {boolean} **/
+		/** @param: {parent} is type {object} **/
+		/** @param: {__class__} is type {class} **/
+		/** @return: is type {object} **/
 		/** call static method of base and copy object from created incase inherited **/
-		return Base.__object__({ column: column, row: row, x: x, y: y, squareWidth: squareWidth, squareHeight: squareHeight, g: g, h: h, f: f, walkable: walkable || true, opened: opened, closed: closed, parent: parent, __class__: __class__ });
+		return Base.__object__({ column: column, row: row, x: x, y: y, squareWidth: squareWidth, squareHeight: squareHeight, g: g, h: h, f: f, cost: cost || 0, walkable: walkable || true, opened: opened, closed: closed, parent: parent, __class__: __class__ });
 	}
 
 	static getRandomColumnInt (array) {
 		/** @description: returns random integer from grid length **/
-		/** @param: array @type: {array} **/
-		/** @return: @type: {integer} **/
+		/** @param: {array} is type {array} **/
+		/** @return: is type {integer} **/
 		if (!array || !array instanceof Array) return false;
 		/** return item from array length **/
 		return Base.__random__(0, array.length);
@@ -34,9 +35,9 @@ class Graph extends Grid {
 
 	static getRandomRowInt (array, column) {
 		/** @description: returns random integer from grid length **/
-		/** @param: array @type: {array} **/
-		/** @param: column @type: {integer} **/
-		/** @return: @type: {integer} **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {integer} **/
 		if ((!array || !array instanceof Array) || (isNaN(column))) return false;
 		/** return array item integer **/
 		return Base.__random__(0, column);
@@ -44,9 +45,9 @@ class Graph extends Grid {
 
 	static getTileCopy (array, column, row) {
 		/** @description: returns copied item from supplied grid 2d array using column and row to locate items **/
-		/** @param: array @type: {array} **/
-		/** @param: column @type: {integer} **/
-		/** @param: row @type: {integer} **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
 		/** handle arguments **/
 		if ((!array || !array instanceof Array) || (isNaN(column) || isNaN(row))) return false;
 		/** attempt to find item **/
@@ -55,8 +56,8 @@ class Graph extends Grid {
 
 	static getRandomTileCopy (array) {
 		/** @description: returns copied item from supplied grid 2d array random column and row to locate items **/
-		/** @param: array @type: {array} **/
-		/** @return: @type: {object} **/
+		/** @param: {array} is type {array} **/
+		/** @return: is type {object} **/
 		/** handle arguments **/
 		if (!array || !array instanceof Array) return false;
 		/** set base column integer **/
@@ -69,16 +70,16 @@ class Graph extends Grid {
 
 	static getDirectionIntegers (direction) {
 		/** @description: returns object with offset column and row integers **/
-		/** @param: direction @type: {string} **/
-		/** @return: @type: {object} **/
+		/** @param: {direction} is type {string} **/
+		/** @return: is type {object} **/
 		/** return object **/
 		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
 	}
 
 	static getRandomDirectionString (directions) {
 		/** @description: returns string for direction lookup **/
-		/** @param: direction @type: {array} **/
-		/** @return: @type: {object} **/
+		/** @param: {direction} is type {array} **/
+		/** @return: is type {object} **/
 		/** handle directions requirement **/
 		if (!directions || !directions instanceof Array) return false;
 		/** return random string from directions **/
@@ -87,10 +88,10 @@ class Graph extends Grid {
 
 	editTile (column, row, config, grid) {
 		/** @description: edits array items in 2d array using supplied coordinates and optional array **/
-		/** @param: array @type: {array} **/
-		/** @param: column @type: {integer} **/
-		/** @param: config @type: {object} **/
-		/** @param: callback @type: {function} **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {config} is type {object} **/
+		/** @param: {callback} is type {function} **/
 		/** handle grid requirement **/
 		if (isNaN(column) || isNaN(row) || !config instanceof Object) return false;
 		/** fetch tile from copied or this instance **/
@@ -108,8 +109,8 @@ class Graph extends Grid {
 
 	editTiles (callback, grid) {
 		/** @description: edits all tiles **/
-		/** @param: {callback} @type: {function} **/
-		/** @param: {grid} @type: {array} **/
+		/** @param: {callback} is type {function} **/
+		/** @param: {grid} is type {array} **/
 		/** handle requirements **/
 		if (!typeof callback === "function") return false;
 		/** set grid reference **/
@@ -130,8 +131,8 @@ class Graph extends Grid {
 
 	getTile (column, row) {
 		/** @description: returns item from this grid 2d array using column and row to locate items **/
-		/** @param: array @type: {array} **/
-		/** @param: column @type: {integer} **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
 		/** handle grid requirement **/
 		if (!this.grid || (isNaN(column) || isNaN(row))) return false;
 		/** attempt to find item **/
@@ -140,8 +141,8 @@ class Graph extends Grid {
 
 	getTiles (callback, copy) {
 		/** @description: returns item by item from this grid 2d array **/
-		/** @param: callback @type: {function} **/
-		/** @param: copy @type: {boolean} **/
+		/** @param: {callback} is type {function} **/
+		/** @param: {copy} is type {boolean} **/
 		/** handle grid requirement **/
 		if (!this.grid || !callback) return false;
 		/** enumerate over this grid columns **/
@@ -159,7 +160,7 @@ class Graph extends Grid {
 
 	getRandomTile () {
 		/** @description: returns item from this grid **/
-		/** @return: @type: {object} **/
+		/** @return: is type {object} **/
 		/** handle grid requirement **/
 		if (!this.grid) return false;
 		/** set base column integer **/
@@ -172,9 +173,9 @@ class Graph extends Grid {
 
 	getAdjacentTiles (tile, copy) {
 		/** @description: returns item from this grid **/
-		/** @param: tile @type: {object} **/
-		/** @param: copy @type: {boolean} **/
-		/** @return: @type: {array} **/
+		/** @param: {tile} is type {object} **/
+		/** @param: {copy} is type {boolean} **/
+		/** @return: is type {array} **/
 		/** handle grid requirement **/
 		if (!tile || !this.grid || !this.directions instanceof Array) return false;
 		/** set base array to hold found tiles **/
@@ -190,9 +191,9 @@ class Graph extends Grid {
 
 	getSpecificAdjacentTile (tile, direction, copy) {
 		/** @description: returns item from this grid **/
-		/** @param: tile @type: {object} **/
-		/** @param: direction @type: {string} **/
-		/** @param: copy @type: {boolean} **/
+		/** @param: {tile} is type {object} **/
+		/** @param: {direction} is type {string} **/
+		/** @param: {copy} is type {boolean} **/
 		/** handle grid requirement **/
 		if (!tile || !direction || !this.grid || !this.directions instanceof Array) return false;
 		/** set offset integers to find tile next to supplied tile **/
@@ -207,14 +208,22 @@ class Graph extends Grid {
 
 	setTileUsed (column, row) {
 		/** @description: sets found tile to unwalkable **/
-		/** @param: {column} @type: {integer} **/
-		/** @param: {row} @row: {integer} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
 		/** handle arguments **/
 		if (isNaN(column) || isNaN(row)) return false;
 		/** attempt to find tile **/
 		var tile = this.getTile(column, row);
 		/** confirm found and set tile unwalkable **/
 		if (tile) tile.walkable = false;
+	}
+
+	setTileCost (column, row, cost) {
+		/** @description: sets found tile to include a cost of movement **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		/** handle arguments **/
 	}
 
 	setRandomTileUsed () {
@@ -227,9 +236,9 @@ class Graph extends Grid {
 
 	setRandomTilesUsed (frequencyMin, frequencyMax, target) {
 		/** @description: sets random tiles within grid to unwalkable **/
-		/** @param: {frequencyMin} @type: {integer} **/
-		/** @param: {frequencyMax} @type: {integer} **/
-		/** @param: {target} @type: {integer} **/
+		/** @param: {frequencyMin} is type {integer} **/
+		/** @param: {frequencyMax} is type {integer} **/
+		/** @param: {target} is type {integer} **/
 		/** set defaults for distribution **/
 		/** set min distribution **/
 		frequencyMin = !isNaN(frequencyMin) ? frequencyMin : 0;
@@ -255,9 +264,9 @@ class Graph extends Grid {
 
 	setColumnTilesUsed (column, start, end) {
 		/** @description: sets in column in grid to unwalkable from start to offset **/
-		/** @param: {column} @type: {integer} **/
-		/** @param: {start} @type: {integer} **/
-		/** @param: {end} @type: {integer} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
 		/** handle arguments **/
 		if (isNaN(column) || isNaN(start) || isNaN(end)) return false;
 		/** set column reference **/
@@ -275,9 +284,9 @@ class Graph extends Grid {
 
 	setRowTilesUsed (row, start, end) {
 		/** @description: sets row in grid to unwalkable from start to offset **/
-		/** @param: {row} @type: {integer} **/
-		/** @param: {start} @type: {integer} **/
-		/** @param: {end} @type: {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
 		/** handle arguments **/
 		if (isNaN(row) || isNaN(start) || isNaN(end)) return false;
 		/** confirm row base reference **/
@@ -306,7 +315,7 @@ class Graph extends Grid {
 			/** enumrate over rows **/
 			for (var j = 0; j < rows; j++) {
 				/** update column with row item using graph node **/
-				column.push(Graph.node(i, j, i * this.squareWidth, j * this.squareHeight, this.squareWidth, this.squareHeight, undefined, undefined, undefined, true, undefined, undefined, undefined, __class__));
+				column.push(Graph.node(i, j, i * this.squareWidth, j * this.squareHeight, this.squareWidth, this.squareHeight, undefined, undefined, undefined, undefined, true, undefined, undefined, undefined, __class__));
 			}
 			/** update column **/
 			grid.push(column);
@@ -317,7 +326,7 @@ class Graph extends Grid {
 
 	__graph__ (config) {
 		/** @description: initialises graph node from arguments and clones possible instances **/
-		/** @param: config @type: {object} : config.grid @type {array}{array} **/
+		/** @param: {config} is type {object} : {config.grid} is type {array}{array} **/
 		/** set base config **/
 		config = config || {};
 		/** set base column size **/
@@ -333,7 +342,7 @@ class Graph extends Grid {
 
 	constructor (config) {
 		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
-		/** @param: config @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
 		/** call super **/

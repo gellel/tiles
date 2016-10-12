@@ -95,21 +95,21 @@ class Tile extends Base {
 
 	setPositionX (x) {
 	 	/** @description: function for setting tiles x position by supplied integer **/
-	 	/** @param: {x} @type: {integer} **/
+	 	/** @param: {x} is type {integer} **/
 		/** set position of tile coordinate x **/
 		this.x = (x || 0) * (this.squareWidth || this.scale);
 	}
 
 	setPositionY (y) {
 	 	/** @description: function for setting tiles y position by supplied integer **/
-	 	/** @param: {y} @type: {integer} **/
+	 	/** @param: {y} is type {integer} **/
 		/** set position of tile coordinate y **/
 		this.y = (y || 0) * (this.squareHeight || this.scale);
 	}
 
 	constructor (config) {
 		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
-		/** @param: config @type: {object} **/
+		/** @param: config is type {object} **/
 		/** set base config **/
 		config = config || {};
 		/** call super **/

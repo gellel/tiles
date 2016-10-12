@@ -2,44 +2,44 @@ class Canvas extends Grid {
 
 	static RGB (red, green, blue) {
 		/** @description: creates a rgb string using supplied arguments **/
-		/** @param: red @type {integer} or {string} **/
-		/** @param: blue @type {integer} or {string} **/
-		/** @param: green @type {integer} or {string} **/
-		/** @return: @type {string} **/
+		/** @param: {red} is type {integer} or {string} **/
+		/** @param: {blue} is type {integer} or {string} **/
+		/** @param: {green} is type {integer} or {string} **/
+		/** @return: is type {string} **/
 		return "rgb(" + red + "," + green + "," + blue + ")";
 	}
 
 	static RGBA (red, green, blue, alpha) {
 		/** @description: creates a rgb string using supplied arguments **/
-		/** @param: red @type {integer} or {string} **/
-		/** @param: blue @type {integer} or {string} **/
-		/** @param: green @type {integer} or {string} **/
-		/** @param: alpha @type {integer} or {string} **/
-		/** @return: @type {string} **/
+		/** @param: {red} is type {integer} or {string} **/
+		/** @param: {blue} is type {integer} or {string} **/
+		/** @param: {green} is type {integer} or {string} **/
+		/** @param: alpha is type {integer} or {string} **/
+		/** @return: is type {string} **/
 		return "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
 	}
 
 	static RandomRBGInt (min) {
 		/** @description: creates a rgb integer using supplied arguments with 255 as ceiling **/
-		/** @param: int @type {integer} **/
-		/** @return: @type {integer} **/
+		/** @param: {int} is type {integer} **/
+		/** @return: is type {integer} **/
 		return Base.__random__(min, 255);
 	}
 
 	static RandomAlphaInt (pmin, pmax, smin, smax) {
 		/** @description: creates a alpha channel integer using supplied arguments with 1.0 as ceiling **/
-		/** @param: pmin @type {integer} **/
-		/** @param: pmax @type {integer} **/
-		/** @param: smin @type {integer} **/
-		/** @param: smax @type {integer} **/
-		/** @return: @type {string} **/
+		/** @param: {pmin} is type {integer} **/
+		/** @param: {pmax} is type {integer} **/
+		/** @param: {smin} is type {integer} **/
+		/** @param: {smax} is type {integer} **/
+		/** @return: is type {string} **/
 		return "0" + "." + Base.__random__(pmin, pmax) + Base.__random__(smin, smax);
 	}
 
 	static attributes (grid) {
 		/** @description: returns base object for calculation **/
-		/** @param: grid @type {object} **/
-		/** @return: @type {object} **/
+		/** @param: grid is type {object} **/
+		/** @return: is type {object} **/
 		/** handle arguments **/
 		return grid && grid instanceof Object ? { width: grid.gridWidth, height: grid.gridHeight } : {};
 	}
@@ -62,8 +62,8 @@ class Canvas extends Grid {
 
 	drawGridLines (style, offset) {
 		/** @description: function for drawing grid layout to canvas context **/
-		/** @param: {style} @type: {object} **/
-		/** @param: {offset} @type: {boolean} **/
+		/** @param: {style} is type {object} **/
+		/** @param: {offset} is type {boolean} **/
 		/** enumerate over columns **/
 		for (var i = 0; i < this.columns; i++) {
 			/** enumerate over rows **/
@@ -82,7 +82,7 @@ class Canvas extends Grid {
 
 	drawGridSquare (config) {
 		/** @description: function for drawing object as grid square to canvas instance **/
-		/** @param: {config} @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** draw tile to canvas from object details **/
 		this.drawGeometry(config.fill, config.x, config.y, config.squareWidth, config.squareHeight, config.style);
 	}
@@ -99,7 +99,7 @@ class Canvas extends Grid {
 
 	drawRegExp (type) {
 		/** @description: for selecting the correct drawing method from regular expression **/
-		/** @param type @type {string} **/
+		/** @param type is type {string} **/
 		/** define types of rectangle drawing methods with their expression and system definitions **/
 		var methods = [{ key: "fillRect", exp: new RegExp("^fill(Rect)?$", "gi") }, { key: "clearRect", exp: new RegExp("^clear(Rect)?$", "gi") }, { key: "strokeRect", exp: new RegExp("^stroke?Rect$", "gi" ) }];	
 		/** iterate over defined method data **/
@@ -112,12 +112,12 @@ class Canvas extends Grid {
 
 	drawGeometry (type, positionX, positionY, width, height, style) {
 	 	/** @description: function drawing rectangular shape of defined fill type to canvas **/
-	 	/** @param: {type} @type: {string} **/
-	 	/** @param: {positionX} @type: {integer} **/
-	 	/** @param: {positionY} @type: {integer} **/
-	 	/** @param: {width} @type: {integer} **/
-	 	/** @param: {height} @type: {integer} **/
-	 	/** @param: {style} @type: {object} **/
+	 	/** @param: {type} is type {string} **/
+	 	/** @param: {positionX} is type {integer} **/
+	 	/** @param: {positionY} is type {integer} **/
+	 	/** @param: {width} is type {integer} **/
+	 	/** @param: {height} is type {integer} **/
+	 	/** @param: {style} is type {object} **/
 		/** apply drawing styles for rectangle **/
 		if (style) this.drawApplyStyle(style);
 		/** draw rectangle using system method **/
@@ -126,22 +126,22 @@ class Canvas extends Grid {
 
 	drawImage (image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight) {
 	 	/** @description: function drawing image to canvas using full clipping and position **/
-	 	/** @param: {image} @type: {string} **/
-	 	/** @param: {sourceX} @type: {integer} **/
-	 	/** @param: {sourceY} @type: {integer} **/
-	 	/** @param: {sourceWidth} @type: {integer} **/
-	 	/** @param: {sourceHeight} @type: {integer} **/
-	 	/** @param: {positionX} @type: {integer} **/
-	 	/** @param: {positionY} @type: {integer} **/
-	 	/** @param: {imageWidth} @type: {integer} **/
-	 	/** @param: {imageHeight} @type: {integer} **/
+	 	/** @param: {image} is type {string} **/
+	 	/** @param: {sourceX} is type {integer} **/
+	 	/** @param: {sourceY} is type {integer} **/
+	 	/** @param: {sourceWidth} is type {integer} **/
+	 	/** @param: {sourceHeight} is type {integer} **/
+	 	/** @param: {positionX} is type {integer} **/
+	 	/** @param: {positionY} is type {integer} **/
+	 	/** @param: {imageWidth} is type {integer} **/
+	 	/** @param: {imageHeight} is type {integer} **/
 		/** draw image to canvas from image source **/
 		this.context.drawImage(image, sourceX, sourceY, souceWidth, sourceHeight, positionX, positionY, imageWidth, imageHeight)
 	}
 
 	drawApplyStyle (style) {
 	 	/** @description: function for applying drawing styles to context of canvas **/
-	 	/** @param: {style} @type: {object} **/
+	 	/** @param: {style} is type {object} **/
 		/** iterate over keys in style object **/
 		for (var key in style) {
 			/** apply 'style' to canvas context if key matches system definition **/
@@ -151,15 +151,15 @@ class Canvas extends Grid {
 
 	drawBezier (curveXStart, curveYStart, curveXEnd, curveYEnd, positionXStart, positionYStart, positionXEnd, positionYEnd, style) {
 	 	/** @description: function for drawing a single curved line to canvas **/
-	 	/** @param: {curveXStart} @type: {integer} **/
-	 	/** @param: {curveYStart} @type: {integer} **/
-	 	/** @param: {curveXEnd} @type: {integer} **/
-	 	/** @param: {curveYEnd} @type: {integer} **/
-	 	/** @param: {positionXStart} @type: {integer} **/
-	 	/** @param: {positionYStart} @type: {integer} **/
-	 	/** @param: {positionXEnd} @type: {integer} **/
-	 	/** @param: {positionYEnd} @type: {integer} **/
-	 	/** @param: {style} @type: {object} **/
+	 	/** @param: {curveXStart} is type {integer} **/
+	 	/** @param: {curveYStart} is type {integer} **/
+	 	/** @param: {curveXEnd} is type {integer} **/
+	 	/** @param: {curveYEnd} is type {integer} **/
+	 	/** @param: {positionXStart} is type {integer} **/
+	 	/** @param: {positionYStart} is type {integer} **/
+	 	/** @param: {positionXEnd} is type {integer} **/
+	 	/** @param: {positionYEnd} is type {integer} **/
+	 	/** @param: {style} is type {object} **/
 		/** start line path **/
 		this.context.beginPath();
 		/** apply drawing styles for strokes **/
@@ -194,12 +194,12 @@ class Canvas extends Grid {
 
 	drawLine (positionXStart, positionYStart, positionXEnd, positionYEnd, style, offset) {
 	 	/** @description: function for drawing a single straight line to canvas **/
-	 	/** @param: {positionXStart} @type: {integer} **/
-	 	/** @param: {positionYStart} @type: {integer} **/
-	 	/** @param: {positionXEnd} @type: {integer} **/
-	 	/** @param: {positionYEnd} @type: {integer} **/
-	 	/** @param: {style} @type: {object} **/
-	 	/** @param: {offset} @type: {boolean} **/
+	 	/** @param: {positionXStart} is type {integer} **/
+	 	/** @param: {positionYStart} is type {integer} **/
+	 	/** @param: {positionXEnd} is type {integer} **/
+	 	/** @param: {positionYEnd} is type {integer} **/
+	 	/** @param: {style} is type {object} **/
+	 	/** @param: {offset} is type {boolean} **/
 		/** start line path **/
 		this.context.beginPath();
 		/** apply drawing styles for strokes **/
@@ -236,18 +236,18 @@ class Canvas extends Grid {
 
 	fontApplyAttributes (font) {
 	 	/** @description: function for creating concatenated css font string from font object **/
-	 	/** @param: {font} @type {object} **/
+	 	/** @param: {font} is type {object} **/
 		/** create single line string as defined css standard for shorthand font **/
 		return (font.style || 'normal') + ' ' + (font.variant || 'normal') + ' ' + (font.weight || 'normal') + ' ' + (font.stretch || 'normal') + ' ' + (font.size || '14px') + '/' + (font.line || 'inherit') + ' ' + (font.family || 'sans-serif');
 	}
 
 	drawFillText (positionX, positionY, fontString, fontAttributes, fontStyle) {
 	 	/** @description: function for drawing filled text to canvas element **/
-	 	/** @param: {positionX} @type: {integer} **/
-	 	/** @param: {positionY} @type: {integer} **/
-	 	/** @param: {fontString} @type: {string} **/
-	 	/** @param: {fontAttributes} @type: {string} or {object} **/
-	 	/** @param: {fontStyle} @type: {object} **/
+	 	/** @param: {positionX} is type {integer} **/
+	 	/** @param: {positionY} is type {integer} **/
+	 	/** @param: {fontString} is type {string} **/
+	 	/** @param: {fontAttributes} is type {string} or {object} **/
+	 	/** @param: {fontStyle} is type {object} **/
 		/** set font for canvas based on string as argument or object formatted to string **/
 		if (fontAttributes) this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
 		/** apply drawing styles for font **/
@@ -258,11 +258,11 @@ class Canvas extends Grid {
 
 	drawStrokeText (positionX, positionY, fontString, fontAttributes, fontStyle) {
 	 	/** @description: function drawing stroked text to canvas element **/
-		/** @param: {positionX} @type: {integer} **/
-		/** @param: {positionY} @type: {integer} **/
-		/** @param: {fontString} @type: {string} **/
-		/** @param: {fontAttributes} @type: {object} **/
-		/** @param: {fontStyle} @type: {object} **/
+		/** @param: {positionX} is type {integer} **/
+		/** @param: {positionY} is type {integer} **/
+		/** @param: {fontString} is type {string} **/
+		/** @param: {fontAttributes} is type {object} **/
+		/** @param: {fontStyle} is type {object} **/
 		/** set font for canvas based on string as argument or object formatted to string **/
 		this.context.font = (typeof fontAttributes === 'string') ? fontAttributes : this.fontApplyAttributes(fontAttributes);
 		/** apply drawing styles for font **/
@@ -273,7 +273,7 @@ class Canvas extends Grid {
 
 	__canvas__ (config) {
 		/** @description: initialises html canvas dom element and drawing methods **/
-		/** @param: {config} @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
 		/** set canvas element for drawing context **/
@@ -288,7 +288,7 @@ class Canvas extends Grid {
 	
 	constructor (config) {
 		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
-		/** @param: {config} @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
 		/** call super **/

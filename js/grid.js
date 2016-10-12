@@ -4,7 +4,7 @@ class Grid extends Base {
 
 	__grid__ (config) {
 		/** @description: private method for grid to organise expected {this} data **/
-		/** @param: config @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base object **/
 		config = config || {};
 		/** confirm that a base scale for width was defined or set default **/
@@ -23,7 +23,7 @@ class Grid extends Base {
 
 	constructor (config) {
 		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
-		/** @param: config @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
 		/** call super **/

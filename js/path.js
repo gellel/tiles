@@ -4,30 +4,30 @@ class Path extends Graph {
 
 	static manhattan (dx, dy) {
 		/** @description: calculate sum of position x and y **/
-		/** @param: {dx} @type: {integer} **/
-		/** @param: {dy} @type: {integer} **/
-		/** @return: @type: {integer} **/
+		/** @param: {dx} is type {integer} **/
+		/** @param: {dy} is type {integer} **/
+		/** @return: is type {integer} **/
 		return dx + dy;
 	}
 
 	static euclidean (dx, dy) {
 		/** @description: calculates euclidean distance from x and y **/
-		/** @param: {dx} @type: {integer} **/
-		/** @param: {dy} @type: {integer} **/
-		/** @return: @type: {integer} **/
+		/** @param: {dx} is type {integer} **/
+		/** @param: {dy} is type {integer} **/
+		/** @return: is type {integer} **/
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
 	static dijkstra () {
 		/** @description: sets dijkstra heuristic **/
-		/** @return: @type: {integer} **/
+		/** @return: is type {integer} **/
 		return 0;
 	}
 
 	backtrace (node) {
 		/** @description: filters array by tracing parents of element back to path **/
-		/** @param: {node} @type: {object} **/
-		/** @return: @type: {array} **/
+		/** @param: {node} is type {object} **/
+		/** @return: is type {array} **/
 		/** set base path **/
 		var path = [node];
 		/** enumerate while node has parent **/
@@ -43,13 +43,13 @@ class Path extends Graph {
 
 	path (type, startColumn, startRow, endColumn, endRow) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
-		/** @param: {type} @type: {string} **/
+		/** @param: {type} is type {string} **/
 		/** @param: {type} @weight {integer} **/
-		/** @param: {startColumn} @type: {integer} **/
-		/** @param: {startRow} @type: {integer} **/
-		/** @param: {endColumn} @type: {integer} **/
-		/** @param: {endRow} @type: {integer} **/
-		/** @return: @type: {array} **/
+		/** @param: {startColumn} is type {integer} **/
+		/** @param: {startRow} is type {integer} **/
+		/** @param: {endColumn} is type {integer} **/
+		/** @param: {endRow} is type {integer} **/
+		/** @return: is type {array} **/
 		/** set heuristic calculation type **/
 		var heuristic = Path[type];
 		/** set weight of tiles **/
@@ -96,8 +96,8 @@ class Path extends Graph {
 							var column = neighbour.column;
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
-							/** set new graph weight for tile **/
-							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
+							/** set new graph weight for tile including the cost of movement to node **/
+							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2) + node.cost;
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/
 							if (!neighbour.opened || ng < neighbour.g) {
 								/** update graph weight **/
@@ -129,7 +129,7 @@ class Path extends Graph {
 
 	__path__ (config) {
 		/** @description: initialised copied grid **/
-		/** @param: {config} @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
 		/** set copied status **/
@@ -157,7 +157,7 @@ class Path extends Graph {
 
 	constructor (config) {
 		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
-		/** @param: {config} @type: {object} **/
+		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
 		/** call super **/
