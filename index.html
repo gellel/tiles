@@ -27,7 +27,7 @@
 
 			//path.setRandomTilesUsed(5);
 
-			path.setRandomTilesCost(2);
+			path.setRandomTilesCost(5);
 
 			path.setColumnTilesUsed(5, 3, 16);
 			path.setRowTilesUsed(3, 4, 19)
@@ -39,24 +39,36 @@
 			/** used tiles are black **/
 			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(0, 0, 0, 1)" });
 			
-			var p = path.path("manhattan", 0, 6, 29, 5, { __filter__: true });
+			var p = path.path("manhattan", 0, 6, 29, 5);
 
-			if (p) console.log("p length:", p.length)
+			if (p) console.log("NO COST:", p.length)
 
-			/** path is with cost is green **/
+			/** path is without costs included is green **/
 			new Queue(p).process(function (tile) {
 				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 0, 0.6)" }}));
 			});
 
 			path.resetGraph();
 
-			var g = path.path("manhattan", 0, 6, 29, 5);
+			var g = path.path("manhattan", 0, 6, 29, 5, { __filter__: false, types: ["cost"] });
 			
-			if (g) console.log("g length:", g.length)
+			if (g) console.log("HAS COST IN:", g.length)
 
-			/** path without cost is purple **/
+			/** path including cost tiles **/
 			new Queue(g).process(function (tile) {
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(255, 0, 255, 0.5)" }}));
+				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 0, 255, 0.5)" }}));
+			});
+
+
+			path.resetGraph();
+
+			var z = path.path("manhattan", 0, 6, 29, 5, { __filter__: true });
+			
+			if (z) console.log("HAS COST OUT:", z.length)
+
+			/** path that cannot use unwalkable or cost tiles **/
+			new Queue(z).process(function (tile) {
+				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(255, 0, 155, 1)" }}));
 			});
 
 
