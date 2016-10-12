@@ -117,10 +117,8 @@ class Path extends Graph {
 									}
 								}
 							}
-
 							/** set new graph weight for tile including the cost of movement to node **/
 							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
-
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/
 							if (!neighbour.opened || ng < (neighbour.g || 0)) {
 								/** update graph weight **/

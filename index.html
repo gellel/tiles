@@ -19,7 +19,7 @@
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
 			
-			var grid = new Grid({ __init__: true, columns: 30, rows: 30 });
+			var grid = new Grid({ __init__: true, columns: 30, rows: 30, scale: 10 });
 
 			var graph = new Graph(grid.__this__());
 
@@ -29,15 +29,17 @@
 
 			path.setRandomTilesCost(2);
 
+			path.setColumnTilesUsed(5, 3, 16);
+			path.setRowTilesUsed(3, 4, 19)
+
 			var canvas = new Canvas(grid.__this__());
 
-			/** used tiles are black **/
-			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(0, 0, 0, 0.5)" });
 			/** tiles with cost are red **/
 			canvas.drawCostTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.5)" });
-
+			/** used tiles are black **/
+			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(0, 0, 0, 1)" });
 			
-			var p = path.path("manhattan", 0, 6, 29, 5, { __filter__: false, types: ["cost"] });
+			var p = path.path("manhattan", 0, 6, 29, 5, { __filter__: true });
 
 			if (p) console.log("p length:", p.length)
 
