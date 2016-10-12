@@ -88,10 +88,13 @@ class Queue {
 		while (this.isPopulated()) {
 			/** dequeue self **/
 			var item = this.dequeue();
-			/** handle item from queue using callback **/
-			var result = callback(item);
-			/** return if callback returns non falsey **/
-			if (result) return result;
+			/** confirm item **/
+			if (item) {
+				/** handle item from queue using callback **/
+				var result = callback(item);
+				/** return if callback returns non falsey **/
+				if (result) return result;
+			}
 		}
 	}
 

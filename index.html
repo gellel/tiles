@@ -29,19 +29,29 @@
 
 			path.setRandomTilesCost(0, 5, 0, 1);
 
-			var p = path.path("manhattan", 0, 6, 29, 5);
-
-			
 			var canvas = new Canvas(grid.__this__());
 
-
+			/** used tiles are black **/
 			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(0, 0, 0, 1)" });
-
+			/** tiles with cost are red **/
 			canvas.drawCostTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 1)" });
 
+			
+			var p = path.path("manhattan", 0, 6, 29, 5, { cost: true });
 
+			/** path is green **/
 			new Queue(p).process(function (tile) {
 				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 0, 0.3)" }}));
+			});
+
+			path.resetGraph();
+
+			var g = path.path("manhattan", 0, 6, 29, 5);
+
+			console.log(g)
+
+			new Queue(g).process(function (tile) {
+				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(255, 0, 255, 0.3)" }}));
 			});
 			
 			canvas.drawGridLines({ strokeStyle: "rgb(0, 0, 255)", fillStyle: "transparent" });

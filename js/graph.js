@@ -384,6 +384,29 @@ class Graph extends Grid {
 			this.setTileCost(i, row, columns);
 		}
 	}
+
+	resetGraph () {
+		/** @description: resets calculations on graph **/
+		/** edit all tiles in grid **/
+		this.editTiles(function (tile) {
+			/** iterate over keys in found tile **/
+			for (var key in tile) {
+				/** set switch case to key in tile **/
+				switch (key) {
+					case "g":
+					case "h":
+					case "f":
+					case "opened":
+					case "closed":
+					case "parent":
+						tile[key] = undefined;
+						break;
+				}
+			}
+			/** return edited tile **/
+			return tile;
+		});
+	}
 	
 	graph (columns, rows, __class__) {
 		/** @description: initialises graph from defined columns and rows **/

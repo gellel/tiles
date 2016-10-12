@@ -41,7 +41,7 @@ class Path extends Graph {
 		return path.reverse();
 	}
 
-	path (type, startColumn, startRow, endColumn, endRow) {
+	path (type, startColumn, startRow, endColumn, endRow, costs) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
 		/** @param: {type} is type {string} **/
 		/** @param: {type} @weight {integer} **/
@@ -49,6 +49,7 @@ class Path extends Graph {
 		/** @param: {startRow} is type {integer} **/
 		/** @param: {endColumn} is type {integer} **/
 		/** @param: {endRow} is type {integer} **/
+		/** @param: {costs} is type {object} **/
 		/** @return: is type {array} **/
 		/** set heuristic calculation type **/
 		var heuristic = Path[type];
@@ -100,8 +101,18 @@ class Path extends Graph {
 							var row = neighbour.row;
 							/** set new graph weight for tile including the cost of movement to node **/
 							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
-							/** set weight from node **/
-							ng = ng + node.cost;
+							
+							/** confirm that costs defined **/
+							if (costs instanceof Object) {
+								/** iterate over object **/
+								for (var key in costs) {
+									/** confirm key restriction **/
+									if (node[key]) {
+										/** set weight from node **/
+										ng = ng + node.cost;
+									}
+								}
+							}
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/
 							if (!neighbour.opened || ng < (neighbour.g || 0)) {
 								/** update graph weight **/
