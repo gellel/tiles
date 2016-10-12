@@ -218,14 +218,6 @@ class Graph extends Grid {
 		if (tile) tile.walkable = false;
 	}
 
-	setTileCost (column, row, cost) {
-		/** @description: sets found tile to include a cost of movement **/
-		/** @param: {column} is type {integer} **/
-		/** @param: {row} is type {integer} **/
-		/** @param: {cost} is type {integer} **/
-		/** handle arguments **/
-	}
-
 	setRandomTileUsed () {
 		/** @description: sets a random tile in grid to unwalkable **/
 		/** fetch random tile **/
@@ -254,7 +246,6 @@ class Graph extends Grid {
 				var result = Base.__random__(frequencyMin, frequencyMax);
 				/** confirm target was hit **/
 				if (result === target) {
-					console.log('col:', i, 'row:', j)
 					/** set tile to used **/
 					this.setTileUsed(i, j);
 				}
@@ -297,6 +288,99 @@ class Graph extends Grid {
 		for (var i = start; i < end; i++) {
 			/** set this row within column as unusable **/
 			this.grid[i][row].walkable = false;
+		}
+	}
+
+	setTileCost (column, row, cost) {
+		/** @description: sets found tile to include a cost of movement **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		/** handle arguments **/
+		if (isNaN(column) || isNaN(row) || isNaN(cost)) return false;
+		/** attempt to find tile **/
+		var tile = this.getTile(column, row);
+		/** confirm found and set tile unwalkable **/
+		if (tile) tile.cost = cost;
+	}
+
+	setRandomTileCost (cost) {
+		/** @description: sets a random tile to include a cost of movement **/
+		/** @param: {cost} is type {integer} **/
+		/** handle arguments **/
+		if (isNaN(cost)) return false;
+		/** attempt to find tile **/
+		var tile = this.getRandomTile();
+		/** confirm found and set tile unwalkable **/
+		if (tile) tile.cost = cost;
+	}
+
+	setRandomTilesUsed (frequencyMin, frequencyMax, target, cost) {
+		/** @description: sets random tiles within grid to include cost **/
+		/** @param: {frequencyMin} is type {integer} **/
+		/** @param: {frequencyMax} is type {integer} **/
+		/** @param: {target} is type {integer} **/
+		/** set defaults for distribution **/
+		/** set min distribution **/
+		frequencyMin = !isNaN(frequencyMin) ? frequencyMin : 0;
+		/** set max distribution **/
+		frequencyMax = !isNaN(frequencyMax) ? frequencyMax : 3;
+		/** set target integer **/
+		target = !isNaN(target) ? target : 0;
+		/** set cost tile **/
+		cost = !isNaN(cost) ? cost : 1;
+		/** enumerate over grid columns **/
+		for (var i = 0; i < this.grid.length; i++) {
+			/** enumerate over grid rows **/
+			for (var j = 0; j < this.grid[i].length; j++) {
+				/** set base random **/
+				var result = Base.__random__(frequencyMin, frequencyMax);
+				/** confirm target was hit **/
+				if (result === target) {
+					/** set tile to used **/
+					this.setTileCost(i, j, cost);
+				}
+			}
+		}
+	}
+
+	setColumnTilesCost (column, start, end, cost) {
+		/** @description: sets in column in grid to inclust cost from grid start to grid offset **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		/** handle arguments **/
+		if (isNaN(column) || isNaN(start) || isNaN(end) || isNaN(cost)) return false;
+		/** set column reference **/
+		var col = this.grid[column];
+		/** iterate over column **/
+		/** confirm start and end points in range **/
+		if (col[start] && col[end]) {
+			/** enumerate over column **/
+			for (var i = start; i < end; i++) {
+				/** set tile cost **/
+				this.setTileCost(column, i, cost);
+			}
+		}
+	}
+
+	setRowTilesCost (row, start, end, cost) {
+		/** @description: sets row in grid to include cost from grid start to grid offset **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		/** handle arguments **/
+		if (isNaN(row) || isNaN(start) || isNaN(end) || isNaN(cost)) return false;
+		/** confirm row base reference **/
+		if (!this.grid[0][row]) return false;
+		/** confirm column start and end point in range **/
+		if (!this.grid[start] || !this.grid[end]) return false;
+		/** iterate over columns until end, but update row **/
+		for (var i = start; i < end; i++) {
+			/** set this row within column cost **/
+			this.setTileCost(i, row, columns);
 		}
 	}
 	
