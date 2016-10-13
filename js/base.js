@@ -31,6 +31,41 @@ class Base {
 		return config;
 	}
 
+	static __contains__ (config, filter) {
+		if (!config instanceof Object || !config instanceof Object) return false;
+		/** @description: confirms if objects contains property **/
+		/** @param: {config} is type {object} **/
+		/** @param: {filter} is type {filter} **/
+		/** @return: is type {boolean} **/
+		/** iterate over object **/
+		for (var key in filter) {
+			/** confirm property is own type **/
+			if (config.hasOwnProperty(key)) {
+				/** confirm that this key is array **/
+				if (filter[key] instanceof Array) {
+					/** enumerate over array of this key **/
+					for (var i = 0, items = filter[key]; i < items.length; i++) {
+						/** confirm that this key is a match **/
+						if (config[key] === items[i]) return false;
+					}
+				}
+				/** confirm that this key is object **/
+				else if (filter[key] instanceof Object) {
+					/** iterate over object key **/
+					for (var prop in filter[key]) {
+						/** confirm that this key is a match **/
+						if (config[key] === filter[key][prop]) return false;
+					}
+				}
+				/** confirm that this key is a match **/
+				else if (config[key] === filter[key]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	static __object__ (config) {
 		/** @description: create copy of config object **/
 		/** @param: {config} is type {object} **/

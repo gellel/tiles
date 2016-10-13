@@ -51,6 +51,8 @@ class Path extends Graph {
 		/** @param: {endRow} is type {integer} **/
 		/** @param: {costs} is type {object} **/
 		/** @return: is type {array} **/
+		/** set base costs **/
+		costs = costs || {};
 		/** set heuristic calculation type **/
 		var heuristic = Path[type];
 		/** set weight of tiles **/
@@ -65,6 +67,12 @@ class Path extends Graph {
 		var abs = Math.abs;
 		/** set math square root **/
 		var SQRT2 = Math.SQRT2;
+		/** set filter requirement **/
+		var filter = costs.__filter__ || false;
+		/** set avoidance requirement **/
+		var prohibit = costs.prohibit || false;
+		/** set include tiles **/
+		var allow = costs.allow || false;
 		/** set graph weight **/
 		start.g = 0;
 		/** set distanct weight **/
@@ -85,15 +93,10 @@ class Path extends Graph {
 			var neighbours = this.getAdjacentTiles(node);
 			/** confirm neighbours found **/
 			if (neighbours.length) {
-				/** filter neighbours for usable **/
-				neighbours = neighbours.filter(function (t) { return t && t.walkable ? t : false; });
-				/** filter neighbours if pather can use costed items **/
-				if (costs && costs.__filter__) {
-					/** filter out tiles with cost **/
-					neighbours = neighbours.filter(function (t) {
-						if (isNaN(t.cost) || t.cost === 0) return t;
-					});
-				}
+				/** filter unfound tiles **/
+				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
+				/** filter out unwanted **/
+				if (prohibit) neighbours = neighbours.filter(function (tile) { return Base.__contains__(tile, prohibit) ? tile : false; });
 				/** confirm neighbours remain **/
 				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
@@ -107,16 +110,7 @@ class Path extends Graph {
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
 							/** confirm costs and costs has property types **/
-							if (costs && costs.types) {
-								/** enumerate over costs types array **/
-								for (var j = 0; j < costs.types.length; j++) {
-									/** confirm type of property is in neighbour **/
-									if (neighbour[costs.types[j]]) {
-										/** set weight from node **/
-										node.g = node.g + node.cost;
-									}
-								}
-							}
+							if (Base.__contains__(neighbour, allow)) node.g = node.g + node.cost;
 							/** set new graph weight for tile including the cost of movement to node **/
 							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/

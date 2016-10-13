@@ -19,64 +19,69 @@
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
 			
-			var grid = new Grid({ __init__: true, columns: 30, rows: 30, scale: 10 });
+			var grid = new Grid({ __init__: true, columns: 30, rows: 30, scale: 14 });
 
 			var graph = new Graph(grid.__this__());
 
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
-			//path.setRandomTilesUsed(5);
-
-			path.setRandomTilesCost(5);
-
-			path.setColumnTilesUsed(5, 3, 16);
-			path.setRowTilesUsed(3, 4, 19)
-
 			var canvas = new Canvas(grid.__this__());
 
-			/** tiles with cost are red **/
-			canvas.drawCostTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.5)" });
-			/** used tiles are black **/
-			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(0, 0, 0, 1)" });
+
+			/** set used column **/
+			path.setColumnTilesUsed(3, 3, 10);
+			path.setColumnTilesUsed(6, 0, 4);
+			path.setColumnTilesUsed(6, 6, 14);
+
+			/** set weight tiles **/
+			path.setRandomTilesCost(5, 1);
+
+
+			/** draw tiles that have a cost **/
+			canvas.drawCostTiles(path.grid, { fillStyle: "rgba(255, 0, 255, 1)" });
+
+			/** draw tiles that are used **/
+			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 1)" });
 			
+
+			/** this path is not inhibited by anything **/
 			var p = path.path("manhattan", 0, 6, 29, 5);
-
-			if (p) console.log("NO COST:", p.length)
-
-			/** path is without costs included is green **/
-			new Queue(p).process(function (tile) {
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 0, 0.6)" }}));
+			/** draw the calculation of this path **/
+			new Queue(p).process(function (tile) { 
+				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 0, 0.8)" }}));
 			});
-
+			/** reset path for next user **/
 			path.resetGraph();
 
-			var g = path.path("manhattan", 0, 6, 29, 5, { __filter__: false, walkable: [],  avoid: ["cost"] });
-			
-			if (g) console.log("HAS COST IN:", g.length)
 
-			/** path including cost tiles **/
-			new Queue(g).process(function (tile) {
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 0, 255, 0.5)" }}));
+
+
+			/** this path is inhibited by unwalkable tiles **/
+			var z = path.path("manhattan", 0, 6, 29, 5, { prohibit: { walkable: false } });
+			/** draw the calculation of this path **/
+			new Queue(z).process(function (tile) { 
+				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 250, 0.8)" }}));
 			});
-
-
+			/** reset path for next user **/
 			path.resetGraph();
 
-			var z = path.path("manhattan", 0, 6, 29, 5, { __filter__: true });
-			
-			if (z) console.log("HAS COST OUT:", z.length)
 
-			/** path that cannot use unwalkable or cost tiles **/
-			new Queue(z).process(function (tile) {
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(255, 0, 155, 1)" }}));
+
+
+
+			/** this path is inhibited by unwalkable tiles and cost tiles **/
+			var j = path.path("manhattan", 0, 6, 29, 5, { prohibit: { walkable: false, cost: 1 } });
+			/** draw the calculation of this path **/
+			new Queue(j).process(function (tile) { 
+				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(10, 25, 250, 0.8)" }}));
 			});
+			/** reset path for next user **/
+			path.resetGraph();
+			
 
 
-			canvas.drawGridLines({ strokeStyle: "rgb(0, 0, 255)", fillStyle: "transparent" });
-
-			var c = new Character(Object.assign(grid.__this__(), graph.getTile(0, 0, true)));
-
-			console.log("character:", c)
+			/** draw lines for grid **/
+			canvas.drawGridLines({ strokeStyle: "rgba(0, 0, 255, .1)", fillStyle: "transparent" });
 
 		</script>
 	</body>
