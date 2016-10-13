@@ -82,11 +82,11 @@ class Canvas extends Grid {
 		this.drawLine(0, this.gridHeight - 1, this.gridWidth, this.gridHeight - 1, style, offset);
 	}
 
-	drawGridSquare (config) {
+	drawGridSquare (config, style) {
 		/** @description: function for drawing object as grid square to canvas instance **/
 		/** @param: {config} is type {object} **/
 		/** draw tile to canvas from object details **/
-		this.drawGeometry(config.fill, config.x, config.y, config.squareWidth, config.squareHeight, config.style);
+		this.drawGeometry(config.fill, config.x, config.y, config.squareWidth, config.squareHeight, config.style || style);
 	}
 
 	drawUsedTiles (tiles, style) {
@@ -99,11 +99,17 @@ class Canvas extends Grid {
 		}
 	}
 
-	drawCostTiles (tiles, style) {
+	drawCostTiles (tiles, style, cost) {
 		for (var i = 0; i < tiles.length; i++) {
 			for (var j = 0; j < tiles[i].length; j++) {
 				if (tiles[i][j].cost) {
-					this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
+					if (cost && typeof cost === "boolean") {
+					}
+					else if (cost && typeof cost === "number") {
+						if (cost === tiles[i][j].cost) {
+							this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
+						}
+					}
 				}
 			}
 		}

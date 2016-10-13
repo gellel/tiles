@@ -207,17 +207,35 @@ class Graph extends Grid {
 		return Graph.getTile(grid, column, row, copy);
 	}
 
+	static setTile(grid, column, row, key, value) {
+		/** @description: sets found tile key to value **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {key} is type {string} **/
+		/** @param: {value} is type {*} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(column) || isNaN(row) || !key instanceof String) return false;
+		/** attempt to find tile **/
+		var tile = Graph.getTile(grid, column, row);
+		/** confirm found and set attribute **/
+		if (tile) tile[key] = value;
+	}
+
+	static setTileFree (grid, column, row) {
+		/** @description: sets found tile to walkable **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		Graph.setTile(grid, column, row, "walkable", true);
+	}
+
 	static setTileUsed (grid, column, row) {
 		/** @description: sets found tile to unwalkable **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {row} is type {integer} **/
-		/** handle arguments **/
-		if (!grid instanceof Array || isNaN(column) || isNaN(row)) return false;
-		/** attempt to find tile **/
-		var tile = Graph.getTile(grid, column, row);
-		/** confirm found and set tile unwalkable **/
-		if (tile) tile.walkable = false;
+		Graph.setTile(grid, column, row, "walkable", false);
 	}
 
 	static setRandomTileUsed () {
@@ -292,18 +310,26 @@ class Graph extends Grid {
 		}
 	}
 
-	static setTileCost (grid, column, row, cost) {
+	static setTileCost (grid, column, row, cost, overwrite) {
 		/** @description: sets found tile to include a cost of movement **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {row} is type {integer} **/
 		/** @param: {cost} is type {integer} **/
+		/** @param: {overwrite} is type {boolean} **/
 		/** handle arguments **/
 		if (!grid instanceof Array || isNaN(column) || isNaN(row) || isNaN(cost)) return false;
 		/** attempt to find tile **/
 		var tile = Graph.getTile(grid, column, row);
-		/** confirm found and set tile unwalkable **/
-		if (tile) tile.cost = cost;
+		/** confirm found and overwriting is allowed set tile to have cost **/
+		if (tile) {
+			if (overwrite !== undefined && typeof overwrite === "boolean") {
+				tile.cost = cost;
+			}
+			else if (overwrite !== undefined && typeof overwrite === "number") {
+				if (tile.cost === 0 || tile.cost !== overwrite) tile.cost = cost;
+			}
+		}
 	}
 
 	static setRandomTileCost (grid, cost) {
@@ -318,11 +344,12 @@ class Graph extends Grid {
 		if (tile) tile.cost = cost;
 	}
 
-	static setRandomTilesCost (grid, frequencyMax, cost) {
+	static setRandomTilesCost (grid, frequencyMax, cost, overwrite) {
 		/** @description: sets random tiles within grid to include cost **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {frequencyMax} is type {integer} **/
-		/** @param: {target} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		/** @param: {overwrite} is type {boolean} **/
 		if (!grid instanceof Array) return false;
 		/** set defaults for distribution **/
 		frequencyMax = !isNaN(frequencyMax) ? frequencyMax : 5;
@@ -337,19 +364,20 @@ class Graph extends Grid {
 				/** confirm target was hit **/
 				if (result === 0) {
 					/** set tile to used **/
-					Graph.setTileCost(grid, i, j, cost);
+					Graph.setTileCost(grid, i, j, cost, overwrite);
 				}
 			}
 		}
 	}
 
-	static setColumnTilesCost (grid, column, start, end, cost) {
+	static setColumnTilesCost (grid, column, start, end, cost, overwrite) {
 		/** @description: sets in column in grid to inclust cost from grid start to grid offset **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {start} is type {integer} **/
 		/** @param: {end} is type {integer} **/
 		/** @param: {cost} is type {integer} **/
+		/** @param: {overwrite} is type {boolean} **/
 		/** handle arguments **/
 		if (!grid instanceof Array || isNaN(column) || isNaN(start) || isNaN(end) || isNaN(cost)) return false;
 		/** set column reference **/
@@ -360,18 +388,19 @@ class Graph extends Grid {
 			/** enumerate over column **/
 			for (var i = start; i < end; i++) {
 				/** set tile cost **/
-				Graph.setTileCost(grid, column, i, cost);
+				Graph.setTileCost(grid, column, i, cost, overwrite);
 			}
 		}
 	}
 
-	static setRowTilesCost (grid, row, start, end, cost) {
+	static setRowTilesCost (grid, row, start, end, cost, overwrite) {
 		/** @description: sets row in grid to include cost from grid start to grid offset **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {row} is type {integer} **/
 		/** @param: {start} is type {integer} **/
 		/** @param: {end} is type {integer} **/
 		/** @param: {cost} is type {integer} **/
+		/** @param: {overwrite} is type {boolean} **/
 		/** handle arguments **/
 		if (!grid instanceof Array || isNaN(row) || isNaN(start) || isNaN(end) || isNaN(cost)) return false;
 		/** confirm row base reference **/
@@ -381,7 +410,7 @@ class Graph extends Grid {
 		/** iterate over columns until end, but update row **/
 		for (var i = start; i < end; i++) {
 			/** set this row within column cost **/
-			Graph.setTileCost(grid, i, row, columns);
+			Graph.setTileCost(grid, i, row, columns, overwrite);
 		}
 	}
 
@@ -462,6 +491,13 @@ class Graph extends Grid {
 		return Graph.getSpecificAdjacentTile(this.grid, tile, direction, copy);
 	}
 
+	setTileFree (column, row) {
+		/** @description: sets found tile to unwalkable **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		return Graph.setTileFree(this.grid, column, row);
+	}
+
 	setTileUsed (column, row) {
 		/** @description: sets found tile to unwalkable **/
 		/** @param: {column} is type {integer} **/
@@ -496,46 +532,51 @@ class Graph extends Grid {
 		return Graph.setRowTilesUsed(this.grid, row, start, end);
 	}
 
-	setTileCost (column, row, cost) {
+	setTileCost (column, row, cost, overwrite) {
 		/** @description: sets found tile to include a cost of movement **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {row} is type {integer} **/
 		/** @param: {cost} is type {integer} **/
-		Graph.setTileCost(this.grid, column, row, cost);
+		/** @param: {overwrite} is type {boolean} **/
+		Graph.setTileCost(this.grid, column, row, cost, overwrite);
 	}
 
-	setRandomTileCost (cost) {
+	setRandomTileCost (cost, overwrite) {
 		/** @description: sets a random tile to include a cost of movement **/
 		/** @param: {cost} is type {integer} **/
-		return Graph.setRandomTilesCost(this.grid, cost);
+		/** @param: {overwrite} is type {boolean} **/
+		return Graph.setRandomTilesCost(this.grid, cost, overwrite);
 	}
 
-	setRandomTilesCost (frequencyMax, cost) {
+	setRandomTilesCost (frequencyMax, cost, overwrite) {
 		/** @description: sets random tiles within grid to include cost **/
 		/** @param: {frequencyMax} is type {integer} **/
 		/** @param: {target} is type {integer} **/
-		return Graph.setRandomTilesCost(this.grid, frequencyMax, cost);
+		/** @param: {overwrite} is type {boolean} **/
+		return Graph.setRandomTilesCost(this.grid, frequencyMax, cost, overwrite);
 	}
 
-	setColumnTilesCost (column, start, end, cost) {
+	setColumnTilesCost (column, start, end, cost, overwrite) {
 		/** @description: sets in column in grid to inclust cost from grid start to grid offset **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {start} is type {integer} **/
 		/** @param: {end} is type {integer} **/
 		/** @param: {cost} is type {integer} **/
-		return Graph.setColumnTilesCost(this.grid, column, start, end, cost);
+		/** @param: {overwrite} is type {boolean} **/
+		return Graph.setColumnTilesCost(this.grid, column, start, end, cost, overwrite);
 	}
 
-	setRowTilesCost (row, start, end, cost) {
+	setRowTilesCost (row, start, end, cost, overwrite) {
 		/** @description: sets row in grid to include cost from grid start to grid offset **/
 		/** @param: {row} is type {integer} **/
 		/** @param: {start} is type {integer} **/
 		/** @param: {end} is type {integer} **/
 		/** @param: {cost} is type {integer} **/
-		return Graph.setRowTilesCost(this.grid, row, start, end, cost);
+		/** @param: {overwrite} is type {boolean} **/
+		return Graph.setRowTilesCost(this.grid, row, start, end, cost, overwrite);
 	}
 
-	resetGraph () {
+	reset () {
 		/** @description: resets calculations on graph **/
 		return Graph.resetGraph(this.grid);
 	}

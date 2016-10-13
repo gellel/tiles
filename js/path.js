@@ -70,9 +70,9 @@ class Path extends Graph {
 		/** set filter requirement **/
 		var filter = costs.__filter__ || false;
 		/** set avoidance requirement **/
-		var prohibit = costs.prohibit || false;
+		var prohibited = costs.prohibited || false;
 		/** set include tiles **/
-		var allow = costs.allow || false;
+		var allowed = costs.allowed || false;
 		/** set graph weight **/
 		start.g = 0;
 		/** set distanct weight **/
@@ -96,7 +96,7 @@ class Path extends Graph {
 				/** filter unfound tiles **/
 				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
 				/** filter out unwanted **/
-				if (prohibit) neighbours = neighbours.filter(function (tile) { return Base.__contains__(tile, prohibit) ? tile : false; });
+				if (prohibited) neighbours = neighbours.filter(function (tile) { return Base.__contains__(tile, prohibited) ? tile : false; });
 				/** confirm neighbours remain **/
 				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
@@ -110,7 +110,7 @@ class Path extends Graph {
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
 							/** confirm costs and costs has property types **/
-							if (Base.__contains__(neighbour, allow)) node.g = node.g + node.cost;
+							if (Base.__contains__(neighbour, allowed)) node.g = node.g + node.cost;
 							/** set new graph weight for tile including the cost of movement to node **/
 							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/

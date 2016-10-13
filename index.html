@@ -19,7 +19,7 @@
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
 			
-			var grid = new Grid({ __init__: true, columns: 30, rows: 30, scale: 14 });
+			var grid = new Grid({ __init__: true, columns: 80, rows: 40, scale: 16 });
 
 			var graph = new Graph(grid.__this__());
 
@@ -28,56 +28,71 @@
 			var canvas = new Canvas(grid.__this__());
 
 
-			/** set used column **/
-			path.setColumnTilesUsed(3, 3, 10);
-			path.setColumnTilesUsed(6, 0, 4);
-			path.setColumnTilesUsed(6, 6, 14);
+			/** set heavy weights **/
+			path.setRandomTilesCost(8, 2, true);
+			/** colour heavy tiles **/
+			canvas.drawCostTiles(path.grid, { fillStyle: "#DADFE1" }, 2);
 
-			/** set weight tiles **/
-			path.setRandomTilesCost(5, 1);
+			/** set light weights **/
+			path.setRandomTilesCost(8, 1, 0);
+			/** colour light tiles **/
+			canvas.drawCostTiles(path.grid, { fillStyle: "#EEEEEE" }, 1);
 
-
-			/** draw tiles that have a cost **/
-			canvas.drawCostTiles(path.grid, { fillStyle: "rgba(255, 0, 255, 1)" });
-
-			/** draw tiles that are used **/
-			canvas.drawUsedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 1)" });
+			/** set used tiles **/
+			path.setRandomTilesUsed(8);
+			/** set direct used tiles **/
+			path.setColumnTilesUsed(4, 0, 8);
 			
-
-			/** this path is not inhibited by anything **/
-			var p = path.path("manhattan", 0, 6, 29, 5);
-			/** draw the calculation of this path **/
-			new Queue(p).process(function (tile) { 
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 0, 0.8)" }}));
-			});
-			/** reset path for next user **/
-			path.resetGraph();
-
-
-
-
-			/** this path is inhibited by unwalkable tiles **/
-			var z = path.path("manhattan", 0, 6, 29, 5, { prohibit: { walkable: false } });
-			/** draw the calculation of this path **/
-			new Queue(z).process(function (tile) { 
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(0, 255, 250, 0.8)" }}));
-			});
-			/** reset path for next user **/
-			path.resetGraph();
+			/** set usable near start **/
+			path.setTileFree(0, 0);
+			path.setTileFree(0, 1);
+			path.setTileFree(1, 0);
+			path.setTileFree(1, 1);
+			/** set usable near end **/
+			path.setTileFree(79, 39);
+			path.setTileFree(78, 39);
+			path.setTileFree(79, 38);
+			path.setTileFree(78, 38);
 
 
+			/** colour used tiles **/
+			canvas.drawUsedTiles(path.grid, { fillStyle: "#2c3e50" });
 
 
-
-			/** this path is inhibited by unwalkable tiles and cost tiles **/
-			var j = path.path("manhattan", 0, 6, 29, 5, { prohibit: { walkable: false, cost: 1 } });
-			/** draw the calculation of this path **/
-			new Queue(j).process(function (tile) { 
-				canvas.drawGridSquare(Object.assign(tile, { style: { fillStyle: "rgba(10, 25, 250, 0.8)" }}));
-			});
-			/** reset path for next user **/
-			path.resetGraph();
 			
+			/** set path with no issues **/
+			var a = path.path("manhattan", 0, 0, 79, 39);
+
+			/** reset **/
+			path.reset();
+
+			/** set path with must avoid unusuable **/
+			var b = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false } });
+
+			/** reset **/
+			path.reset();
+
+			/** set path with must avoid unusuable and heavy weights but can use light **/
+			var c = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false, cost: 2 } });
+
+			/** reset path **/
+			path.reset();
+
+			/** set path with must avoid usuable, heavy and light weights **/
+			var d = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false, cost: [1, 2] }});
+
+
+			/** draw d completed path **/
+			new Queue(d).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 0.5)"}); });
+
+			/** draw C completed path **/
+			new Queue(c).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(248, 148, 6, 0.5)"}); });
+
+			/** draw B completed path **/
+			new Queue(b).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(31, 58, 147, 0.5)"}); });
+
+			/** draw A completed path **/
+			new Queue(a).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(46, 204, 113, 0.5)"}); });
 
 
 			/** draw lines for grid **/
