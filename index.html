@@ -50,7 +50,7 @@
 
 			path.resetGraph();
 
-			var g = path.path("manhattan", 0, 6, 29, 5, { __filter__: false, types: ["cost"] });
+			var g = path.path("manhattan", 0, 6, 29, 5, { __filter__: false, walkable: [],  avoid: ["cost"] });
 			
 			if (g) console.log("HAS COST IN:", g.length)
 
@@ -74,7 +74,7 @@
 
 			canvas.drawGridLines({ strokeStyle: "rgb(0, 0, 255)", fillStyle: "transparent" });
 
-			var c = new Character(Base.__trim__(Object.assign(grid.__this__(), graph.getTile(0, 0, true)), ["f", "g", "closed", "cost", "open", "h", "opened", "parent", "walkable"]));
+			var c = new Character(Object.assign(grid.__this__(), graph.getTile(0, 0, true)));
 
 			console.log("character:", c)
 
