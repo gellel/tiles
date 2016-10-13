@@ -74,6 +74,10 @@
 
 			canvas.drawGridLines({ strokeStyle: "rgb(0, 0, 255)", fillStyle: "transparent" });
 
+			var c = new Character(Base.__trim__(Object.assign(grid.__this__(), graph.getTile(0, 0, true)), ["f", "g", "closed", "cost", "open", "h", "opened", "parent", "walkable"]));
+
+			console.log("character:", c)
+
 		</script>
 	</body>
 </html>

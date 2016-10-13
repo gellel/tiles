@@ -1,5 +1,148 @@
 class Tile extends Base {
 
+	/** @description: base class for grid based items such as map tiles or characters **/
+
+	editTile (grid, column, row, config) {
+		/** @description: edits array items in 2d array using supplied coordinates and optional array **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {config} is type {object} **/
+		/** @param: {callback} is type {function} **/
+		return Graph.editTile(grid, column, row, config);
+	}
+
+	editTiles (grid, callback) {
+		/** @description: edits all tiles **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {callback} is type {function} **/
+		return Graph.editTiles(grid, callback);
+	}
+
+	getTile (grid, column, row, copy) {
+		/** @description: returns item from this grid 2d array using column and row to locate items **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {copy} is type {boolean} **/
+		return Graph.getTile(grid, column, row, copy);
+	}
+
+	getTiles (grid, callback, copy) {
+		/** @description: returns item by item from this grid 2d array **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {callback} is type {function} **/
+		/** @param: {copy} is type {boolean} **/
+		return Graph.getTiles(grid, callback, copy);
+	} 
+
+	getRandomTile (grid, copy) {
+		/** @description: returns item from this grid **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {copy} is type {boolean} **/
+		/** @return: is type {object} **/
+		return Graph.getRandomTile(grid, copy);
+	}
+
+	getAdjacentTiles (grid, tile, copy) {
+		/** @description: returns item from this grid **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {tile} is type {object} **/
+		/** @param: {copy} is type {boolean} **/
+		/** @return: is type {array} **/
+		return Graph.getAdjacentTiles(grid, tile, this.directions, copy);
+	}
+
+	getSpecificAdjacentTile (grid, tile, direction, copy) {
+		/** @description: returns item from this grid **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {tile} is type {object} **/
+		/** @param: {direction} is type {string} **/
+		/** @param: {copy} is type {boolean} **/
+		return Graph.getSpecificAdjacentTile(grid, tile, direction, copy);
+	}
+
+	setTileUsed (grid, column, row) {
+		/** @description: sets found tile to unwalkable **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		return Graph.setTileUsed(grid, column, row);
+	}
+
+	setRandomTileUsed (grid) {
+		/** @description: sets a random tile in grid to unwalkable **/
+		/** @param: {grid} is type {array} **/
+		return Graph.setRandomTilesUsed(grid);
+	}
+
+	setRandomTilesUsed (grid, frequencyMax) {
+		/** @description: sets random tiles within grid to unwalkable **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {frequencyMax} is type {integer} **/
+		return Graph.setRandomTilesUsed(grid, frequencyMax);
+	}
+
+	setColumnTilesUsed (grid, column, start, end) {
+		/** @description: sets in column in grid to unwalkable from start to offset **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
+		return Graph.setColumnTilesUsed(grid, column, start, end);
+	}
+
+	setRowTilesUsed (grid, row, start, end) {
+		/** @description: sets row in grid to unwalkable from start to offset **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
+		return Graph.setRowTilesUsed(grid, row, start, end);
+	}
+
+	setTileCost (grid, column, row, cost) {
+		/** @description: sets found tile to include a cost of movement **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		Graph.setTileCost(grid, column, row, cost);
+	}
+
+	setRandomTileCost (grid, cost) {
+		/** @description: sets a random tile to include a cost of movement **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {cost} is type {integer} **/
+		return Graph.setRandomTilesCost(grid, cost);
+	}
+
+	setRandomTilesCost (grid, frequencyMax, cost) {
+		/** @description: sets random tiles within grid to include cost **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {frequencyMax} is type {integer} **/
+		/** @param: {target} is type {integer} **/
+		return Graph.setRandomTilesCost(grid, frequencyMax, cost);
+	}
+
+	setColumnTilesCost (grid, column, start, end, cost) {
+		/** @description: sets in column in grid to inclust cost from grid start to grid offset **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		return Graph.setColumnTilesCost(grid, column, start, end, cost);
+	}
+
+	setRowTilesCost (grid, row, start, end, cost) {
+		/** @description: sets row in grid to include cost from grid start to grid offset **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {end} is type {integer} **/
+		/** @param: {cost} is type {integer} **/
+		return Graph.setRowTilesCost(grid, row, start, end, cost);
+	}
+
 	getLeftPoint () {
 	 	/** @description: function for getting tiles left x coordinate **/
 		/** return this base x position **/

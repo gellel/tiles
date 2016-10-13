@@ -1,5 +1,7 @@
 class Canvas extends Grid {
 
+	/** @description: drawing handler for HTML5 graphics **/
+
 	static RGB (red, green, blue) {
 		/** @description: creates a rgb string using supplied arguments **/
 		/** @param: {red} is type {integer} or {string} **/

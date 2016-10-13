@@ -13,6 +13,24 @@ class Base {
 		return enumerable ? enumerable[result] : result;
 	}
 
+	static __trim__ (config, trim) {
+		/** @description: cleans unwanted property from object if found **/
+		/** @param: {config} is type {object} **/
+		/** @return: is type {object} **/
+		/** clone object **/
+		config = Base.__object__(config);
+		/** enumerate over keys in trim **/
+		for (var i = 0; i < trim.length; i++) {
+			/** confirm key is own property and not prototype **/
+			if (config.hasOwnProperty(trim[i])) {
+				/** delete key **/
+				delete config[trim[i]];			
+			}
+		}
+		/** return edited clone **/
+		return config;
+	}
+
 	static __object__ (config) {
 		/** @description: create copy of config object **/
 		/** @param: {config} is type {object} **/
