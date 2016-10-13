@@ -19,7 +19,7 @@
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
 			
-			var grid = new Grid({ __init__: true, columns: 80, rows: 40, scale: 16 });
+			var grid = new Grid({ __init__: true, columns: 80, rows: 40, scale: 10 });
 
 			var graph = new Graph(grid.__this__());
 
@@ -61,31 +61,44 @@
 			
 			/** set path with no issues **/
 			var a = path.path("manhattan", 0, 0, 79, 39);
-
+			/** set details **/
+			var aa = Object.create({ c: path.calculations, v: path.visits });
+			/** draw tiles to canvas that were visited **/
+			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.1)" });
 			/** reset **/
 			path.reset();
 
 			/** set path with must avoid unusuable **/
 			var b = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false } });
-
+			/** set details **/
+			var bb = Object.create({ c: path.calculations, v: path.visits });
+			/** draw tiles to canvas that were visited **/
+			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.1)" });
 			/** reset **/
 			path.reset();
 
 			/** set path with must avoid unusuable and heavy weights but can use light **/
 			var c = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false, cost: 2 } });
-
+			/** set details **/
+			var cc = Object.create({ c: path.calculations, v: path.visits });
+			/** draw tiles to canvas that were visited **/
+			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.1)" });
 			/** reset path **/
 			path.reset();
 
 			/** set path with must avoid usuable, heavy and light weights **/
 			var d = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false, cost: [1, 2] }});
+			/** set details **/
+			var dd = Object.create({ c: path.calculations, v: path.visits });
+			/** draw tiles to canvas that were visited **/
+			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.2)" });
 
 
 			/** console log the outcomes of the paths **/
-			if (d) console.log("D path takes:", d.length, "moves.");
-			if (c) console.log("C path takes:", c.length, "moves.");
-			if (b) console.log("B path takes:", b.length, "moves.");
-			if (a) console.log("A path takes:", a.length, "moves.");
+			if (d) console.log("D path takes:", d.length, "moves.", "Process took:", dd.c, "calculations.", "Pather visited:", dd.v, "tiles.");
+			if (c) console.log("C path takes:", c.length, "moves.", "Process took:", cc.c, "calculations.", "Pather visited:", cc.v, "tiles.");
+			if (b) console.log("B path takes:", b.length, "moves.", "Process took:", bb.c, "calculations.", "Pather visited:", bb.v, "tiles.");
+			if (a) console.log("A path takes:", a.length, "moves.", "Process took:", aa.c, "calculations.", "Pather visited:", aa.v, "tiles.");
 
 			/** draw d completed unwalkable and weights of 2 and 1 prohibited path **/
 			new Queue(d).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 0.5)"}); });

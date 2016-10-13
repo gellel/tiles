@@ -2,7 +2,7 @@ class Graph extends Grid {
 
 	/** @description: obtain tiles in grid based on inherited grid measurement **/
 
-	static node (column, row, x, y, squareWidth, squareHeight, g, h, f, cost, walkable, opened, closed, parent, __class__) {
+	static node (column, row, x, y, squareWidth, squareHeight, g, h, f, cost, walkable, opened, closed, visited, parent, __class__) {
 		/** @description: initialises graph node from arguments and clones possible instances **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {row} is type {integer} **/
@@ -21,7 +21,7 @@ class Graph extends Grid {
 		/** @param: {__class__} is type {class} **/
 		/** @return: is type {object} **/
 		/** call static method of base and copy object from created incase inherited **/
-		return Base.__object__({ column: column, row: row, x: x, y: y, squareWidth: squareWidth, squareHeight: squareHeight, g: g, h: h, f: f, cost: cost || 0, walkable: walkable || true, opened: opened, closed: closed, parent: parent, __class__: __class__ });
+		return Base.__object__({ column: column, row: row, x: x, y: y, squareWidth: squareWidth, squareHeight: squareHeight, g: g, h: h, f: f, cost: cost || 0, walkable: walkable || true, opened: opened, closed: closed, visited: visited || false, parent: parent, __class__: __class__ });
 	}
 
 	static getRandomColumnInt (grid) {
@@ -429,6 +429,7 @@ class Graph extends Grid {
 					case "opened":
 					case "closed":
 					case "parent":
+					case "visited":
 						tile[key] = undefined;
 						break;
 				}
@@ -596,7 +597,7 @@ class Graph extends Grid {
 			/** enumrate over rows **/
 			for (var j = 0; j < rows; j++) {
 				/** update column with row item using graph node **/
-				column.push(Graph.node(i, j, i * this.squareWidth, j * this.squareHeight, this.squareWidth, this.squareHeight, undefined, undefined, undefined, undefined, true, undefined, undefined, undefined, __class__));
+				column.push(Graph.node(i, j, i * this.squareWidth, j * this.squareHeight, this.squareWidth, this.squareHeight, undefined, undefined, undefined, undefined, true, undefined, undefined, false, undefined, __class__));
 			}
 			/** update column **/
 			grid.push(column);

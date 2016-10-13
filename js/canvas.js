@@ -99,6 +99,16 @@ class Canvas extends Grid {
 		}
 	}
 
+	drawVisitedTiles (tiles, style) {
+		for (var i = 0; i < tiles.length; i++) {
+			for (var j = 0; j < tiles[i].length; j++) {
+				if (tiles[i][j].visited) {
+					this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
+				}
+			}
+		}
+	}
+
 	drawCostTiles (tiles, style, cost) {
 		for (var i = 0; i < tiles.length; i++) {
 			for (var j = 0; j < tiles[i].length; j++) {

@@ -81,12 +81,20 @@ class Path extends Graph {
 		start.opened = true;
 		/** enqueue tile for processing **/
 		var queue = new Queue([start]);
+		/** set base count **/
+		this.calculations = 0;
+		/** set base visits **/
+		this.visits = 0;
 		/** iterate over queue while items are to be processed **/
 		while (queue.isPopulated()) {
+			/** set new calculation **/
+			this.calculations = this.calculations + 1;
 			/** retrieve enqueued tile **/
 			var node = queue.dequeue();
 			/** set node to closed **/
 			node.closed = true;
+			/** set node to include visited **/
+			node.visited = true;
 			/** confirm that node is the target and reduce **/
 			if (node === target) return this.backtrace(target);
 			/** collect node neighbours **/
@@ -101,6 +109,8 @@ class Path extends Graph {
 				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
 					for (var i = 0, len = neighbours.length; i < len; i++) {
+						/** set process visits **/
+						this.visits = this.visits + 1;
 						/** cache tile **/
 						var neighbour = neighbours[i];
 						/** confirm that this tile is not closed from previous evaluation **/
