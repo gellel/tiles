@@ -54,7 +54,6 @@
 			path.setTileFree(79, 38);
 			path.setTileFree(78, 38);
 
-
 			/** colour used tiles **/
 			canvas.drawUsedTiles(path.grid, { fillStyle: "#2c3e50" });
 
@@ -82,16 +81,22 @@
 			var d = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false, cost: [1, 2] }});
 
 
-			/** draw d completed path **/
+			/** console log the outcomes of the paths **/
+			if (d) console.log("D path takes:", d.length, "moves.");
+			if (c) console.log("C path takes:", c.length, "moves.");
+			if (b) console.log("B path takes:", b.length, "moves.");
+			if (a) console.log("A path takes:", a.length, "moves.");
+
+			/** draw d completed unwalkable and weights of 2 and 1 prohibited path **/
 			new Queue(d).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 0.5)"}); });
 
-			/** draw C completed path **/
+			/** draw C completed with unwalkable and weights of 2 prohibited path **/
 			new Queue(c).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(248, 148, 6, 0.5)"}); });
 
-			/** draw B completed path **/
+			/** draw B completed with unwalkable prohibitied path **/
 			new Queue(b).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(31, 58, 147, 0.5)"}); });
 
-			/** draw A completed path **/
+			/** draw A completed unprohbitied path **/
 			new Queue(a).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(46, 204, 113, 0.5)"}); });
 
 
