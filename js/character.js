@@ -1,5 +1,33 @@
 class Character extends Tile {
 
+	canMoveTop () {
+	 	/** @description: function confirming whether the character can move towards y position target without overshooting **/
+		/** @return: is type {boolean} **/
+		/** confirm that the top side of the character has collided with the target tile **/
+		return this.targetY <= (this.y + this.velocityY) ? true : false;
+	}
+
+	canMoveBottom () {
+	 	/** @description: function confirming whether the character can move towards y position target without overshooting **/
+		/** @return: is type {boolean} **/
+		/** confirm that the bottom side of the character has collided with the target tile **/
+		return ((this.y + this.height) + this.velocityY) <= this.targetY + this.height ? true : false;
+	}
+
+	canMoveLeft () {
+	 	/** @description: function confirming whether the character can move towards x position target without overshooting **/
+		/** @return: is type {boolean} **/
+		/** confirm that the left side of the character has collided with the target tile **/
+		return (this.x + this.velocityX) >= this.targetX ? true : false;
+	}
+
+	canMoveRight () {
+	 	/** @description: function confirming whether the character can move towards x position target without overshooting **/
+		/** @return: is type {boolean} **/
+		/** confirm that the right side of the character has collided with the target tile **/
+		return ((this.x + this.width) + this.velocityX) <= this.targetX + this.width ? true : false;
+	}
+
 	getVelocityIntegers (integers) {
 	 	/** @description: function for obtaining character speed as an integer from direction integers **/
 	 	/** @param: {integers} is type {object} **/
