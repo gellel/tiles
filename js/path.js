@@ -41,9 +41,10 @@ class Path extends Graph {
 		return Path.heuristic_manhattan(dx, dy);
 	}
 
-	backtrace (node) {
+	backtrace (node, target) {
 		/** @description: filters array by tracing parents of element back to path **/
 		/** @param: {node} is type {object} **/
+		/** @param: {target} is type {target} **/
 		/** @return: is type {array} **/
 		/** set base path **/
 		var path = [node];
@@ -54,6 +55,8 @@ class Path extends Graph {
 			/** append new current node to array **/
 			path.push(node);
 		}
+		/** add last tile to target **/
+		path.unshift(target);
 		/** reverse path **/
 		return path.reverse();
 	}
@@ -145,7 +148,7 @@ class Path extends Graph {
 			/** set node to closed **/
 			node.closed = true;
 			/** confirm that node is the target and reduce **/
-			if (node === target) return this.backtrace(target);
+			if (node === target) return this.backtrace(node, target);
 			/** collect node neighbours **/
 			var neighbours = this.getAdjacentTiles(node);
 			/** confirm neighbours found **/
@@ -231,7 +234,7 @@ class Path extends Graph {
 			/** set node to include visited **/
 			node.visited = true;
 			/** confirm that node is the target and reduce **/
-			if (node === target) return this.backtrace(target);
+			if (node === target) return this.backtrace(node, target);
 			/** collect node neighbours **/
 			var neighbours = this.getAdjacentTiles(node);
 			/** confirm neighbours found **/
