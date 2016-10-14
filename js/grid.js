@@ -8,17 +8,17 @@ class Grid extends Base {
 		/** set base object **/
 		config = config || {};
 		/** confirm that a base scale for width was defined or set default **/
-		this.squareWidth = config.squareWidth ? config.squareWidth : this.scale || 10;
+		this.gridTileWidth = config.gridTileWidth ? config.gridTileWidth : this.scale || 10;
 		/** confirm that a base scale for height was defined or set default **/
-		this.squareHeight = confirm.squareHeight ? config.squareHeight : this.scale || 10;
+		this.gridTileHeight = confirm.gridTileHeight ? config.gridTileHeight : this.scale || 10;
 		/** confirm that a config column length was defined or set default **/
 		this.columns = config.columns ? config.columns : this.columns || 30;
 		/** confirm that a config row length was define or set default **/
 		this.rows = config.rows ? config.rows : this.rows || 30;
 		/** confirm that columns and scale for width was defined and set the pixel size for grid **/
-		if (this.columns && this.squareWidth) this.gridWidth = this.columns * this.squareWidth;
+		if (this.columns && this.gridTileWidth) this.gridWidth = this.columns * this.gridTileWidth;
 		/** confirm that columns and scale for width was defined and set the pixel size for grid **/
-		if (this.rows && this.squareHeight) this.gridHeight = this.rows * this.squareHeight;
+		if (this.rows && this.gridTileHeight) this.gridHeight = this.rows * this.gridTileHeight;
 	}
 
 	constructor (config) {

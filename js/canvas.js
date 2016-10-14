@@ -71,9 +71,9 @@ class Canvas extends Grid {
 			/** enumerate over rows **/
 			for (var j = 0; j < this.rows; j++) {
 				/** draw current column line **/
-				this.drawLine(i * this.squareWidth, (j * this.squareHeight), (i * this.squareWidth) + this.squareWidth, (j * this.squareHeight), style, offset);
+				this.drawLine(i * this.gridTileWidth, (j * this.gridTileHeight), (i * this.gridTileWidth) + this.gridTileWidth, (j * this.gridTileHeight), style, offset);
 				/** draw current row line **/
-				this.drawLine((i * this.squareWidth) , j * this.squareHeight, (i * this.squareWidth), (j * this.squareHeight) + this.squareHeight, style, offset);
+				this.drawLine((i * this.gridTileWidth) , j * this.gridTileHeight, (i * this.gridTileWidth), (j * this.gridTileHeight) + this.gridTileHeight, style, offset);
 			}
 		}
 		/** draw end column line **/
@@ -86,7 +86,7 @@ class Canvas extends Grid {
 		/** @description: function for drawing object as grid square to canvas instance **/
 		/** @param: {config} is type {object} **/
 		/** draw tile to canvas from object details **/
-		this.drawGeometry(config.fill, config.x, config.y, config.squareWidth, config.squareHeight, config.style || style);
+		this.drawGeometry(config.fill, config.x, config.y, config.gridTileWidth, config.gridTileHeight, config.style || style);
 	}
 
 	drawUsedTiles (tiles, style) {

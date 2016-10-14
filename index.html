@@ -96,10 +96,10 @@
 
 
 			/** console log the outcomes of the paths **/
-			if (d) console.log("D path takes:", d.length, "moves.", "Process took:", dd.c, "calculations.", "Pather visited:", dd.v, "tiles.");
-			if (c) console.log("C path takes:", c.length, "moves.", "Process took:", cc.c, "calculations.", "Pather visited:", cc.v, "tiles.");
-			if (b) console.log("B path takes:", b.length, "moves.", "Process took:", bb.c, "calculations.", "Pather visited:", bb.v, "tiles.");
-			if (a) console.log("A path takes:", a.length, "moves.", "Process took:", aa.c, "calculations.", "Pather visited:", aa.v, "tiles.");
+			if (d) console.log("D path takes:", d.length, "moves.", "Process took:", dd.c, "calculations.", "Pather visited:", dd.v, "tiles. Unwalkable, light and heavy restricted.");
+			if (c) console.log("C path takes:", c.length, "moves.", "Process took:", cc.c, "calculations.", "Pather visited:", cc.v, "tiles. Unwalkable and heavy restricted.");
+			if (b) console.log("B path takes:", b.length, "moves.", "Process took:", bb.c, "calculations.", "Pather visited:", bb.v, "tiles. Unwalkable restricted.");
+			if (a) console.log("A path takes:", a.length, "moves.", "Process took:", aa.c, "calculations.", "Pather visited:", aa.v, "tiles. No restrictions.");
 
 			/** draw d completed unwalkable and weights of 2 and 1 prohibited path **/
 			new Queue(d).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 0.5)"}); });
@@ -116,6 +116,12 @@
 
 			/** draw lines for grid **/
 			canvas.drawGridLines({ strokeStyle: "rgba(0, 0, 255, .1)", fillStyle: "transparent" });
+
+
+			/** set new character **/
+			var character = new Character(Object.assign(graph.getTile(0, 0), {}));
+
+			console.log(character)
 
 		</script>
 	</body>

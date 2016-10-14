@@ -47,12 +47,42 @@ class Character extends Tile {
 		this.y = this.y + y;
 	}
 
+	__character__ (config) {
+		/** @param: {config} is type {object} **/
+		/** set base config **/
+		config = config || {};
+		/** set target x **/
+		this.targetX = config.targetX ? config.targetX : this.targetX ? this.targetX : this.x;
+		/** set target y **/
+		this.targetY = config.targetY ? config.targetY : this.targetY ? this.targetY : this.y;
+		/** set velocity x **/
+		this.velocityX = config.velocityX ? config.velocityX : this.velocityX ? this.velocityX : 0;
+		/** set velocity y **/
+		this.velocityY = config.velocityY ? config.velocityY : this.velocityY ? this.velocityY : 0;
+		/** set speed **/
+		this.speed = config.speed ? config.speed : this.speed ? this.speed : 1;
+		/** set directions **/
+		this.directions = ["top", "right", "bottom", "left"];
+		/** set base colour **/
+		this.baseColour = config.baseColour ? config.baseColour : this.baseColour ? this.baseColour : Canvas.RGB(255, 0, 0);
+		/** set path colour **/
+		this.pathColour = config.pathColour ? config.pathColour : this.pathColour ? this.pathColour : Canvas.RGB(255, 255, 0);
+		/** set starting tile colour **/
+		this.startColour = config.startColour ? config.startColour : this.startColour ? this.startColour : Canvas.RGB(100, 255, 255);
+		/** set target tile colour **/
+		this.targetColour = config.targetColour ? config.targetColour : this.targetColour ? this.targetColour : Canvas.RGB(0, 255, 100);
+	}
+
 	constructor (config) {
 		/** @description: initialise object this property using config object if supplied chaining to extended super method **/
 		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
+		/** ensure init **/
+		config.__init__ = true;
 		/** call super, but with trimmed object to avoid inherited map tile costs if assigned **/
-		super(Base.__trim__(config, ["__class__", "f", "g", "closed", "cost", "open", "h", "opened", "parent", "walkable"]));
+		super(Base.__trim__(config, ["__class__", "f", "g", "closed", "cost", "open", "h", "visited", "opened", "parent", "walkable"]));
+		/** set call to this definition handler **/
+		this.__character__(config);
 	}
 }
