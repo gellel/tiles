@@ -44,7 +44,7 @@ class Path extends Graph {
 	backtrace (node, target) {
 		/** @description: filters array by tracing parents of element back to path **/
 		/** @param: {node} is type {object} **/
-		/** @param: {target} is type {target} **/
+		/** @param: {target} is type {object} **/
 		/** @return: is type {array} **/
 		/** set base path **/
 		var path = [node];
