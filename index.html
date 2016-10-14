@@ -16,6 +16,7 @@
 		<script src="js/graph.js"></script>
 		<script src="js/path.js"></script>
 		<script src="js/tile.js"></script>
+		<script src="js/perlin.js"></script>
 		<script src="js/character.js"></script>
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
@@ -26,7 +27,7 @@
 
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
-			var canvas = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:1;"} }));
+			var canvas = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:2;"} }));
 
 			/** set heavy weights **/
 			path.setRandomTilesCost(8, 2, true);
@@ -112,7 +113,7 @@
 
 
 			/** set stage for characters **/
-			var stage = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:2;"} }));
+			var stage = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:3;"} }));
 
 
 			/** set new character **/
@@ -126,6 +127,8 @@
 				character.eatTiles(path.grid);
 				stage.drawGeometry("fill", character.x, character.y, character.gridTileWidth, character.gridTileHeight, { fillStyle: character.baseColour });
 			});
+
+
 
 		</script>
 	</body>
