@@ -60,7 +60,6 @@ class Path extends Graph {
 
 	astar (startColumn, startRow, endColumn, endRow, cost) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
-		/** @param: {type} @weight {integer} **/
 		/** @param: {startColumn} is type {integer} **/
 		/** @param: {startRow} is type {integer} **/
 		/** @param: {endColumn} is type {integer} **/
@@ -77,7 +76,6 @@ class Path extends Graph {
 
 	dijkstra (startColumn, startRow, endColumn, endRow, cost) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
-		/** @param: {type} @weight {integer} **/
 		/** @param: {startColumn} is type {integer} **/
 		/** @param: {startRow} is type {integer} **/
 		/** @param: {endColumn} is type {integer} **/
@@ -94,7 +92,6 @@ class Path extends Graph {
 
 	bestfirst (startColumn, startRow, endColumn, endRow, cost) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
-		/** @param: {type} @weight {integer} **/
 		/** @param: {startColumn} is type {integer} **/
 		/** @param: {startRow} is type {integer} **/
 		/** @param: {endColumn} is type {integer} **/
@@ -111,8 +108,6 @@ class Path extends Graph {
 
 	breadthfirst (startColumn, startRow, endColumn, endRow, costs) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
-		/** @param: {type} is type {string} **/
-		/** @param: {type} @weight {integer} **/
 		/** @param: {startColumn} is type {integer} **/
 		/** @param: {startRow} is type {integer} **/
 		/** @param: {endColumn} is type {integer} **/
@@ -185,8 +180,6 @@ class Path extends Graph {
 
 	path (startColumn, startRow, endColumn, endRow, costs) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
-		/** @param: {type} is type {string} **/
-		/** @param: {type} @weight {integer} **/
 		/** @param: {startColumn} is type {integer} **/
 		/** @param: {startRow} is type {integer} **/
 		/** @param: {endColumn} is type {integer} **/
