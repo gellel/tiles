@@ -1,20 +1,20 @@
 class Character extends Tile {
 
-	incrementCoordinatePosition (x, y) {
-	 	/** @description: function for incrimenting characters position by supplied integers **/
-	 	/** @param: {x} is type {integer} **/
-	 	/** @param: {y} is type {integer} **/
-		/** increment this current x position by the value of supplied x position **/
-		this.x = this.x + x;
-		/** increment this current y position by the value of supplied y position **/
-		this.y = this.y + y;
-	}
-
 	getVelocityIntegers (integers) {
 	 	/** @description: function for obtaining character speed as an integer from direction integers **/
 	 	/** @param: {integers} is type {object} **/
 		/** set and return velocity object based on direction integers; object contains both x and y offsets **/
 		return 0 !== integers.x ? integers.x < 0 ? integers.x = -this.speed : integers.x = this.speed : integers.y < 0 ? integers.y = -this.speed : integers.y = this.speed, integers;
+	}
+
+	setVelocityIntegers (velocityX, velocityY) {
+	 	/** @description: function for setting characters velocity by supplied integers **/
+	 	/** @param: {velocityX} is type {integer} **/
+	 	/** @param: {velocityY} is type {integer} **/
+		/** set this characters x velocity to defined integer or float **/
+		this.velocityX = velocityX;
+		/** set this characters y velocity to defined integer or float **/
+		this.velocityY = velocityY;
 	}
 
 	setTargetCoordinatePosition (x, y) {
@@ -27,14 +27,24 @@ class Character extends Tile {
 		this.targetY = y;
 	}
 
-	setVelocityIntegers (velocityX, velocityY) {
-	 	/** @description: function for setting characters velocity by supplied integers **/
-	 	/** @param: {velocityX} is type {integer} **/
-	 	/** @param: {velocityY} is type {integer} **/
-		/** set this characters x velocity to defined integer or float **/
-		this.velocityX = velocityX;
-		/** set this characters y velocity to defined integer or float **/
-		this.velocityY = velocityY;
+	setGridReference (column, row) {
+	 	/** @description: function for setting characters position within tile map grid by supplied integers **/
+		/** @param: {column} is type {integer} **/
+	 	/** @param: {row} is type {integer} **/
+		/** set this characters column position within grid to new column position **/
+		this.column = column;
+		/** set this characters row position within grid to new row position **/
+		this.row = row;
+	}
+
+	incrementCoordinatePosition (x, y) {
+	 	/** @description: function for incrimenting characters position by supplied integers **/
+	 	/** @param: {x} is type {integer} **/
+	 	/** @param: {y} is type {integer} **/
+		/** increment this current x position by the value of supplied x position **/
+		this.x = this.x + x;
+		/** increment this current y position by the value of supplied y position **/
+		this.y = this.y + y;
 	}
 
 	constructor (config) {

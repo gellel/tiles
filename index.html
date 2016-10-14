@@ -10,6 +10,7 @@
 		<script src="js/prototypes.js"></script>
 		<script src="js/keyframe.js"></script>
 		<script src="js/queue.js"></script>
+		<script src="js/heap.js"></script>
 		<script src="js/base.js"></script>
 		<script src="js/grid.js"></script>
 		<script src="js/graph.js"></script>
@@ -60,7 +61,7 @@
 
 			
 			/** set path with no issues **/
-			var a = path.path("manhattan", 0, 0, 79, 39);
+			var a = path.astar(0, 0, 79, 39);
 			/** set details **/
 			var aa = Object.create({ c: path.calculations, v: path.visits });
 			/** draw tiles to canvas that were visited **/
@@ -69,7 +70,7 @@
 			path.reset();
 
 			/** set path with must avoid unusuable **/
-			var b = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false } });
+			var b = path.astar(0, 0, 79, 39, { prohibited: { walkable: false } });
 			/** set details **/
 			var bb = Object.create({ c: path.calculations, v: path.visits });
 			/** draw tiles to canvas that were visited **/
@@ -78,7 +79,7 @@
 			path.reset();
 
 			/** set path with must avoid unusuable and heavy weights but can use light **/
-			var c = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false, cost: 2 } });
+			var c = path.astar(0, 0, 79, 39, { prohibited: { walkable: false, cost: 2 } });
 			/** set details **/
 			var cc = Object.create({ c: path.calculations, v: path.visits });
 			/** draw tiles to canvas that were visited **/
@@ -87,7 +88,7 @@
 			path.reset();
 
 			/** set path with must avoid usuable, heavy and light weights **/
-			var d = path.path("manhattan", 0, 0, 79, 39, { prohibited: { walkable: false, cost: [1, 2] }});
+			var d = path.astar(0, 0, 79, 39, { prohibited: { walkable: false, cost: [1, 2] }});
 			/** set details **/
 			var dd = Object.create({ c: path.calculations, v: path.visits });
 			/** draw tiles to canvas that were visited **/

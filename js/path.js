@@ -2,7 +2,7 @@ class Path extends Graph {
 
 	/** @description: obtain direction through grid based on inherited grid **/
 
-	static manhattan (dx, dy) {
+	static heuristic_manhattan (dx, dy) {
 		/** @description: calculate sum of position x and y **/
 		/** @param: {dx} is type {integer} **/
 		/** @param: {dy} is type {integer} **/
@@ -10,7 +10,7 @@ class Path extends Graph {
 		return dx + dy;
 	}
 
-	static euclidean (dx, dy) {
+	static heuristic_euclidean (dx, dy) {
 		/** @description: calculates euclidean distance from x and y **/
 		/** @param: {dx} is type {integer} **/
 		/** @param: {dy} is type {integer} **/
@@ -18,10 +18,19 @@ class Path extends Graph {
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
-	static dijkstra () {
+	static heuristic_dijkstra () {
 		/** @description: sets dijkstra heuristic **/
 		/** @return: is type {integer} **/
 		return 0;
+	}
+
+	static heuristic_octile (dx, dy) {
+		/** @description: sets dijkstra heuristic **/
+		/** @param: {dx} is type {integer} **/
+		/** @param: {dy} is type {integer} **/
+		/** @return: is type {integer} **/
+		var F = Math.SQRT2 - 1;
+		return (dx < dy) ? F * dx + dy : F * dy + dx;
 	}
 
 	backtrace (node) {
@@ -41,7 +50,42 @@ class Path extends Graph {
 		return path.reverse();
 	}
 
-	path (type, startColumn, startRow, endColumn, endRow, costs) {
+	astar (startColumn, startRow, endColumn, endRow, cost) {
+		/** @description: calculates path from startColumnY to endColumnY using tiles **/
+		/** @param: {type} @weight {integer} **/
+		/** @param: {startColumn} is type {integer} **/
+		/** @param: {startRow} is type {integer} **/
+		/** @param: {endColumn} is type {integer} **/
+		/** @param: {endRow} is type {integer} **/
+		/** @param: {costs} is type {object} **/
+		/** @return: is type {array} **/
+		/** set base heuristic distance **/
+		this.heuristic = Path.heuristic_manhattan;
+		/** set base weight **/
+		this.weight = 1;
+		/** calculate path **/
+		return this.path(startColumn, startRow, endColumn, endRow, cost);
+	}
+
+	dijkstra (startColumn, startRow, endColumn, endRow, cost) {
+		/** @description: calculates path from startColumnY to endColumnY using tiles **/
+		/** @param: {type} @weight {integer} **/
+		/** @param: {startColumn} is type {integer} **/
+		/** @param: {startRow} is type {integer} **/
+		/** @param: {endColumn} is type {integer} **/
+		/** @param: {endRow} is type {integer} **/
+		/** @param: {costs} is type {object} **/
+		/** @return: is type {array} **/
+		/** set base heuristic distance **/
+		/** set base heuristic distance **/
+		this.heuristic = Path.heuristic_dijkstra;
+		/** set base weight **/
+		this.weight = 1;
+		/** calculate path **/
+		return this.path(startColumn, startRow, endColumn, endRow, cost);
+	}
+
+	path (startColumn, startRow, endColumn, endRow, costs) {
 		/** @description: calculates path from startColumnY to endColumnY using tiles **/
 		/** @param: {type} is type {string} **/
 		/** @param: {type} @weight {integer} **/
@@ -54,9 +98,9 @@ class Path extends Graph {
 		/** set base costs **/
 		costs = costs || {};
 		/** set heuristic calculation type **/
-		var heuristic = Path[type];
+		var heuristic = this.heuristic;
 		/** set weight of tiles **/
-		var weight = 1;
+		var weight = this.weight;
 		/** set start tile from grid **/
 		var start = this.getTile(startColumn, startRow);
 		/** set target tile from grid **/
@@ -79,18 +123,20 @@ class Path extends Graph {
 		start.f = 0;
 		/** set tile to explored **/
 		start.opened = true;
-		/** enqueue tile for processing **/
-		var queue = new Queue([start]);
+		/** set heap calculations for processing **/
+		var heap = new Heap(function (nodeA, nodeB) { return nodeA.f - nodeB.f; });
+		/** enqueue heap item **/
+		heap.push(start);
 		/** set base count **/
 		this.calculations = 0;
 		/** set base visits **/
 		this.visits = 0;
-		/** iterate over queue while items are to be processed **/
-		while (queue.isPopulated()) {
+		/** iterate over heap while items are to be processed **/
+		while (!heap.empty()) {
 			/** set new calculation **/
 			this.calculations = this.calculations + 1;
-			/** retrieve enqueued tile **/
-			var node = queue.dequeue();
+			/** retrieve tile **/
+			var node = heap.pop();
 			/** set node to closed **/
 			node.closed = true;
 			/** set node to include visited **/
@@ -135,14 +181,14 @@ class Path extends Graph {
 								neighbour.parent = node;
 								/** confirm that this neighbour is not opened **/
 								if (!neighbour.opened) {
-									/** enqueue this neighbour **/
-									queue.enqueue(neighbour);
+									/** enheap this neighbour **/
+									heap.push(neighbour);
 									/** set neighbour to be opened for revision **/
 									neighbour.opened = true;
 								}
 								else {
-									/** update this in queue **/
-									queue.update(neighbour);
+									/** update this in heap **/
+									heap.update(neighbour);
 								}
 							}
 						}
