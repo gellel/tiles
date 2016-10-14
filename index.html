@@ -28,17 +28,10 @@
 
 			var canvas = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:1;"} }));
 
-
 			/** set heavy weights **/
 			path.setRandomTilesCost(8, 2, true);
-			/** colour heavy tiles **/
-			canvas.drawCostTiles(path.grid, { fillStyle: "#DADFE1" }, 2);
-
 			/** set light weights **/
 			path.setRandomTilesCost(8, 1, 0);
-			/** colour light tiles **/
-			canvas.drawCostTiles(path.grid, { fillStyle: "#EEEEEE" }, 1);
-
 			/** set used tiles **/
 			path.setRandomTilesUsed(8);
 			/** set direct used tiles **/
@@ -55,11 +48,6 @@
 			path.setTileFree(79, 38);
 			path.setTileFree(78, 38);
 
-			/** colour used tiles **/
-			canvas.drawUsedTiles(path.grid, { fillStyle: "#2c3e50" });
-
-
-			
 			/** set path with no issues **/
 			var a = path.astar(0, 0, 79, 39);
 			/** set details **/
@@ -102,21 +90,25 @@
 			if (b) console.log("B path takes:", b.length, "moves.", "Process took:", bb.c, "calculations.", "Pather visited:", bb.v, "tiles. Unwalkable restricted.");
 			if (a) console.log("A path takes:", a.length, "moves.", "Process took:", aa.c, "calculations.", "Pather visited:", aa.v, "tiles. No restrictions.");
 
-			/** draw d completed unwalkable and weights of 2 and 1 prohibited path **/
-			new Queue(d).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 0.5)"}); });
+			/** colour heavy tiles **/
+			canvas.drawCostTiles(path.grid, { fillStyle: "#DADFE1" }, 2);
+			/** colour light tiles **/
+			canvas.drawCostTiles(path.grid, { fillStyle: "#EEEEEE" }, 1);
+			/** colour used tiles **/
+			canvas.drawUsedTiles(path.grid, { fillStyle: "#2c3e50" });
 
+			/** draw D completed unwalkable and weights of 2 and 1 prohibited path **/
+			new Queue(d).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 1)"}); });
 			/** draw C completed with unwalkable and weights of 2 prohibited path **/
-			new Queue(c).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(248, 148, 6, 0.5)"}); });
-
+			new Queue(c).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(248, 148, 6, 1)"}); });
 			/** draw B completed with unwalkable prohibitied path **/
-			new Queue(b).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(31, 58, 147, 0.5)"}); });
-
+			new Queue(b).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(31, 58, 147, 1)"}); });
 			/** draw A completed unprohbitied path **/
-			new Queue(a).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(46, 204, 113, 0.5)"}); });
-
+			new Queue(a).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(46, 204, 113, 1)"}); });
 
 			/** draw lines for grid **/
 			canvas.drawGridLines({ strokeStyle: "rgba(0, 0, 255, .1)", fillStyle: "transparent" });
+
 
 
 			/** set stage for characters **/
@@ -124,7 +116,7 @@
 
 
 			/** set new character **/
-			var character = new Character(Object.assign(graph.getTile(0, 0), { path: path.astar(0, 0, 79, 39) }));
+			var character = new Character(Object.assign(graph.getTile(0, 0), { path: path.astar(0, 0, 79, 39, { prohibited: {walkable:false}}) }));
 			/** draw character to stage **/
 			
 
