@@ -2,26 +2,16 @@ class Queue {
 
 	/** @description: creates a function queue for while loop based functions **/
 
-	empty () {
-	 	/** @description: function for emptying queue and clearing memory **/
-		/** empty queue **/
-		this.queue = [];
-	}
+	clear () {
+    	/** @description: function to clean queue **/
+        return this.queue = [];
+    }
 
-	isPopulated () {
-	 	/** @description: function for confirming there are items to be processed **/
-	 	/** @return: is type {boolean} **/
-		/** confirm that queue is not empty **/
-		return this.queue.length ? true : false;
-	}
-
-	isEmpty () {
-	 	/** @description: function for confirming there are no more items to be processed **/
-	 	/** @return: is type {boolean} **/
-		/** confirm that queue is out of index **/
-		return !this.queue.length ? true : false;
-	}
-
+    empty () {
+    	/** @description: function to confirm heap is empty **/
+        return this.queue.length === 0;
+    }
+	
 	enqueue (item) {
 	 	/** @description: function for incrementing FIFO **/
 	 	/** @param: {item} is type {*} **/
@@ -37,7 +27,7 @@ class Queue {
 	 	/** @description: function for deqeuing supplied FIFO **/
 	 	/** @return: is type {*} **/
 		/** confirm that queue is not empty before decoupling **/
-		if (this.isEmpty()) return false;
+		if (this.empty()) return false;
 		/** remove first item from array and return contained item **/
 		return this.queue.splice(0, 1)[0];
 	}
@@ -69,7 +59,7 @@ class Queue {
 			return false;
 		}
 		/** process self **/
-		while (this.isPopulated()) {
+		while (!this.empty()) {
 			/** dequeue self **/
 			var item = this.dequeue();
 			/** confirm item **/

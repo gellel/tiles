@@ -33,6 +33,14 @@ class Path extends Graph {
 		return (dx < dy) ? F * dx + dy : F * dy + dx;
 	}
 
+	static heuristic_bestfirst (dx, dy) {
+		/** @description: sets best first search heuristic **/
+		/** @param: {dx} is type {integer} **/
+		/** @param: {dy} is type {integer} **/
+		/** @return: is type {integer} **/
+		return Path.heuristic_manhattan(dx, dy);
+	}
+
 	backtrace (node) {
 		/** @description: filters array by tracing parents of element back to path **/
 		/** @param: {node} is type {object} **/
@@ -77,12 +85,102 @@ class Path extends Graph {
 		/** @param: {costs} is type {object} **/
 		/** @return: is type {array} **/
 		/** set base heuristic distance **/
-		/** set base heuristic distance **/
 		this.heuristic = Path.heuristic_dijkstra;
 		/** set base weight **/
 		this.weight = 1;
 		/** calculate path **/
 		return this.path(startColumn, startRow, endColumn, endRow, cost);
+	}
+
+	bestfirst (startColumn, startRow, endColumn, endRow, cost) {
+		/** @description: calculates path from startColumnY to endColumnY using tiles **/
+		/** @param: {type} @weight {integer} **/
+		/** @param: {startColumn} is type {integer} **/
+		/** @param: {startRow} is type {integer} **/
+		/** @param: {endColumn} is type {integer} **/
+		/** @param: {endRow} is type {integer} **/
+		/** @param: {costs} is type {object} **/
+		/** @return: is type {array} **/
+		/** set base heuristic distance **/
+		this.heuristic = Path.heuristic_bestfirst;
+		/** set base weight **/
+		this.weight = 1;
+		/** calculate path **/
+		return this.path(startColumn, startRow, endColumn, endRow, cost);
+	}
+
+	breadthfirst (startColumn, startRow, endColumn, endRow, costs) {
+		/** @description: calculates path from startColumnY to endColumnY using tiles **/
+		/** @param: {type} is type {string} **/
+		/** @param: {type} @weight {integer} **/
+		/** @param: {startColumn} is type {integer} **/
+		/** @param: {startRow} is type {integer} **/
+		/** @param: {endColumn} is type {integer} **/
+		/** @param: {endRow} is type {integer} **/
+		/** @param: {costs} is type {object} **/
+		/** @return: is type {array} **/
+		/** set base costs **/
+		costs = costs || {};
+		/** set weight of tiles **/
+		var weight = this.weight;
+		/** set start tile from grid **/
+		var start = this.getTile(startColumn, startRow);
+		/** set target tile from grid **/
+		var target = this.getTile(endColumn, endRow);
+		/** early exit if both paths are not walkable **/
+		if (!start || !start.walkable || !target || !target.walkable) return false;
+		/** set avoidance requirement **/
+		var prohibited = costs.prohibited || false;
+		/** set tile to explored **/
+		start.opened = true;
+		/** set queue calculations for processing **/
+		var queue = new Queue();
+		/** enqueue item **/
+		queue.enqueue(start);
+		/** set base count **/
+		this.calculations = 0;
+		/** set base visits **/
+		this.visits = 0;
+		/** iterate over heap while items are to be processed **/
+		while (!queue.empty()) {
+			/** set new calculation **/
+			this.calculations = this.calculations + 1;
+			/** retrieve tile **/
+			var node = queue.dequeue();
+			/** set node to closed **/
+			node.closed = true;
+			/** confirm that node is the target and reduce **/
+			if (node === target) return this.backtrace(target);
+			/** collect node neighbours **/
+			var neighbours = this.getAdjacentTiles(node);
+			/** confirm neighbours found **/
+			if (neighbours.length) {
+				/** filter unfound tiles **/
+				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
+				/** filter out unwanted **/
+				if (prohibited) neighbours = neighbours.filter(function (tile) { return Base.__contains__(tile, prohibited) ? tile : false; });
+				/** confirm neighbours remain **/
+				if (neighbours && neighbours.length) {
+					/** enumerate over neighbour tiles **/
+					for (var i = 0, len = neighbours.length; i < len; i++) {
+						/** set process visits **/
+						this.visits = this.visits + 1;
+						/** cache tile **/
+						var neighbour = neighbours[i];
+						/** confirm that this tile is not closed from previous evaluation **/
+						if (!neighbour.opened) {
+							/** close tile **/
+							neighbour.opened = true;
+							/** enqueue this neighbour **/
+							queue.enqueue(neighbour);
+							/** set parent of this previously searched node to current from fetched **/
+							neighbour.parent = node;
+						}
+					}
+				}
+			}
+		}
+		return [];
 	}
 
 	path (startColumn, startRow, endColumn, endRow, costs) {
@@ -111,8 +209,6 @@ class Path extends Graph {
 		var abs = Math.abs;
 		/** set math square root **/
 		var SQRT2 = Math.SQRT2;
-		/** set filter requirement **/
-		var filter = costs.__filter__ || false;
 		/** set avoidance requirement **/
 		var prohibited = costs.prohibited || false;
 		/** set include tiles **/
@@ -196,6 +292,7 @@ class Path extends Graph {
 				}
 			}
 		}
+		return [];
 	}
 
 	__path__ (config) {

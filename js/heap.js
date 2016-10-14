@@ -45,6 +45,13 @@ class Heap {
         return this.__update__(this.nodes, x, this.clamp);
     }
 
+    shift () {
+	 	/** @description: function for deqeuing supplied FIFO **/
+	 	/** @return: is type {*} **/
+		/** remove first item from array and return contained item **/
+		return this.nodes.splice(0, 1)[0];
+    }
+
     clear () {
     	/** @description: function to clean heap **/
         return this.nodes = [];
