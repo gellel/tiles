@@ -26,7 +26,7 @@
 
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
-			var canvas = new Canvas(grid.__this__());
+			var canvas = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:1;"} }));
 
 
 			/** set heavy weights **/
@@ -93,7 +93,8 @@
 			var dd = Object.create({ c: path.calculations, v: path.visits });
 			/** draw tiles to canvas that were visited **/
 			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.2)" });
-
+			/** reset path **/
+			path.reset();
 
 			/** console log the outcomes of the paths **/
 			if (d) console.log("D path takes:", d.length, "moves.", "Process took:", dd.c, "calculations.", "Pather visited:", dd.v, "tiles. Unwalkable, light and heavy restricted.");
@@ -118,10 +119,21 @@
 			canvas.drawGridLines({ strokeStyle: "rgba(0, 0, 255, .1)", fillStyle: "transparent" });
 
 
-			/** set new character **/
-			var character = new Character(Object.assign(graph.getTile(0, 0), {}));
+			/** set stage for characters **/
+			var stage = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:2;"} }));
 
-			console.log(character)
+
+			/** set new character **/
+			var character = new Character(Object.assign(graph.getTile(0, 0), { path: path.astar(0, 0, 79, 39) }));
+			/** draw character to stage **/
+			
+
+
+			keyframe.start(function () {
+				stage.drawGeometry("clear", character.x, character.y, character.gridTileWidth, character.gridTileHeight)
+				character.eatTiles(path.grid);
+				stage.drawGeometry("fill", character.x, character.y, character.gridTileWidth, character.gridTileHeight, { fillStyle: character.baseColour });
+			});
 
 		</script>
 	</body>

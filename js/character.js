@@ -1,5 +1,11 @@
 class Character extends Tile {
 
+	tileCollision () {
+		/** @description: function for confirmin whether the character has reached the supplied target x and y position **/
+		/** confirm that the drawing coordinates for the character and the tile intersect **/
+		return (this.x === this.targetX && this.y === this.targetY) ? true : false;
+	}
+
 	canMoveTop () {
 	 	/** @description: function confirming whether the character can move towards y position target without overshooting **/
 		/** @return: is type {boolean} **/
@@ -11,7 +17,7 @@ class Character extends Tile {
 	 	/** @description: function confirming whether the character can move towards y position target without overshooting **/
 		/** @return: is type {boolean} **/
 		/** confirm that the bottom side of the character has collided with the target tile **/
-		return ((this.y + this.height) + this.velocityY) <= this.targetY + this.height ? true : false;
+		return ((this.y + this.gridTileHeight) + this.velocityY) <= this.targetY + this.gridTileHeight ? true : false;
 	}
 
 	canMoveLeft () {
@@ -25,7 +31,23 @@ class Character extends Tile {
 	 	/** @description: function confirming whether the character can move towards x position target without overshooting **/
 		/** @return: is type {boolean} **/
 		/** confirm that the right side of the character has collided with the target tile **/
-		return ((this.x + this.width) + this.velocityX) <= this.targetX + this.width ? true : false;
+		return ((this.x + this.gridTileWidth) + this.velocityX) <= this.targetX + this.gridTileWidth ? true : false;
+	}
+
+	canMove () {
+		/** @description: function for confirming whether the character can move towards the direction with supplied velocity **/
+		/** @return: is type {boolean} **/
+		if (!this.velocityX && !this.velocityY) return false;
+		/** confirm which direction has velocity and return result of movement attempt **/
+		return this.velocityX ? this.velocityX > 0 ? this.canMoveRight() : this.canMoveLeft() : this.velocityY > 0 ? this.canMoveBottom() : this.canMoveTop();
+	}
+
+	moveComplete () {
+		/** @description: base movement handler for setting next movement **/
+		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
+		if (this.canMove()) return this.incrementCoordinatePosition(this.velocityX, this.velocityY);
+		/** confirm that character has intersected its destination tile **/
+		return this.tileCollision();
 	}
 
 	getVelocityIntegers (integers) {
@@ -33,6 +55,14 @@ class Character extends Tile {
 	 	/** @param: {integers} is type {object} **/
 		/** set and return velocity object based on direction integers; object contains both x and y offsets **/
 		return 0 !== integers.x ? integers.x < 0 ? integers.x = -this.speed : integers.x = this.speed : integers.y < 0 ? integers.y = -this.speed : integers.y = this.speed, integers;
+	}
+
+	getVelocityIntegersFromTile (position) {
+
+		var x = this.column === position.column ? 0 : this.column > position.column ? -this.speed : this.speed;
+		var y = this.row === position.row ? 0 : this.row > position.row ? -this.speed : this.speed;
+
+		return { x: x, y: y };
 	}
 
 	setVelocityIntegers (velocityX, velocityY) {
@@ -73,6 +103,52 @@ class Character extends Tile {
 		this.x = this.x + x;
 		/** increment this current y position by the value of supplied y position **/
 		this.y = this.y + y;
+	}
+
+	randomNextTile (grid) {
+		/** @description: function for letting character randomly path **/
+		/** @param: {grid} is type {array} **/
+		/** confirm that character can still move and exit function after clearing, updating position and redrawing **/
+		if (this.moveComplete()) {
+			/** reset character velocities to prevent additional movement **/
+			this.setVelocityIntegers(0, 0);
+			/** get and set direction for next tile selection **/
+			var direction = Graph.getRandomDirectionString(this.directions);
+			/** attempt to get tile from character position **/
+			var tile = Graph.getSpecificAdjacentTile(grid, { x: this.x, y: this.y, column: this.column, row: this.row }, direction);
+			/** exit function if tile cannot be found or used **/
+			if (!tile || !tile.walkable) return;
+			/** set velocity integers for corner check and movement **/
+			var velocity = this.getVelocityIntegers(Graph.getDirectionIntegers(direction));
+			/** set movement velocity **/
+			this.setVelocityIntegers(velocity.x, velocity.y);
+			/** set character position within grid columns and rows **/
+			this.setGridReference(tile.column, tile.row);
+			/** set tile to new destination tile **/
+			this.setTargetCoordinatePosition(tile.x, tile.y);
+		}
+	}
+
+	eatTiles () {
+		/** @description: function for letting character path through supplied tiles **/
+		/** @return: is type {boolean} **/
+		/** confirm if path exists or path has been consumed return true for handler **/
+		if (!this.path || !this.path.length) return true;
+		/** contine **/
+		if (this.moveComplete()) {
+			/** attempt to get tile from character position **/
+			var tile = this.path.shift();
+			/** set velocity integers for corner check and movement **/
+			var velocity = this.getVelocityIntegersFromTile(tile);
+			/** set movement velocity **/
+			this.setVelocityIntegers(velocity.x, velocity.y);
+			/** set character position within grid columns and rows **/
+			this.setGridReference(tile.column, tile.row);
+			/** set tile to new destination tile **/
+			this.setTargetCoordinatePosition(tile.x, tile.y);
+		}
+		/** return false for handler **/
+		return false;
 	}
 
 	__character__ (config) {
