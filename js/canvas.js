@@ -311,7 +311,7 @@ class Canvas extends Grid {
 		/** set attributes for grid **/
 		this.__grid__(config);
 		/** set attributes for node **/
-		this.node.setMultipleAttributes(Object.assign(Canvas.attributes(this.__this__()), config.attributes));
+		this.node.setMultipleAttributes(Object.assign(Canvas.attributes(this.__this__()), config.attr || config.attributes || {}));
 	}
 	
 	constructor (config) {

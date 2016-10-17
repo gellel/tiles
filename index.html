@@ -16,38 +16,86 @@
 		<script src="js/graph.js"></script>
 		<script src="js/path.js"></script>
 		<script src="js/tile.js"></script>
-		<script src="js/perlin.js"></script>
+		<script src="js/simplex.js"></script>
 		<script src="js/character.js"></script>
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
-			
-			var grid = new Grid({ __init__: true, columns: 80, rows: 40, scale: 10 });
 
-			var graph = new Graph(grid.__this__());
+			var tiles = [
+
+				{
+					name: "shore_water",
+					colour: "#57d8f8",
+					parents: ["ocean", "land"]
+				},
+				{
+					name: "short_water",
+					colour: "#4ccbeb",
+					parents: ["ocean"]
+				},
+				{
+					name: "medium_water",
+					colour: "#3dc2e3",
+					parents: ["ocean"]
+				}
+
+
+			];
+
+
+
+			var grid = new Grid({ 
+				__init__: true, columns: 120, rows: 70, scale: 10 });
+
+
+			var graph = new Graph(
+				Object.assign(grid.__this__(), { __class__: Tile }));
+
+
+			var noise = new Simplex(
+				{ min: 0, max: 15, octaves: 8, frequency: 0.01 });
+
+
+			var world = new Canvas(
+				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 1;" } }));
+
+
+
+			/** set geography **/
+			graph.editTiles(function (tile) {
+
+		
+				var n = parseInt(noise.process(tile.column, tile.row));
+				
+				var f = "";
+
+				if (n === 0) f = "#28aed0";
+				if (n === 1) f = "#32b7d8";
+				if (n === 2) f = "#3dc2e3";
+				if (n === 3) f = "#4ccbeb";
+				if (n === 4) f = "#57d8f8";
+				if (n === 5) f = "#cae1b1";
+				if (n === 6) f = "#ebe8b5";
+				if (n === 7) f = "#e3dfa1";
+				if (n === 8) f = "#dad58d";
+				if (n === 9) f = "#d2cd80";
+				if (n === 10) f = "#64d977";
+				if (n === 11) f = "#56d16a";
+				if (n === 12) f = "#54ce68";
+				if (n === 13) f = "#4cc760";
+				if (n === 14) f = "#47c55c";
+
+
+				world.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: f });
+
+			});
+
+
+			var canvas = new Canvas(
+				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 2;" } }))
 
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
-			var canvas = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:2;"} }));
-
-			/** set heavy weights **/
-			path.setRandomTilesCost(8, 2, true);
-			/** set light weights **/
-			path.setRandomTilesCost(8, 1, 0);
-			/** set used tiles **/
-			path.setRandomTilesUsed(8);
-			/** set direct used tiles **/
-			path.setColumnTilesUsed(4, 0, 8);
-			
-			/** set usable near start **/
-			path.setTileFree(0, 0);
-			path.setTileFree(0, 1);
-			path.setTileFree(1, 0);
-			path.setTileFree(1, 1);
-			/** set usable near end **/
-			path.setTileFree(79, 39);
-			path.setTileFree(78, 39);
-			path.setTileFree(79, 38);
-			path.setTileFree(78, 38);
 
 			/** set path with no issues **/
 			var a = path.astar(0, 0, 79, 39);
@@ -109,24 +157,6 @@
 
 			/** draw lines for grid **/
 			canvas.drawGridLines({ strokeStyle: "rgba(0, 0, 255, .1)", fillStyle: "transparent" });
-
-
-
-			/** set stage for characters **/
-			var stage = new Canvas(Object.assign(grid.__this__(), { attributes: { style: "position:absolute;z-index:3;"} }));
-
-
-			/** set new character **/
-			var character = new Character(Object.assign(graph.getTile(0, 0), { path: path.astar(0, 0, 79, 39, { prohibited: {walkable:false}}) }));
-			/** draw character to stage **/
-			
-
-
-			keyframe.start(function () {
-				stage.drawGeometry("clear", character.x, character.y, character.gridTileWidth, character.gridTileHeight)
-				character.eatTiles(path.grid);
-				stage.drawGeometry("fill", character.x, character.y, character.gridTileWidth, character.gridTileHeight, { fillStyle: character.baseColour });
-			});
 
 
 

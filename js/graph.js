@@ -2,7 +2,7 @@ class Graph extends Grid {
 
 	/** @description: obtain tiles in grid based on inherited grid measurement **/
 
-	static node (column, row, x, y, gridTileWidth, gridTileHeight, g, h, f, cost, walkable, opened, closed, visited, parent, __class__) {
+	static node (columns, rows, column, row, x, y, gridTileWidth, gridTileHeight, g, h, f, cost, walkable, opened, closed, visited, parent, __class__) {
 		/** @description: initialises graph node from arguments and clones possible instances **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {row} is type {integer} **/
@@ -21,7 +21,7 @@ class Graph extends Grid {
 		/** @param: {__class__} is type {class} **/
 		/** @return: is type {object} **/
 		/** call static method of base and copy object from created incase inherited **/
-		return Base.__object__({ column: column, row: row, x: x, y: y, gridTileWidth: gridTileWidth, gridTileHeight: gridTileHeight, g: g, h: h, f: f, cost: cost || 0, walkable: walkable || true, opened: opened, closed: closed, visited: visited || false, parent: parent, __class__: __class__ });
+		return Base.__object__({ columns: columns, rows: rows, column: column, row: row, x: x, y: y, gridTileWidth: gridTileWidth, gridTileHeight: gridTileHeight, g: g, h: h, f: f, cost: cost || 0, walkable: walkable || true, opened: opened, closed: closed, visited: visited || false, parent: parent, __class__: __class__, __init__: true });
 	}
 
 	static getRandomColumnInt (grid) {
@@ -92,6 +92,8 @@ class Graph extends Grid {
 		/** @param: {column} is type {integer} **/
 		/** @param: {config} is type {object} **/
 		/** @param: {copy} is type {boolean} **/
+		/** set base config **/
+		config = config || {};
 		/** handle requirements **/
 		if (!grid instanceof Array || isNaN(column) || isNaN(row) || !config instanceof Object) return false;
 		/** fetch tile from copied or this instance **/
@@ -597,7 +599,7 @@ class Graph extends Grid {
 			/** enumrate over rows **/
 			for (var j = 0; j < rows; j++) {
 				/** update column with row item using graph node **/
-				column.push(Graph.node(i, j, i * this.gridTileWidth, j * this.gridTileHeight, this.gridTileWidth, this.gridTileHeight, undefined, undefined, undefined, undefined, true, undefined, undefined, false, undefined, __class__));
+				column.push(Graph.node(this.columns, this.rows, i, j, i * this.gridTileWidth, j * this.gridTileHeight, this.gridTileWidth, this.gridTileHeight, undefined, undefined, undefined, undefined, true, undefined, undefined, false, undefined, __class__));
 			}
 			/** update column **/
 			grid.push(column);
@@ -630,7 +632,7 @@ class Graph extends Grid {
 		/** call super **/
 		super(config);
 		/** set call to this definition handler **/
-		this.__graph__({ grid: config.grid });
+		this.__graph__(config);
 		/** set base directions for this grid lookup **/
 		this.directions = ["top", "right", "bottom", "left"];
 	}

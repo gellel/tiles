@@ -259,6 +259,10 @@ class Tile extends Base {
 		this.x = config.x ? config.x : this.x ? this.x : 0;
 		/** set base position y **/
 		this.y = config.y ? config.y : this.y ? this.y : 0;
+		/** set base width **/
+		this.width = config.width ? config.width : this.gridTileWidth;
+		/** se base height **/
+		this.height = config.height ? config.height : this.gridTileHeight;
 	}
 
 	constructor (config) {
