@@ -41,29 +41,52 @@ class Base {
 		for (var key in filter) {
 			/** confirm property is own type **/
 			if (config.hasOwnProperty(key)) {
-				/** confirm that this key is array **/
+				/** filter type is an array **/
 				if (filter[key] instanceof Array) {
-					/** enumerate over array of this key **/
-					for (var i = 0, items = filter[key]; i < items.length; i++) {
-						/** confirm that this key is a match **/
-						if (config[key] === items[i]) return false;
+					for (var i = 0; i < filter[key].length; i++) {
+						/** match filter array to config key array **/
+						if (config[key] instanceof Array) {
+							for (var j = 0; j < config[key].length; j++) {
+								if (config[key][j] === filter[key][i]) return true;
+							}
+						}
+						/** match filter array to config object keys **/
+						else if (config[key] instanceof Object) {
+							for (var prop in config[key]) {
+								if (config[key][prop] === filter[key][i]) return true;
+							}
+						}
+						/** match key to key **/
+						else {
+							if (config[key] === filter[key][i]) return true;
+						}
 					}
 				}
-				/** confirm that this key is object **/
+				/** filter type is object **/
 				else if (filter[key] instanceof Object) {
-					/** iterate over object key **/
-					for (var prop in filter[key]) {
-						/** confirm that this key is a match **/
-						if (config[key] === filter[key][prop]) return false;
+					for (var filt in filter[key]) {
+						/** match filter key to config array **/
+						if (config[key] instanceof Array) {
+							for (var j = 0; j < config[key].length; j++) {
+								if (config[key][j] === filter[key][filt]) return true;
+							}
+						}
+						else if (config[key] instanceof Object) {
+							for (var prop in config[key]) {
+								if (config[key][prop] === filter[key][filt]) return true;
+							}
+						}
+						else {
+							if (config[key] === filter[key][filt]) return true;
+						}
 					}
 				}
-				/** confirm that this key is a match **/
-				else if (config[key] === filter[key]) {
-					return false;
+				else {
+					if (filter[key] === config[key]) return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	static __object__ (config) {

@@ -43,6 +43,22 @@ class Graph extends Grid {
 		return Base.__random__(0, column);
 	}
 
+	static getTileByAttribute (grid, attributes, column) {
+		/** @description: returns item from supplied grid 2d array with optional column **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {object} **/
+		if (!grid || !grid instanceof Array) return false;
+		/** set base column or fetch from random **/
+		column = !isNaN(column) ? column : Graph.getRandomColumnInt(grid);
+		/** set base flattened row **/
+		var row = [].concat.apply([], grid[column]);
+		/** filter **/
+		row = row.filter(function (tile) { if (Base.__contains__(tile, attributes)) return tile; });
+		/** return first **/
+		return row;
+	}
+
 	static getTileCopy (grid, column, row) {
 		/** @description: returns copied item from supplied grid 2d array using column and row to locate items **/
 		/** @param: {grid} is type {array} **/
@@ -168,7 +184,7 @@ class Graph extends Grid {
 		/** set base row integer **/
 		var row = Base.__random__(0, grid[column].length);
 		/** attempt to find item **/
-		return Graph.getTile(column, row, copy);
+		return Graph.getTile(grid, column, row, copy);
 	}
 
 	static getAdjacentTiles (grid, tile, directions, copy) {
@@ -492,6 +508,30 @@ class Graph extends Grid {
 		/** @param: {direction} is type {string} **/
 		/** @param: {copy} is type {boolean} **/
 		return Graph.getSpecificAdjacentTile(this.grid, tile, direction, copy);
+	}
+
+	getTileByAttribute (attributes, column) {
+		/** @description: returns item from supplied grid 2d array with optional column **/
+		/** @param: {attributes} is type {object} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {object} **/
+		return Graph.getTileByAttribute(this.grid, attributes, column)
+	}
+
+	getRandomColumnInt () {
+		/** @description: returns random integer from grid length **/
+		/** @return: is type {integer} **/
+		/** return item from array length **/
+		return Graph.getRandomColumnInt(this.grid);
+	}
+
+	getRandomRowInt (column) {
+		/** @description: returns random integer from grid length **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {integer} **/
+		/** return array item integer **/
+		return Graph.getRandomRowInt(this.grid, column);
 	}
 
 	setTileFree (column, row) {

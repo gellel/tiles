@@ -136,13 +136,13 @@ class Path extends Graph {
 		/** enqueue item **/
 		queue.enqueue(start);
 		/** set base count **/
-		this.calculations = 0;
+		this.iterations = 0;
 		/** set base visits **/
-		this.visits = 0;
+		this.checks = 0;
 		/** iterate over heap while items are to be processed **/
 		while (!queue.empty()) {
 			/** set new calculation **/
-			this.calculations = this.calculations + 1;
+			this.iterations = this.iterations + 1;
 			/** retrieve tile **/
 			var node = queue.dequeue();
 			/** set node to closed **/
@@ -162,7 +162,7 @@ class Path extends Graph {
 					/** enumerate over neighbour tiles **/
 					for (var i = 0, len = neighbours.length; i < len; i++) {
 						/** set process visits **/
-						this.visits = this.visits + 1;
+						this.checks = this.checks + 1;
 						/** cache tile **/
 						var neighbour = neighbours[i];
 						/** confirm that this tile is not closed from previous evaluation **/
@@ -220,13 +220,13 @@ class Path extends Graph {
 		/** enqueue heap item **/
 		heap.push(start);
 		/** set base count **/
-		this.calculations = 0;
+		this.iterations = 0;
 		/** set base visits **/
-		this.visits = 0;
+		this.checks = 0;
 		/** iterate over heap while items are to be processed **/
 		while (!heap.empty()) {
 			/** set new calculation **/
-			this.calculations = this.calculations + 1;
+			this.iterations = this.iterations + 1;
 			/** retrieve tile **/
 			var node = heap.pop();
 			/** set node to closed **/
@@ -242,13 +242,13 @@ class Path extends Graph {
 				/** filter unfound tiles **/
 				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
 				/** filter out unwanted **/
-				if (prohibited) neighbours = neighbours.filter(function (tile) { return Base.__contains__(tile, prohibited) ? tile : false; });
+				if (prohibited) neighbours = neighbours.filter(function (tile) { return !Base.__contains__(tile, prohibited) ? tile : false; });
 				/** confirm neighbours remain **/
 				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
 					for (var i = 0, len = neighbours.length; i < len; i++) {
 						/** set process visits **/
-						this.visits = this.visits + 1;
+						this.checks = this.checks + 1;
 						/** cache tile **/
 						var neighbour = neighbours[i];
 						/** confirm that this tile is not closed from previous evaluation **/
@@ -258,7 +258,7 @@ class Path extends Graph {
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
 							/** confirm costs and costs has property types **/
-							if (Base.__contains__(neighbour, allowed)) node.g = node.g + node.cost;
+							if (!Base.__contains__(neighbour, allowed)) node.g = node.g + node.cost;
 							/** set new graph weight for tile including the cost of movement to node **/
 							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/
