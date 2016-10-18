@@ -21,35 +21,44 @@
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
 
-			var d = [
-				{ type: ["water"], name: "open_ocean", cost: 10, hex: "#25a9cb" },
-				{ type: ["water"], name: "deep_sea", cost: 9, hex: "#28aed0" }, 
-				{ type: ["water"], name: "medium_sea", cost: 8, hex: "#32b7d8" }, 
-				{ type: ["water"], name: "low_sea", cost: 7, hex: "#3dc2e3" }, 
-				{ type: ["water"], name: "shallow_sea", cost: 6, hex: "#4ccbeb" }, 
-				{ type: ["water"], name: "shore_sea", cost: 5, hex: "#57d8f8" },
-				{ type: ["water"], name: "beach_sea", cost: 4, hex: "#6ee0fc" },
+			var geography = [
+				{ class: "ocean", related: [], cost: 7, hex: "#25a9cb" },
+				{ class: "ocean", related: [], cost: 6, hex: "#28aed0" },
 
-				{ type: ["water"], name: "beach_sand", cost: 4, hex: "#b1e1d1" },
-				{ type: ["water"], name: "shore_sand", cost: 4, hex: "#cae1b1" }, 
-				{ type: ["land"], name: "deep_sand", cost: 4, hex: "#ebe8b5" }, 
-				{ type: ["land"], name: "medium_sand", cost: 3, hex: "#e3dfa1" }, 
-				{ type: ["land"], name: "low_sand", cost: 2, hex: "#e1dd9d" }, 
-				{ type: ["land"], name: "sand", cost: 1, hex: "#dbd793" },
+				{ class: "sea", related: [], cost: 5, hex: "#32b7d8" }, 
+				{ class: "sea", related: [], cost: 4, hex: "#3dc2e3" }, 
 
-				{ type: ["land"], name: "mixed_grass", cost: 0, hex: "#64d977" }, 
-				{ type: ["land"], name: "grass", cost: 0, hex: "#56d16a" }, 
-				{ type: ["land"], name: "low_grass", cost: 1, hex: "#54ce68" }, 
-				{ type: ["land"], name: "medium_grass", cost: 2, hex: "#4cc760" }, 
-				{ type: ["land"], name: "deep_grass", cost: 3, hex: "#47c55c" },
+				{ class: "coast", related: [], cost: 3, hex: "#4ccbeb" }, 
+				{ class: "coast", related: [], cost: 2, hex: "#57d8f8" },
 
-				{ type: ["land"], name: "low_field", cost: 1, hex: "#40c155" },
-				{ type: ["land"], name: "medium_field", cost: 1, hex: "#38b94d" },
-				{ type: ["land"], name: "shallow_field", cost: 2, hex: "#33b649" },
-				{ type: ["land"], name: "alpine_field", cost: 3, hex: "#50b360" },
-				{ type: ["land"], name: "rocky_field", cost: 4, hex: "#53a260" },
-				{ type: ["land"], name: "inclined_field", cost: 6, hex: "#78a47f" }
+				{ class: "shore", related: [], cost: 1, hex: "6ee0fc" },
+				{ class: "shore", related: [], cost: 5, hex: "#77e3fd" },
+				{ class: "shore", related: [], cost: 3, hex: "#b1e1d1" },
+				{ class: "shore", related: [], cost: 3, hex: "#cae1b1" }, 
+
+				{ class: "beach", related: [], cost: 3, hex: "#ebe8b5" }, 
+				{ class: "beach", related: [], cost: 2, hex: "#e3dfa1" }, 
+
+				{ class: "sand", related: [], cost: 1, hex: "#e1dd9d" },
+
+				{ class: "soil", related: [], cost: 0, hex: "#dbd793" }, 
+
+				{ class: "grass", related: [], cost: 1, hex: "#64d977" }, 
+				{ class: "grass", related: [], cost: 2, hex: "#56d16a" }, 
+				{ class: "grass", related: [], cost: 3, hex: "#4cc760" },
+
+				{ class: "hill", related: [], cost: 1, hex: "#47c55c" },
+				{ class: "hill", related: [], cost: 2, hex: "#42c458" },
+				{ class: "hill", related: [], cost: 3, hex: "#3ec054" },
+				{ class: "hill", related: [], cost: 4, hex: "#38bb4e" },
+
+				{ class: "alpine", related: [], cost: 1, hex: "#38bb69" },
+				{ class: "alpine", related: [], cost: 2, hex: "#38ae64" },
+				{ class: "alpine", related: [], cost: 3, hex: "#369c5c" },
+				{ class: "alpine", related: [], cost: 4, hex: "#469263" },
+				{ class: "alpine", related: [], cost: 5, hex: "#4b8761" }
 			];
+
 
 			var grid = new Grid({ 
 				__init__: true, columns: 120, rows: 60, scale: 10 });
@@ -60,7 +69,8 @@
 
 
 			var noise = new Simplex(
-				{ min: Base.__random__(0, parseInt(d.length / 2)), max: Base.__random__(0, d.length), octaves: 20, amplitude: 1.0, frequency: 0.01, distribution: 0.05, persistence: 0.45 });
+				{ min: 0, max: geography.length, 
+					octaves: 14, amplitude: 1.0, frequency: 0.01, distribution: 0.05, persistence: 0.45 });
 
 			var world = new Canvas(
 				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 1;" } }));
@@ -71,79 +81,17 @@
 
 
 			graph.editTiles(function (tile) { 
-				return Object.assign(tile, d[parseInt(noise.process(tile.column, tile.row))]); 
-			});
+				return Object.assign(tile, geography[Math.floor(noise.process(tile.column, tile.row))])
+			});	
 
-			graph.getTiles(function (tile) { 
+			graph.getTiles(function (tile) {
 				world.drawGridSquare(tile, { fillStyle: tile.hex })
-			});
-
+			})
 
 			/** create base path class **/
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
 
-			/** get grass start tiles **/
-			var gs = path.getTileByAttribute({ type: ["land"] }, 0);
-			/** get grass end tiles **/
-			var gt = path.getTileByAttribute({ type: ["land"] }, path.grid.length - 1);
-
-			
-			if (gs.length && gt.length) {
-					
-				gs = gs.reduce(function (prev, curr) { return prev.cost < curr.cost ? prev : curr });
-				gt = gt.reduce(function (prev, curr) { return prev.cost < curr.cost ? prev : curr });
-
-				/** attempt to create path **/
-				var a = path.astar(gs.column, gs.row, gt.column, gt.row, { 
-					prohibited: { type: [] },
-					allowed: { type: [] }
-				});
-				/** set details **/
-				var aa = Object.create({ c: path.iterations, v: path.checks });
-
-				/** log outcome of pathing **/
-				console.log("A path takes:", a.length, "moves.", "Path performed", aa.c, "iterations.", "Path checked", aa.v, "tiles.");
-
-				/** plot path **/
-				new Queue(a).process(function (t) { 
-						canvas.drawGridSquare(t, { fillStyle: "rgba(21, 114, 113, 0.7)"}); });
-
-				/** reset path for next user **/
-				path.reset();
-
-			}
-
-			/** get grass start tiles **/
-			var ws = path.getTileByAttribute({ type: ["water"] }, 0);
-			/** get grass end tiles **/
-			var wt = path.getTileByAttribute({ type: ["water"] }, path.grid.length - 1);
-
-			
-			if (ws.length && wt.length) {
-					
-				ws = ws.reduce(function (prev, curr) { return prev.cost < curr.cost ? prev : curr });
-				wt = wt.reduce(function (prev, curr) { return prev.cost < curr.cost ? prev : curr });
-
-				/** attempt to create path **/
-				var b = path.astar(ws.column, ws.row, wt.column, wt.row, { 
-					prohibited: { type: [] },
-					allowed: { type: [] }
-				});
-				/** set details **/
-				var bb = Object.create({ c: path.iterations, v: path.checks });
-
-				/** log outcome of pathing **/
-				console.log("B path takes:", b.length, "moves.", "Path performed", bb.c, "iterations.", "Path checked", bb.v, "tiles.");
-
-				/** plot path **/
-				new Queue(b).process(function (t) { 
-						canvas.drawGridSquare(t, { fillStyle: "rgba(214, 54, 13, 0.7)"}); });
-
-				/** reset path for next user **/
-				path.reset();
-
-			}
 
 
 		</script>
