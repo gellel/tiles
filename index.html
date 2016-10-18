@@ -21,31 +21,38 @@
 		<script src="js/canvas.js"></script>
 		<script type="text/javascript">
 
-			var tiles = [
+			var d = [
+				{name: "water_ocean", cost: 10, hex: "#25a9cb"},
+				{name: "water_sea_deep", cost: 9, hex: "#28aed0"}, 
+				{name: "water_sea_medium", cost: 8, hex: "#32b7d8"}, 
+				{name: "water_sea_low", cost: 7, hex: "#3dc2e3"}, 
+				{name: "water_sea_shallow", cost: 6, hex: "#4ccbeb"}, 
+				{name: "water_sea_shore", cost: 4, hex: "#57d8f8"},
+				{name: "water_sea_line", cost: 3, hex: "#6ee0fc"},
 
-				{
-					name: "shore_water",
-					colour: "#57d8f8",
-					parents: ["ocean", "land"]
-				},
-				{
-					name: "short_water",
-					colour: "#4ccbeb",
-					parents: ["ocean"]
-				},
-				{
-					name: "medium_water",
-					colour: "#3dc2e3",
-					parents: ["ocean"]
-				}
+				{name: "sand_submerged", cost: 3, hex: "#b1e1d1"},
+				{name: "sand_coast", cost: 3, hex: "#cae1b1"}, 
+				{name: "sand_beach", cost: 3, hex: "#ebe8b5"}, 
+				{name: "sand_soft", cost: 3, hex: "#e3dfa1"}, 
+				{name: "sand_medium", cost: 2, hex: "#e1dd9d"}, 
+				{name: "dirt", cost: 1, hex: "#dbd793"},
 
+				{name: "grass", cost: 0, hex: "#64d977"}, 
+				{name: "grass_light", cost: 0, hex: "#56d16a"}, 
+				{name: "grass_shallow", cost: 1, hex: "#54ce68"}, 
+				{name: "grass_medium", cost: 2, hex: "#4cc760"}, 
+				{name: "grass_deep", cost: 3, hex: "#47c55c"},
 
+				{name: "field_open", cost: 1, hex: "#40c155"},
+				{name: "field_rise", cost: 1, hex: "#38b94d"},
+				{name: "field_incline", cost: 2, hex: "#33b649"},
+				{name: "field_alpine", cost: 3, hex: "#50b360"},
+				{name: "field_mountain", cost: 4, hex: "#53a260"},
+				{name: "field_rocky", cost: 6, hex: "#78a47f"}
 			];
 
-
-
 			var grid = new Grid({ 
-				__init__: true, columns: 120, rows: 70, scale: 10 });
+				__init__: true, columns: 120, rows: 60, scale: 10 });
 
 
 			var graph = new Graph(
@@ -53,110 +60,59 @@
 
 
 			var noise = new Simplex(
-				{ min: 0, max: 15, octaves: 8, frequency: 0.01 });
+				{ min: 0, max: d.length, octaves: 20, amplitude: 1.0, frequency: 0.01, distribution: 0.05, persistence: 0.45 });
 
 
 			var world = new Canvas(
 				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 1;" } }));
 
 
-
-			/** set geography **/
-			graph.editTiles(function (tile) {
-
-		
-				var n = parseInt(noise.process(tile.column, tile.row));
-				
-				var f = "";
-
-				if (n === 0) f = "#28aed0";
-				if (n === 1) f = "#32b7d8";
-				if (n === 2) f = "#3dc2e3";
-				if (n === 3) f = "#4ccbeb";
-				if (n === 4) f = "#57d8f8";
-				if (n === 5) f = "#cae1b1";
-				if (n === 6) f = "#ebe8b5";
-				if (n === 7) f = "#e3dfa1";
-				if (n === 8) f = "#dad58d";
-				if (n === 9) f = "#d2cd80";
-				if (n === 10) f = "#64d977";
-				if (n === 11) f = "#56d16a";
-				if (n === 12) f = "#54ce68";
-				if (n === 13) f = "#4cc760";
-				if (n === 14) f = "#47c55c";
-
-
-				world.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: f });
-
-			});
-
-
 			var canvas = new Canvas(
 				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 2;" } }))
+
+
+			/** set environment geography **/
+			graph.editTiles(function (tile) { Object.assign(tile, d[parseInt(noise.process(tile.column, tile.row))]); });
+			/** draw environment **/
+			graph.getTiles(function (tile) { world.drawGridSquare(tile, { fillStyle: tile.hex }) });
+
+
 
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
 
-			/** set path with no issues **/
-			var a = path.astar(0, 0, 79, 39);
-			/** set details **/
-			var aa = Object.create({ c: path.calculations, v: path.visits });
-			/** draw tiles to canvas that were visited **/
-			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.1)" });
-			/** reset **/
+			/** land based path **/
+			var a = path.astar(0, 0, path.grid.length - 1, path.grid[0].length - 1, { 
+				prohibited: { 
+					name: ["water_ocean","water_sea_deep","water_sea_medium","water_sea_low","water_sea_shallow"] }, 
+
+				allowed: { 
+					name: ["water_sea_shore","water_sea_line","sand_submerged","sand_coast"], cost: [4,5] } 
+				});
+			
+			
+			new Queue(a).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 0.5)"}); });
+
+
 			path.reset();
 
-			/** set path with must avoid unusuable **/
-			var b = path.astar(0, 0, 79, 39, { prohibited: { walkable: false } });
-			/** set details **/
-			var bb = Object.create({ c: path.calculations, v: path.visits });
-			/** draw tiles to canvas that were visited **/
-			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.1)" });
-			/** reset **/
+
+
+			/** water based path **/
+			var b = path.astar(0, 0, path.grid.length - 1, path.grid[0].length - 1, { 
+				prohibited: { 
+					name: ["grass_deep", "grass_medium", "grass_shallow", "grass", "dirt", "sand_medium", "sand_soft"] }, 
+
+				allowed: { 
+					name: ["sand_beach", "sand_coast"] } 
+				});
+			
+			
+			new Queue(b).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(102, 51, 153, 0.5)"}); });
+
+
 			path.reset();
 
-			/** set path with must avoid unusuable and heavy weights but can use light **/
-			var c = path.astar(0, 0, 79, 39, { prohibited: { walkable: false, cost: 2 } });
-			/** set details **/
-			var cc = Object.create({ c: path.calculations, v: path.visits });
-			/** draw tiles to canvas that were visited **/
-			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.1)" });
-			/** reset path **/
-			path.reset();
-
-			/** set path with must avoid usuable, heavy and light weights **/
-			var d = path.astar(0, 0, 79, 39, { prohibited: { walkable: false, cost: [1, 2] }});
-			/** set details **/
-			var dd = Object.create({ c: path.calculations, v: path.visits });
-			/** draw tiles to canvas that were visited **/
-			//canvas.drawVisitedTiles(path.grid, { fillStyle: "rgba(255, 0, 0, 0.2)" });
-			/** reset path **/
-			path.reset();
-
-			/** console log the outcomes of the paths **/
-			if (d) console.log("D path takes:", d.length, "moves.", "Process took:", dd.c, "calculations.", "Pather visited:", dd.v, "tiles. Unwalkable, light and heavy restricted.");
-			if (c) console.log("C path takes:", c.length, "moves.", "Process took:", cc.c, "calculations.", "Pather visited:", cc.v, "tiles. Unwalkable and heavy restricted.");
-			if (b) console.log("B path takes:", b.length, "moves.", "Process took:", bb.c, "calculations.", "Pather visited:", bb.v, "tiles. Unwalkable restricted.");
-			if (a) console.log("A path takes:", a.length, "moves.", "Process took:", aa.c, "calculations.", "Pather visited:", aa.v, "tiles. No restrictions.");
-
-			/** colour heavy tiles **/
-			canvas.drawCostTiles(path.grid, { fillStyle: "#DADFE1" }, 2);
-			/** colour light tiles **/
-			canvas.drawCostTiles(path.grid, { fillStyle: "#EEEEEE" }, 1);
-			/** colour used tiles **/
-			canvas.drawUsedTiles(path.grid, { fillStyle: "#2c3e50" });
-
-			/** draw D completed unwalkable and weights of 2 and 1 prohibited path **/
-			new Queue(d).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(242, 38, 19, 1)"}); });
-			/** draw C completed with unwalkable and weights of 2 prohibited path **/
-			new Queue(c).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(248, 148, 6, 1)"}); });
-			/** draw B completed with unwalkable prohibitied path **/
-			new Queue(b).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(31, 58, 147, 1)"}); });
-			/** draw A completed unprohbitied path **/
-			new Queue(a).process(function (t) { canvas.drawGridSquare(t, { fillStyle: "rgba(46, 204, 113, 1)"}); });
-
-			/** draw lines for grid **/
-			canvas.drawGridLines({ strokeStyle: "rgba(0, 0, 255, .1)", fillStyle: "transparent" });
 
 
 
