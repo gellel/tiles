@@ -241,7 +241,7 @@ class Path extends Graph {
 			if (neighbours.length) {
 				/** filter unfound tiles **/
 				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
-				/** filter out unwanted **/
+				/** filter out unwanted by matching that object does not contain listed types **/
 				if (prohibited) neighbours = neighbours.filter(function (tile) { return !Base.__contains__(tile, prohibited) ? tile : false; });
 				/** confirm neighbours remain **/
 				if (neighbours && neighbours.length) {
@@ -257,8 +257,10 @@ class Path extends Graph {
 							var column = neighbour.column;
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
-							/** confirm costs and costs has property types **/
-							if (!Base.__contains__(neighbour, allowed)) node.g = node.g + node.cost;
+							/** confirm costs and costs has property types by matching if object exists **/
+							if (Base.__contains__(neighbour, allowed)) {
+								node.g = node.g + node.cost;
+							}
 							/** set new graph weight for tile including the cost of movement to node **/
 							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
 							/** confirm that this neighbours is not opened or if the new graph weight is less than the current for this node **/

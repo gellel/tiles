@@ -22,33 +22,33 @@
 		<script type="text/javascript">
 
 			var d = [
-				{ type: ["ocean", "water"], name: "open_ocean", cost: 10, hex: "#25a9cb" },
-				{ type: ["ocean", "water"], name: "deep_sea", cost: 9, hex: "#28aed0" }, 
-				{ type: ["ocean", "water"], name: "medium_sea", cost: 8, hex: "#32b7d8" }, 
-				{ type: ["ocean", "water"], name: "low_sea", cost: 7, hex: "#3dc2e3" }, 
-				{ type: ["sea", "water"], name: "shallow_sea", cost: 6, hex: "#4ccbeb" }, 
-				{ type: ["sea", "water"], name: "shore_sea", cost: 5, hex: "#57d8f8" },
+				{ type: ["water"], name: "open_ocean", cost: 10, hex: "#25a9cb" },
+				{ type: ["water"], name: "deep_sea", cost: 9, hex: "#28aed0" }, 
+				{ type: ["water"], name: "medium_sea", cost: 8, hex: "#32b7d8" }, 
+				{ type: ["water"], name: "low_sea", cost: 7, hex: "#3dc2e3" }, 
+				{ type: ["water"], name: "shallow_sea", cost: 6, hex: "#4ccbeb" }, 
+				{ type: ["water"], name: "shore_sea", cost: 5, hex: "#57d8f8" },
 				{ type: ["water"], name: "beach_sea", cost: 4, hex: "#6ee0fc" },
 
-				{ type: ["water", "sand"], name: "beach_sand", cost: 4, hex: "#b1e1d1" },
-				{ type: ["water", "sand"], name: "shore_sand", cost: 4, hex: "#cae1b1" }, 
-				{ type: ["sand", "earth"], name: "deep_sand", cost: 4, hex: "#ebe8b5" }, 
-				{ type: ["sand", "earth"], name: "medium_sand", cost: 3, hex: "#e3dfa1" }, 
-				{ type: ["earth"], name: "low_sand", cost: 2, hex: "#e1dd9d" }, 
-				{ type: ["earth"], name: "sand", cost: 1, hex: "#dbd793" },
+				{ type: ["water"], name: "beach_sand", cost: 4, hex: "#b1e1d1" },
+				{ type: ["water"], name: "shore_sand", cost: 4, hex: "#cae1b1" }, 
+				{ type: ["land"], name: "deep_sand", cost: 4, hex: "#ebe8b5" }, 
+				{ type: ["land"], name: "medium_sand", cost: 3, hex: "#e3dfa1" }, 
+				{ type: ["land"], name: "low_sand", cost: 2, hex: "#e1dd9d" }, 
+				{ type: ["land"], name: "sand", cost: 1, hex: "#dbd793" },
 
-				{ type: ["grass"], name: "mixed_grass", cost: 0, hex: "#64d977" }, 
-				{ type: ["grass"], name: "grass", cost: 0, hex: "#56d16a" }, 
-				{ type: ["grass"], name: "low_grass", cost: 1, hex: "#54ce68" }, 
-				{ type: ["grass"], name: "medium_grass", cost: 2, hex: "#4cc760" }, 
-				{ type: ["grass"], name: "deep_grass", cost: 3, hex: "#47c55c" },
+				{ type: ["land"], name: "mixed_grass", cost: 0, hex: "#64d977" }, 
+				{ type: ["land"], name: "grass", cost: 0, hex: "#56d16a" }, 
+				{ type: ["land"], name: "low_grass", cost: 1, hex: "#54ce68" }, 
+				{ type: ["land"], name: "medium_grass", cost: 2, hex: "#4cc760" }, 
+				{ type: ["land"], name: "deep_grass", cost: 3, hex: "#47c55c" },
 
-				{ type: ["grass", "field"], name: "low_field", cost: 1, hex: "#40c155" },
-				{ type: ["grass", "field"], name: "medium_field", cost: 1, hex: "#38b94d" },
-				{ type: ["field", "alpine"], name: "shallow_field", cost: 2, hex: "#33b649" },
-				{ type: ["field", "alpine"], name: "alpine_field", cost: 3, hex: "#50b360" },
-				{ type: ["field", "alpine"], name: "rocky_field", cost: 4, hex: "#53a260" },
-				{ type: ["field", "alpine"], name: "inclined_field", cost: 6, hex: "#78a47f" }
+				{ type: ["land"], name: "low_field", cost: 1, hex: "#40c155" },
+				{ type: ["land"], name: "medium_field", cost: 1, hex: "#38b94d" },
+				{ type: ["land"], name: "shallow_field", cost: 2, hex: "#33b649" },
+				{ type: ["land"], name: "alpine_field", cost: 3, hex: "#50b360" },
+				{ type: ["land"], name: "rocky_field", cost: 4, hex: "#53a260" },
+				{ type: ["land"], name: "inclined_field", cost: 6, hex: "#78a47f" }
 			];
 
 			var grid = new Grid({ 
@@ -60,7 +60,7 @@
 
 
 			var noise = new Simplex(
-				{ min: 0, max: d.length, octaves: 20, amplitude: 1.0, frequency: 0.01, distribution: 0.05, persistence: 0.45 });
+				{ min: Base.__random__(0, parseInt(d.length / 2)), max: Base.__random__(0, d.length), octaves: 20, amplitude: 1.0, frequency: 0.01, distribution: 0.05, persistence: 0.45 });
 
 			var world = new Canvas(
 				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 1;" } }));
@@ -84,9 +84,9 @@
 
 
 			/** get grass start tiles **/
-			var gs = path.getTileByAttribute({ type: ["grass"] }, 0);
+			var gs = path.getTileByAttribute({ type: ["land"] }, 0);
 			/** get grass end tiles **/
-			var gt = path.getTileByAttribute({ type: ["grass"] }, path.grid.length - 1);
+			var gt = path.getTileByAttribute({ type: ["land"] }, path.grid.length - 1);
 
 			
 			if (gs.length && gt.length) {
@@ -96,8 +96,8 @@
 
 				/** attempt to create path **/
 				var a = path.astar(gs.column, gs.row, gt.column, gt.row, { 
-					prohibited: { type: ["ocean", "alpine"] },
-					allowed: { type: ["sea", "sand"] }
+					prohibited: { type: [] },
+					allowed: { type: [] }
 				});
 				/** set details **/
 				var aa = Object.create({ c: path.iterations, v: path.checks });
@@ -115,7 +115,7 @@
 			}
 
 			/** get grass start tiles **/
-			var ws = path.getTileByAttribute({ type: ["ocean", "sea"] }, 0);
+			var ws = path.getTileByAttribute({ type: ["water"] }, 0);
 			/** get grass end tiles **/
 			var wt = path.getTileByAttribute({ type: ["water"] }, path.grid.length - 1);
 
@@ -127,8 +127,8 @@
 
 				/** attempt to create path **/
 				var b = path.astar(ws.column, ws.row, wt.column, wt.row, { 
-					prohibited: { type: ["grass"] },
-					allowed: { type: ["earth", "sand"] }
+					prohibited: { type: [] },
+					allowed: { type: [] }
 				});
 				/** set details **/
 				var bb = Object.create({ c: path.iterations, v: path.checks });
