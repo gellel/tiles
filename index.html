@@ -83,19 +83,19 @@
 				min: 0
 			});
 
-			graph.getTiles(function (tile) {
+			graph.editTiles(function (tile) {
+				return Object.assign(tile, geography[parseInt(Math.abs(simplex.noise2d(tile.column, tile.row)))])
+			})
 
-				var n = simplex.noise2d(tile.column, tile.row);
-				var f = parseInt(Math.abs(n));
-				var g = geography[f];
+			graph.getTiles(function (tile) {
 
 				//console.log('colour is:', Canvas.RGB(f, 0, 0))
 				//console.log(g)
-				base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: g.hex })
+				base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: tile.hex });
 				//base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGB(f, 0, 0) })
 				//base.drawFillText(tile.x, tile.y + tile.height / 2, f, "normal 10px/normal sans-serif", { fillStyle: Canvas.RGB(0, 0, 0)}); 
 
-				base.context.fillStyle = "transparent";
+				//base.context.fillStyle = "transparent";
 
 			});
 			
