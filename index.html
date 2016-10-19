@@ -22,76 +22,83 @@
 		<script type="text/javascript">
 
 			var geography = [
-				{ class: "ocean", related: [], cost: 7, hex: "#25a9cb" },
-				{ class: "ocean", related: [], cost: 6, hex: "#28aed0" },
+				{ class: "ocean", ref: "", related: [], cost: 7, hex: "#25a9cb" },
+				{ class: "ocean", ref: "", related: [], cost: 6, hex: "#28aed0" },
 
-				{ class: "sea", related: [], cost: 5, hex: "#32b7d8" }, 
-				{ class: "sea", related: [], cost: 4, hex: "#3dc2e3" }, 
+				{ class: "sea", ref: "", related: [], cost: 5, hex: "#32b7d8" }, 
+				{ class: "sea", ref: "", related: [], cost: 4, hex: "#3dc2e3" }, 
 
-				{ class: "coast", related: [], cost: 3, hex: "#4ccbeb" }, 
-				{ class: "coast", related: [], cost: 2, hex: "#57d8f8" },
+				{ class: "coast", ref: "", related: [], cost: 3, hex: "#4ccbeb" }, 
+				{ class: "coast", ref: "", related: [], cost: 2, hex: "#57d8f8" },
 
-				{ class: "shore", related: [], cost: 1, hex: "6ee0fc" },
-				{ class: "shore", related: [], cost: 5, hex: "#77e3fd" },
-				{ class: "shore", related: [], cost: 3, hex: "#b1e1d1" },
-				{ class: "shore", related: [], cost: 3, hex: "#cae1b1" }, 
+				{ class: "shore", ref: "", related: [], cost: 1, hex: "#6ee0fc" },
+				{ class: "shore", ref: "", related: [], cost: 5, hex: "#77e3fd" },
+				{ class: "shore", ref: "", related: [], cost: 3, hex: "#b1e1d1" },
+				{ class: "shore", ref: "", related: [], cost: 3, hex: "#cae1b1" }, 
 
-				{ class: "beach", related: [], cost: 3, hex: "#ebe8b5" }, 
-				{ class: "beach", related: [], cost: 2, hex: "#e3dfa1" }, 
+				{ class: "beach", ref: "", related: [], cost: 3, hex: "#ebe8b5" }, 
+				{ class: "beach", ref: "", related: [], cost: 2, hex: "#e3dfa1" }, 
 
-				{ class: "sand", related: [], cost: 1, hex: "#e1dd9d" },
+				{ class: "sand", ref: "", related: [], cost: 1, hex: "#e1dd9d" },
 
-				{ class: "soil", related: [], cost: 0, hex: "#dbd793" }, 
+				{ class: "soil", ref: "", related: [], cost: 0, hex: "#dbd793" }, 
 
-				{ class: "grass", related: [], cost: 1, hex: "#64d977" }, 
-				{ class: "grass", related: [], cost: 2, hex: "#56d16a" }, 
-				{ class: "grass", related: [], cost: 3, hex: "#4cc760" },
+				{ class: "grass", ref: "", related: [], cost: 1, hex: "#64d977" }, 
+				{ class: "grass", ref: "", related: [], cost: 2, hex: "#56d16a" }, 
+				{ class: "grass", ref: "", related: [], cost: 3, hex: "#4cc760" },
 
-				{ class: "hill", related: [], cost: 1, hex: "#47c55c" },
-				{ class: "hill", related: [], cost: 2, hex: "#42c458" },
-				{ class: "hill", related: [], cost: 3, hex: "#3ec054" },
-				{ class: "hill", related: [], cost: 4, hex: "#38bb4e" },
+				{ class: "hill", ref: "", related: [], cost: 1, hex: "#47c55c" },
+				{ class: "hill", ref: "", related: [], cost: 2, hex: "#42c458" },
+				{ class: "hill", ref: "", related: [], cost: 3, hex: "#3ec054" },
+				{ class: "hill", ref: "", related: [], cost: 4, hex: "#38bb4e" },
 
-				{ class: "alpine", related: [], cost: 1, hex: "#38bb69" },
-				{ class: "alpine", related: [], cost: 2, hex: "#38ae64" },
-				{ class: "alpine", related: [], cost: 3, hex: "#369c5c" },
-				{ class: "alpine", related: [], cost: 4, hex: "#469263" },
-				{ class: "alpine", related: [], cost: 5, hex: "#4b8761" }
+				{ class: "alpine", ref: "", related: [], cost: 1, hex: "#38bb69" },
+				{ class: "alpine", ref: "", related: [], cost: 2, hex: "#38ae64" },
+				{ class: "alpine", ref: "", related: [], cost: 3, hex: "#369c5c" },
+				{ class: "alpine", ref: "", related: [], cost: 4, hex: "#469263" },
+				{ class: "alpine", ref: "", related: [], cost: 5, hex: "#4b8761" }
 			];
 
 
-			var grid = new Grid({ 
-				__init__: true, columns: 120, rows: 60, scale: 10 });
+			var grid = new Grid({ __init__: true, columns: 100, rows: 60, scale: 10 });
 
+			var graph = new Graph(Object.assign(grid.__this__(), { __class__: Tile }));
 
-			var graph = new Graph(
-				Object.assign(grid.__this__(), { __class__: Tile }));
+			var base = new Canvas(Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 1" } }));
 
+			var dirs = new Canvas(Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 2" } }));
+				
+			var char = new Canvas(Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 3" } }));
 
-			var noise = new Simplex(
-				{ min: 0, max: geography.length, 
-					octaves: 14, amplitude: 1.0, frequency: 0.01, distribution: 0.05, persistence: 0.45 });
-
-			var world = new Canvas(
-				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 1;" } }));
-
-
-			var canvas = new Canvas(
-				Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 2;" } }))
-
-
-			graph.editTiles(function (tile) { 
-				return Object.assign(tile, geography[Math.floor(noise.process(tile.column, tile.row))])
-			});	
-
-			graph.getTiles(function (tile) {
-				world.drawGridSquare(tile, { fillStyle: tile.hex })
-			})
-
-			/** create base path class **/
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
 
+			
+			var simplex = new Simplex({
+				amplitude: 0.001,
+				frequency: 0.010,
+				octaves: 1,
+				max: geography.length,
+				min: 0
+			});
+
+			graph.getTiles(function (tile) {
+
+				var n = simplex.noise2d(tile.column, tile.row);
+				var f = parseInt(Math.abs(n));
+				var g = geography[f];
+
+				//console.log('colour is:', Canvas.RGB(f, 0, 0))
+				//console.log(g)
+				base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: g.hex })
+				//base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGB(f, 0, 0) })
+				//base.drawFillText(tile.x, tile.y + tile.height / 2, f, "normal 10px/normal sans-serif", { fillStyle: Canvas.RGB(0, 0, 0)}); 
+
+				base.context.fillStyle = "transparent";
+
+			});
+			
+			
 
 
 		</script>
