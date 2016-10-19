@@ -254,6 +254,10 @@ class Simplex {
 	}
 
 	constructor (config) {
+		/** @params: {config.amplitude} is shifting impact for the gradient (scales the occurance of new items) **/
+		/** @params: {config.frequency} is for the preveleance of the pattern (can also feel like the magnification) **/
+		/** @params: {config.octaves} is for smoothness **/
+		/** @params: {config.persistence} is for smoothness, but can produce more jaggedness of repetitions **/
 		/** set base config **/
 		config = config || {};
 		/** set base amplitude for constructor **/
@@ -267,7 +271,7 @@ class Simplex {
 		/** set base octaves for constructor **/
 		this.octaves = parseInt(config.octaves) || 1;
 		/** set base persistence for constructor **/
-		this.persistence = config.persistence || 0.5;
+		this.persistence = config.persistence || 0.50;
 		/** set base random calculator for constructor **/
 		this.random = config.random || Math.random;
 		/** set base range for constructor **/
