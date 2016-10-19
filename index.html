@@ -22,41 +22,48 @@
 		<script type="text/javascript">
 
 			var geography = [
-				{ class: "ocean", ref: "", related: [], cost: 7, hex: "#25a9cb" },
-				{ class: "ocean", ref: "", related: [], cost: 6, hex: "#28aed0" },
+				{ class: "ocean", ref: "", related: [], hex: "#25a9cb" },
+				{ class: "ocean", ref: "", related: [], hex: "#28aed0" },
 
-				{ class: "sea", ref: "", related: [], cost: 5, hex: "#32b7d8" }, 
-				{ class: "sea", ref: "", related: [], cost: 4, hex: "#3dc2e3" }, 
+				{ class: "sea", ref: "", related: [], hex: "#32b7d8" }, 
+				{ class: "sea", ref: "", related: [], hex: "#3dc2e3" }, 
 
-				{ class: "coast", ref: "", related: [], cost: 3, hex: "#4ccbeb" }, 
-				{ class: "coast", ref: "", related: [], cost: 2, hex: "#57d8f8" },
+				{ class: "coast", ref: "", related: [], hex: "#4ccbeb" }, 
+				{ class: "coast", ref: "", related: [], hex: "#57d8f8" },
 
-				{ class: "shore", ref: "", related: [], cost: 1, hex: "#6ee0fc" },
-				{ class: "shore", ref: "", related: [], cost: 5, hex: "#77e3fd" },
-				{ class: "shore", ref: "", related: [], cost: 3, hex: "#b1e1d1" },
-				{ class: "shore", ref: "", related: [], cost: 3, hex: "#cae1b1" }, 
+				{ class: "shore", ref: "", related: [], hex: "#6ee0fc" },
+				{ class: "shore", ref: "", related: [], hex: "#77e3fd" },
+				{ class: "shore", ref: "", related: [], hex: "#b1e1d1" },
+				{ class: "shore", ref: "", related: [], hex: "#cae1b1" }, 
 
-				{ class: "beach", ref: "", related: [], cost: 3, hex: "#ebe8b5" }, 
-				{ class: "beach", ref: "", related: [], cost: 2, hex: "#e3dfa1" }, 
+				{ class: "beach", ref: "", related: [], hex: "#ebe8b5" }, 
+				{ class: "beach", ref: "", related: [], hex: "#e3dfa1" }, 
 
-				{ class: "sand", ref: "", related: [], cost: 1, hex: "#e1dd9d" },
+				{ class: "sand", ref: "", related: [], hex: "#e1dd9d" },
 
-				{ class: "soil", ref: "", related: [], cost: 0, hex: "#dbd793" }, 
+				{ class: "soil", ref: "", related: [], hex: "#dbd793" }, 
 
-				{ class: "grass", ref: "", related: [], cost: 1, hex: "#64d977" }, 
-				{ class: "grass", ref: "", related: [], cost: 2, hex: "#56d16a" }, 
-				{ class: "grass", ref: "", related: [], cost: 3, hex: "#4cc760" },
+				{ class: "grass", ref: "", related: [], hex: "#64d977" }, 
+				{ class: "grass", ref: "", related: [], hex: "#56d16a" }, 
+				{ class: "grass", ref: "", related: [], hex: "#4cc760" },
 
-				{ class: "hill", ref: "", related: [], cost: 1, hex: "#47c55c" },
-				{ class: "hill", ref: "", related: [], cost: 2, hex: "#42c458" },
-				{ class: "hill", ref: "", related: [], cost: 3, hex: "#3ec054" },
-				{ class: "hill", ref: "", related: [], cost: 4, hex: "#38bb4e" },
+				{ class: "hill", ref: "", related: [], hex: "#47c55c" },
+				{ class: "hill", ref: "", related: [], hex: "#42c458" },
+				{ class: "hill", ref: "", related: [], hex: "#3ec054" },
+				{ class: "hill", ref: "", related: [], hex: "#38bb4e" },
 
-				{ class: "alpine", ref: "", related: [], cost: 1, hex: "#38bb69" },
-				{ class: "alpine", ref: "", related: [], cost: 2, hex: "#38ae64" },
-				{ class: "alpine", ref: "", related: [], cost: 3, hex: "#369c5c" },
-				{ class: "alpine", ref: "", related: [], cost: 4, hex: "#469263" },
-				{ class: "alpine", ref: "", related: [], cost: 5, hex: "#4b8761" }
+				{ class: "alpine", ref: "", related: [], hex: "#38bb69" },
+				{ class: "alpine", ref: "", related: [], hex: "#38ae64" },
+				{ class: "alpine", ref: "", related: [], hex: "#369c5c" },
+				{ class: "alpine", ref: "", related: [], hex: "#469263" },
+				{ class: "alpine", ref: "", related: [], hex: "#4b8761" },
+
+				{ class: "artic", ref: "", related: [], hex: "#5f8c6f" },
+				{ class: "artic", ref: "", related: [], hex: "#809e8b" },
+				{ class: "artic", ref: "", related: [], hex: "#a6baad" },
+				{ class: "artic", ref: "", related: [], hex: "#b6cbbe" },
+				{ class: "artic", ref: "", related: [], hex: "#cedbd3" },
+				{ class: "artic", ref: "", related: [], hex: "#dce9e1" }
 			];
 
 
@@ -73,7 +80,6 @@
 			var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
 
-			
 			var simplex = new Simplex({
 				amplitude: 0.001,
 				frequency: 0.010,
@@ -89,13 +95,8 @@
 
 			graph.getTiles(function (tile) {
 
-				//console.log('colour is:', Canvas.RGB(f, 0, 0))
-				//console.log(g)
 				base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: tile.hex });
-				//base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGB(f, 0, 0) })
 				//base.drawFillText(tile.x, tile.y + tile.height / 2, f, "normal 10px/normal sans-serif", { fillStyle: Canvas.RGB(0, 0, 0)}); 
-
-				//base.context.fillStyle = "transparent";
 
 			});
 			
