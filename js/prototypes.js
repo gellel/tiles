@@ -157,14 +157,17 @@
 
     win.jsonp = {};
     win.jsonp.get = function (url, callback) {
-        var queryconcat = (url.indexOf('?')) ? "&" : "?";
-         
         win.jsonp.response = callback;
-        document.body.insertNode("script", {
+
+        var queryconcat = (url.indexOf('?') === -1) ? "?" : "&";
+        
+        document.head.insertNode("script", {
             id: "json",
             "type": "text/javascript",
             "src": url + queryconcat + "callback=window.jsonp.response"
         });
+
+
     };
 
     win.jsonf = {};

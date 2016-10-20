@@ -8,9 +8,9 @@ class Base {
 		/** @param: {max} is type {integer} **/
 		/** @param: {enumerable} is type {array} and @optional **/
 		/** @return: is type {integer} or is type {object} **/
-		var result = Math.floor(Math.random() * (max - min + 1)) + min;
+		var result = Math.floor(Math.random() * (max - min + 1) + min);
 		/** return result **/
-		return enumerable ? enumerable[result] : result;
+		return enumerable && enumerable.length ? result === enumerable.length ? enumerable[result - 1] : enumerable[result] : result;
 	}
 
 	static __trim__ (config, trim) {
