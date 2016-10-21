@@ -23,9 +23,8 @@
 
 			window.getScript("json/tiles_as.js", function () {
 
-
 				var grid = new Grid(
-					{ __init__: true, columns: 140, rows: 60, scale: 10 });
+					{ __init__: true, columns: 160, rows: 60, scale: 10 });
 
 				var graph = new Graph(
 					Object.assign(grid.__this__(), { __class__: Tile }));
@@ -58,12 +57,11 @@
 
 
 				var simplex = new Simplex({
-					amplitude: 0.001, frequency: 0.0110, persistence: 0.39, octaves: 10, max: textures.length, min: 0
+					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length - Base.__random__(0, 5), min: 0
 				});
 
 
 				graph.editTiles(function (tile) {
-
 					return Object.assign(Object.assign(tile, { noise: parseInt(Math.abs(simplex.noise2d(tile.column, tile.row))) }), textures[tile.noise]);
 				});
 				
@@ -72,8 +70,7 @@
 				});	
 
 
-				var path = new Path(
-					Object.assign(graph.__this__(), { __copy__: true }));
+				var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
 
 
@@ -102,7 +99,6 @@
 				dirs.drawGeometry("fill", a_end.x, a_end.y, a_end.width, a_end.height, { 
 					fillStyle: Canvas.RGB(255, 50, 50)});
 
-
 				path.reset();
 
 				/** b path **/
@@ -114,8 +110,13 @@
 
 
 				var b_path = path.astar(b_start.column, b_start.row, b_end.column, b_end.row, {
-					prohibited: { class_name: ["alpine", "hill"], psd_name: ["grass_4"] },
-					allow: { class_name: ["grass"] }
+					prohibited: { 
+						class_name: ["alpine", "hill"], 
+						psd_name: ["grass_4"] 
+					},
+					allow: { 
+						class_name: ["grass"] 
+					}
 				});
 
 				new Queue(b_path).process(function (tile) {
