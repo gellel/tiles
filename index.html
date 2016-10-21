@@ -25,7 +25,7 @@
 
 
 				var grid = new Grid(
-					{ __init__: true, columns: 100, rows: 60, scale: 10 });
+					{ __init__: true, columns: 140, rows: 60, scale: 10 });
 
 				var graph = new Graph(
 					Object.assign(grid.__this__(), { __class__: Tile }));
@@ -59,21 +59,20 @@
 
 
 				var simplex = new Simplex({
-					amplitude: 0.001, frequency: 0.025, persistence: 0.25, octaves: 10, max: textures.length, min: 0
+					amplitude: 0.001, frequency: 0.0110, persistence: 0.34, octaves: 10, max: textures.length, min: 0
 				});
 
 
 				graph.editTiles(function (tile) {
-					return Object.assign(tile, textures[parseInt(Math.abs(simplex.noise2d(tile.column, tile.row)))])
+
+					return Object.assign(Object.assign(tile, { noise: parseInt(Math.abs(simplex.noise2d(tile.column, tile.row))) }), textures[tile.noise]);
 				});
 				
 				graph.getTiles(function (tile) {
 					base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: tile.colour.hex });
 
-					/** 
-
-					base.drawFillText(tile.x, tile.y + tile.height / 2, f, "normal 10px/normal sans-serif", { fillStyle: Canvas.RGB(0, 0, 0)}); 
-					**/
+					/*base.drawFillText(tile.x, tile.y + tile.height / 2, tile.noise, "normal 10px/normal sans-serif", { fillStyle: Canvas.RGB(0, 0, 0)}); */
+					
 
 				});
 
