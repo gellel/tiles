@@ -310,9 +310,9 @@ var geography = {
 					hex: "#76af6c"
 				},
 				type_cost: {
-					fire: 0,
+					fire: 1,
 					water: 1,
-					grass: 0
+					grass: 1
 				}
 			},
 			{
@@ -324,9 +324,9 @@ var geography = {
 					hex: "#72ad68"
 				},
 				type_cost: {
-					fire: 0,
+					fire: 1,
 					water: 2,
-					grass: 0
+					grass: 1
 				}
 			},
 			{

@@ -43,7 +43,7 @@ class Graph extends Grid {
 		return Base.__random__(0, column);
 	}
 
-	static getTileByAttribute (grid, attributes, column) {
+	static getTilesByAttribute (grid, attributes, column) {
 		/** @description: returns item from supplied grid 2d array with optional column **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
@@ -430,7 +430,7 @@ class Graph extends Grid {
 		}
 	}
 
-	static resetGraph (grid) {
+	static reset (grid) {
 		/** @description: resets calculations on graph **/
 		/** @param: {grid} is type {array} **/
 		/** edit all tiles in grid **/
@@ -508,12 +508,12 @@ class Graph extends Grid {
 		return Graph.getSpecificAdjacentTile(this.grid, tile, direction, copy);
 	}
 
-	getTileByAttribute (attributes, column) {
+	getTilesByAttribute (attributes, column) {
 		/** @description: returns item from supplied grid 2d array with optional column **/
 		/** @param: {attributes} is type {object} **/
 		/** @param: {column} is type {integer} **/
 		/** @return: is type {object} **/
-		return Graph.getTileByAttribute(this.grid, attributes, column)
+		return Graph.getTilesByAttribute(this.grid, attributes, column)
 	}
 
 	getRandomColumnInt () {
@@ -619,7 +619,7 @@ class Graph extends Grid {
 
 	reset () {
 		/** @description: resets calculations on graph **/
-		return Graph.resetGraph(this.grid);
+		return Graph.reset(this.grid);
 	}
 	
 	graph (columns, rows, __class__) {

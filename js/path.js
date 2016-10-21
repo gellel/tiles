@@ -261,13 +261,16 @@ class Path extends Graph {
 							var row = neighbour.row;
 							/** confirm costs and costs has property types by matching if object exists **/
 							if (Base.__contains__(neighbour, allowed)) {
+								/** add cost to node cost **/
 								node.g = node.g + node.cost;
 							}
 							/** confirm that cost type is string **/
 							if (penalty && neighbour.type_cost instanceof Object) {
-								/** **/
+								/** iterate over keys in cost types **/
 								for (var type in neighbour.type_cost) {
+									/** confirm that a key match was made **/
 									if (type === penalty) {
+										/** add cost to node cost **/
 										node.g = node.g + neighbour.type_cost[type];
 										break;
 									}

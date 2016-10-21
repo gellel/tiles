@@ -23,83 +23,113 @@
 
 			window.getScript("json/tiles_as.js", function () {
 
+				/** set base grid measurements **/
 				var grid = new Grid(
 					{ __init__: true, columns: 160, rows: 60, scale: 10 });
 
+				/** set base graph of grid from default; use tile class for all nodes in graph **/
 				var graph = new Graph(
 					Object.assign(grid.__this__(), { __class__: Tile }));
 
+				/** set base canvas for drawing world environment **/
 				var base = new Canvas(
 					Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 1" } }));
 
+				/** set base canvas for drawing paths through world **/
 				var dirs = new Canvas(
 					Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 2" } }));
-					
+				
+				/** set base canvas for drawing characters within world **/
 				var char = new Canvas(
 					Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 3" } }));
 
+				/** set base canvas for drawing grid overlay or other ui elements **/
 				var hexg = new Canvas(
 					Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 4" } }));
 
-				var climate = (function (obj) {
-					var i = [];
-					for (var key in obj) {
-						if (obj.hasOwnProperty(key)) {
-							i.push(obj[key])
-						}
-					}
-					return Base.__random__(0, i.length, i);
-				})(geography)
+				/** set base textures for world **/
+				var textures = geography.tropic.tiles;
 
-
-				
-				var textures = climate.tiles;
-
-
+				/** set base simplex processor for world generation **/
 				var simplex = new Simplex({
 					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length - Base.__random__(0, 5), min: 0
 				});
 
-
+				/** edit all tiles within base graph and assign their tile type, classification, cost, etc. **/
 				graph.editTiles(function (tile) {
 					return Object.assign(Object.assign(tile, { noise: parseInt(Math.abs(simplex.noise2d(tile.column, tile.row))) }), textures[tile.noise]);
 				});
 				
+				/** iterate over all tiles and paint canvas **/
 				graph.getTiles(function (tile) {
 					base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: tile.colour.hex });
 				});	
 
 
+				/** collect all tiles that are water **/
+				new Queue(graph.getTilesByAttribute({ class_name: ["ocean", "sea", "coast"]}, "grid")).process(function (tile) {
+
+					/** if rng is hit, add stipple **/
+					if (Base.__random__(0, 8) === 0) {
+						/** collect random measurement for small grid quarter square **/
+						var pos = tile.getRandomOutsideQuarter();
+						/** draw stipple to map **/
+						base.drawGeometry("fill", pos.left, pos.top, pos.width, pos.height, { 
+							fillStyle: Canvas.RGBA(255, 255, 255, Base.__rfloat__(0.000, 0.180, 4))
+						});	
+					}
+				});
+				
+				/** collect all tiles that are wash **/
+				new Queue(graph.getTilesByAttribute({ class_name: "wash"}, "grid")).process(function (tile) {
+					/** if rng is hit, add stipple **/
+					if (Base.__random__(0, 4) === 0) {
+						/** draw stipple to map **/
+						base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { 
+							fillStyle: Canvas.RGBA(255, 255, 255, Base.__rfloat__(0.000, 0.350, 4)) });	
+					}
+				});
+
+				/** set base path using inherited graph but as a copy of inherited graph **/
 				var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
 
+				/** end required **/
 
-				/** a path **/
-				var a_start = path.getTile(0, Base.__random__(0, grid.rows - 1));
+				/** fire type path **/
+
+				/** select tiles that are accessible by type **/
+				var a_start = path.getTilesByAttribute(
+					{ class_name: ["hill", "grass", "sand"] }, "grid")[0];
+				/** set random finishing row in last column **/
 				var a_end = path.getTile(grid.columns - 1, Base.__random__(0, grid.rows - 1));
 
+				/** set path **/
 				var a_path = path.astar(a_start.column, a_start.row, a_end.column, a_end.row, {
 					prohibited: { 
 						class_name: ["ocean", "sea"]
 					},
 					path_type: "fire"
 				});
-
+				/** draw path **/
 				new Queue(a_path).process(function (tile) {
 					dirs.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGBA(255, 0, 0, 0.80)})
 				});
-				
+				/** draw attempted start **/
 				dirs.drawGeometry("fill", a_start.x, a_start.y, a_start.width, a_start.height, { 
 					fillStyle: Canvas.RGB(255, 50, 50)});
-
+				/** draw attempted end **/
 				dirs.drawGeometry("fill", a_end.x, a_end.y, a_end.width, a_end.height, { 
 					fillStyle: Canvas.RGB(255, 50, 50)});
 
+				/** reset calculations for this path **/
 				path.reset();
+
+
 
 				/** b path **/
 
-				var b_start = path.getTileByAttribute(
+				var b_start = path.getTilesByAttribute(
 					{ class_name: ["ocean", "sea"], psd_name: ["coast_3", "coast_4"]}, "grid")[0];
 
 				var b_end = path.getTile(grid.columns - 1, Base.__random__(0, grid.rows - 1));
@@ -117,18 +147,18 @@
 				});
 
 				new Queue(b_path).process(function (tile) {
-					dirs.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGBA(0, 255, 0, 0.80)})
+					dirs.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGBA(0, 0, 255, 0.80)})
 				});
 
 				dirs.drawGeometry("fill", b_start.x, b_start.y, b_start.width, b_start.height, { 
-					fillStyle: Canvas.RGB(50, 255, 0)});
+					fillStyle: Canvas.RGB(50, 0, 255)});
 
 				dirs.drawGeometry("fill", b_end.x, b_end.y, b_end.width, b_end.height, { 
-					fillStyle: Canvas.RGB(50, 255, 0)});
+					fillStyle: Canvas.RGB(50, 0, 255)});
 
 
 				/** draw grid overlay **/
-				hexg.drawGridLines({ strokeStyle: Canvas.RGBA(255, 255, 255, 0.15) });
+				//hexg.drawGridLines({ strokeStyle: Canvas.RGBA(255, 255, 255, 0.15) });
 
 			}); 
 

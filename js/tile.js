@@ -176,49 +176,49 @@ class Tile extends Base {
 	getTopLeftInsideQuarter () {
 	 	/** @description: function for getting tiles top left inside quarter measurements **/
 		/** return top left hand side starting inside quarter square; does not calculate x position from canvas position **/
-		return { top: 0, right: this.squareWdith / 2, bottom: this.gridTileHeight / 2, left: 0, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: 0, right: this.gridTileWidth / 2, bottom: this.gridTileHeight / 2, left: 0, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getTopRightInsideQuarter () {
 	 	/** @description: function for getting tiles top right inside quarter measurements **/
 		/** return top right hand side starting inside quarter square; does not calculate x position from canvas position; starts calculation from middle of square **/
-		return { top: 0, right: this.width, bottom: this.gridTileHeight / 2, left: this.squareWdith / 2, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: 0, right: this.width, bottom: this.gridTileHeight / 2, left: this.gridTileWidth / 2, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getBottomLeftInsideQuarter () {
 	 	/** @description: function for getting tiles bottom left inside quarter measurements **/
 		/** return bottom left hand side starting inside quarter square; does not calculate x position from canvas position **/
-		return { top: this.gridTileHeight / 2, right: this.squareWdith / 2, bottom: this.height, left: 0, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: this.gridTileHeight / 2, right: this.gridTileWidth / 2, bottom: this.height, left: 0, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getBottomRightInsideQuarter () {
 	 	/** @description: function for getting tiles bottom right inside quarter measurements **/
 		/** return bottom right hand side starting inside quarter square; does not calculate x position from canvas position; starts calculation from middle of square **/
-		return { top: this.gridTileHeight / 2, right: this.width, bottom: this.gridTileHeight / 2, left: this.squareWdith / 2, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: this.gridTileHeight / 2, right: this.width, bottom: this.gridTileHeight / 2, left: this.gridTileWidth / 2, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getTopLeftOutsideQuarter () {
 	 	/** @description: function for getting tiles top left outside quarter measurements **/
 		/** return top left hand side starting inside quarter square; calculates x position from canvas position **/
-		return { top: this.y, right: this.getRightPoint() - this.squareWdith / 2, bottom: this.y + this.gridTileHeight / 2, left: this.x, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: this.y, right: this.getRightPoint() - this.gridTileWidth / 2, bottom: this.y + this.gridTileHeight / 2, left: this.x, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getTopRightOutsideQuarter () {
 	 	/** @description: function for getting tiles top right outside quarter measurements **/
 		/** return top right hand side starting inside quarter square; calculates x position from canvas position **/
-		return { top: this.y, right: this.getRightPoint(), bottom: this.y + this.gridTileHeight / 2, left: this.x + this.squareWdith / 2, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: this.y, right: this.getRightPoint(), bottom: this.y + this.gridTileHeight / 2, left: this.x + this.gridTileWidth / 2, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getBottomLeftOutsideQuarter () {
 	 	/** @description: function for getting tiles bottom left outside quarter measurements **/
 		/** return bottom left hand side starting inside quarter square; calculates x position from canvas position **/
-		return { top: this.y + this.gridTileHeight / 2, right: this.getRightPoint() - this.squareWdith / 2, bottom: this.getBottomPoint(), left: this.x, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: this.y + this.gridTileHeight / 2, right: this.getRightPoint() - this.gridTileWidth / 2, bottom: this.getBottomPoint(), left: this.x, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getBottomRightOutsideQuarter () {
 	 	/** @description: function for getting tiles bottom right outside quarter measurements **/
 		/** return bottom right hand side starting inside quarter square; calculates x position from canvas position **/
-		return { top: this.y + this.gridTileHeight / 2, right: this.getRightPoint(), bottom: this.getBottomPoint(), left: this.x + this.squareWdith / 2, width: this.squareWdith / 2, height: this.gridTileHeight / 2 };
+		return { top: this.y + this.gridTileHeight / 2, right: this.getRightPoint(), bottom: this.getBottomPoint(), left: this.x + this.gridTileWidth / 2, width: this.gridTileWidth / 2, height: this.gridTileHeight / 2 };
 	}
 
 	getOutsideQuarters () {

@@ -2,6 +2,15 @@ class Base {
 
 	/** @description: base type of class to extend shared child classes **/
 
+	static __rfloat__ (min, max, decimal) {
+		/** @description: create random float using range **/
+		/** @param: {min} is type {float} **/
+		/** @param: {max} is type {float} **/
+		/** @param: {decimal} is type {integer} **/
+		/** @return: is type {integer} or is type {object} **/
+		return (Math.random() * (min - max) + max).toFixed(4)
+	}
+
 	static __random__ (min, max, enumerable) {
 		/** @description: create random number using range **/
 		/** @param: {min} is type {integer} **/
