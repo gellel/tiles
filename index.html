@@ -39,9 +39,8 @@
 				var char = new Canvas(
 					Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 3" } }));
 
-				var path = new Path(
-					Object.assign(graph.__this__(), { __copy__: true }));
-
+				var hexg = new Canvas(
+					Object.assign(grid.__this__(), { attr: { style: "position: absolute; z-index: 4" } }));
 
 				var climate = (function (obj) {
 					var i = [];
@@ -59,7 +58,7 @@
 
 
 				var simplex = new Simplex({
-					amplitude: 0.001, frequency: 0.0110, persistence: 0.34, octaves: 10, max: textures.length, min: 0
+					amplitude: 0.001, frequency: 0.0110, persistence: 0.39, octaves: 10, max: textures.length, min: 0
 				});
 
 
@@ -70,11 +69,68 @@
 				
 				graph.getTiles(function (tile) {
 					base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: tile.colour.hex });
+				});	
 
-					/*base.drawFillText(tile.x, tile.y + tile.height / 2, tile.noise, "normal 10px/normal sans-serif", { fillStyle: Canvas.RGB(0, 0, 0)}); */
-					
 
+				var path = new Path(
+					Object.assign(graph.__this__(), { __copy__: true }));
+
+
+
+				/** a path **/
+				var a_start = path.getTile(0, Base.__random__(0, grid.rows - 1));
+				var a_end = path.getTile(grid.columns - 1, Base.__random__(0, grid.rows - 1));
+
+				var a_path = path.astar(a_start.column, a_start.row, a_end.column, a_end.row, {
+					prohibited: { 
+						class_name: ["ocean", "sea"], 
+						psd_name: ["coast_3", "coast_4"] 
+					},
+					allow: { 
+						class_name: ["hill", "alpine"], 
+						psd_name: ["sand_1", "sand_2", "coast_1", "coast_2"] 
+					}
 				});
+
+				new Queue(a_path).process(function (tile) {
+					dirs.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGBA(255, 0, 0, 0.80)})
+				});
+				
+				dirs.drawGeometry("fill", a_start.x, a_start.y, a_start.width, a_start.height, { 
+					fillStyle: Canvas.RGB(255, 50, 50)});
+
+				dirs.drawGeometry("fill", a_end.x, a_end.y, a_end.width, a_end.height, { 
+					fillStyle: Canvas.RGB(255, 50, 50)});
+
+
+				path.reset();
+
+				/** b path **/
+
+				var b_start = path.getTileByAttribute(
+					{ class_name: ["ocean", "sea"], psd_name: ["coast_3", "coast_4"]}, "grid")[0];
+
+				var b_end = path.getTile(grid.columns - 1, Base.__random__(0, grid.rows - 1));
+
+
+				var b_path = path.astar(b_start.column, b_start.row, b_end.column, b_end.row, {
+					prohibited: { class_name: ["alpine", "hill"], psd_name: ["grass_4"] },
+					allow: { class_name: ["grass"] }
+				});
+
+				new Queue(b_path).process(function (tile) {
+					dirs.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGBA(0, 255, 0, 0.80)})
+				});
+
+				dirs.drawGeometry("fill", b_start.x, b_start.y, b_start.width, b_start.height, { 
+					fillStyle: Canvas.RGB(50, 255, 0)});
+
+				dirs.drawGeometry("fill", b_end.x, b_end.y, b_end.width, b_end.height, { 
+					fillStyle: Canvas.RGB(50, 255, 0)});
+
+
+				/** draw grid overlay **/
+				hexg.drawGridLines({ strokeStyle: Canvas.RGBA(255, 255, 255, 0.15) });
 
 			}); 
 

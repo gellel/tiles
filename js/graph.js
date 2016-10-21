@@ -50,11 +50,9 @@ class Graph extends Grid {
 		/** @return: is type {object} **/
 		if (!grid || !grid instanceof Array) return false;
 		/** set base column or fetch from random **/
-		column = !isNaN(column) ? column : Graph.getRandomColumnInt(grid);
-		/** set base flattened row **/
-		var row = [].concat.apply([], grid[column]);
+		column = !isNaN(column) ? grid[column] : column === "grid" ? [].concat.apply([], grid) : grid[Graph.getRandomColumnInt(grid)];
 		/** filter **/
-		row = row.filter(function (tile) { if (Base.__contains__(tile, attributes)) return tile; });
+		var row = column.filter(function (tile) { if (Base.__contains__(tile, attributes)) return tile; });
 		/** return first **/
 		return row;
 	}

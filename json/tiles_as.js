@@ -5,7 +5,7 @@ var geography = {
 
 			/** ocean **/
 			{	
-				classification: "ocean",
+				class_name: "ocean",
 				type: "water",
 				psd_name: "ocean_3",
 				cost: 3,
@@ -15,7 +15,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "ocean",
+				class_name: "ocean",
 				type: "water",
 				psd_name: "ocean_2",
 				cost: 2,
@@ -25,7 +25,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "ocean",
+				class_name: "ocean",
 				type: "water",
 				psd_name: "ocean_1",
 				cost: 1,
@@ -36,7 +36,7 @@ var geography = {
 			},
 			/** sea **/
 			{
-				classification: "sea",
+				class_name: "sea",
 				type: "water",
 				psd_name: "sea_4",
 				cost: 4,
@@ -46,7 +46,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "sea",
+				class_name: "sea",
 				type: "water",
 				psd_name: "sea_3",
 				cost: 3,
@@ -56,7 +56,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "sea",
+				class_name: "sea",
 				type: "water",
 				psd_name: "sea_2",
 				cost: 2,
@@ -66,7 +66,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "sea",
+				class_name: "sea",
 				type: "water",
 				psd_name: "sea_1",
 				cost: 4,
@@ -77,7 +77,7 @@ var geography = {
 			},
 			/** coast **/
 			{
-				classification: "coast",
+				class_name: "coast",
 				psd_name: "coast_4",
 				cost: 3,
 				colour: { 
@@ -86,7 +86,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "coast",
+				class_name: "coast",
 				psd_name: "coast_3",
 				cost: 2,
 				colour: { 
@@ -95,7 +95,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "coast",
+				class_name: "coast",
 				psd_name: "coast_2",
 				cost: 2,
 				colour: { 
@@ -104,7 +104,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "coast",
+				class_name: "coast",
 				psd_name: "coast_1",
 				cost: 1,
 				colour: { 
@@ -115,7 +115,7 @@ var geography = {
 			/** wash **/
 			
 			{	
-				classification: "wash",
+				class_name: "wash",
 				psd_name: "wash_1",
 				cost: 1,
 				colour: { 
@@ -126,7 +126,7 @@ var geography = {
 
 			/** sand **/
 			{	
-				classification: "sand",
+				class_name: "sand",
 				psd_name: "sand_2",
 				cost: 1,
 				colour: { 
@@ -135,7 +135,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "sand",
+				class_name: "sand",
 				psd_name: "sand_1",
 				cost: 2,
 				colour: { 
@@ -147,7 +147,7 @@ var geography = {
 			
 			/** grass **/
 			{
-				classification: "grass",
+				class_name: "grass",
 				psd_name: "grass_6",
 				cost: 0,
 				colour: { 
@@ -156,7 +156,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "grass",
+				class_name: "grass",
 				psd_name: "grass_5",
 				cost: 0,
 				colour: { 
@@ -165,7 +165,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "grass",
+				class_name: "grass",
 				psd_name: "grass_4",
 				cost: 0,
 				colour: { 
@@ -174,7 +174,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "grass",
+				class_name: "grass",
 				psd_name: "grass_3",
 				cost: 1,
 				colour: { 
@@ -183,7 +183,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "grass",
+				class_name: "grass",
 				psd_name: "grass_2",
 				cost: 2,
 				colour: { 
@@ -192,7 +192,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "grass",
+				class_name: "grass",
 				psd_name: "grass_1",
 				cost: 3,
 				colour: { 
@@ -202,7 +202,7 @@ var geography = {
 			},
 			/** hill **/
 			{
-				classification: "hill",
+				class_name: "hill",
 				psd_name: "hill_4",
 				cost: 1,
 				colour: { 
@@ -211,7 +211,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "hill",
+				class_name: "hill",
 				psd_name: "hill_3",
 				cost: 2,
 				colour: { 
@@ -220,7 +220,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "hill",
+				class_name: "hill",
 				psd_name: "hill_2",
 				cost: 3,
 				colour: { 
@@ -229,7 +229,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "hill",
+				class_name: "hill",
 				psd_name: "hill_1",
 				cost: 4,
 				colour: { 
@@ -239,7 +239,7 @@ var geography = {
 			},
 			/** alpine **/ 
 			{
-				classification: "alpine",
+				class_name: "alpine",
 				psd_name: "alpine_6",
 				cost: 1,
 				colour: { 
@@ -248,7 +248,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "alpine",
+				class_name: "alpine",
 				psd_name: "alpine_5",
 				cost: 1,
 				colour: { 
@@ -257,7 +257,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "alpine",
+				class_name: "alpine",
 				psd_name: "alpine_4",
 				cost: 2,
 				colour: {
@@ -266,7 +266,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "alpine",
+				class_name: "alpine",
 				psd_name: "alpine_3",
 				cost: 2,
 				colour: {
@@ -275,7 +275,7 @@ var geography = {
 				}
 			},
 			{
-				classification: "alpine",
+				class_name: "alpine",
 				psd_name: "alpine_2",
 				cost: 2,
 				colour: {
