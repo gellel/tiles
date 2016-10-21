@@ -80,13 +80,9 @@
 
 				var a_path = path.astar(a_start.column, a_start.row, a_end.column, a_end.row, {
 					prohibited: { 
-						class_name: ["ocean", "sea"], 
-						psd_name: ["coast_3", "coast_4"] 
+						class_name: ["ocean", "sea"]
 					},
-					allow: { 
-						class_name: ["hill", "alpine"], 
-						psd_name: ["sand_1", "sand_2", "coast_1", "coast_2"] 
-					}
+					path_type: "fire"
 				});
 
 				new Queue(a_path).process(function (tile) {
@@ -116,7 +112,8 @@
 					},
 					allow: { 
 						class_name: ["grass"] 
-					}
+					},
+					path_type: "water"
 				});
 
 				new Queue(b_path).process(function (tile) {

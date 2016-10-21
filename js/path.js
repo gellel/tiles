@@ -156,7 +156,7 @@ class Path extends Graph {
 				/** filter unfound tiles **/
 				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
 				/** filter out unwanted **/
-				if (prohibited) neighbours = neighbours.filter(function (tile) { return Base.__contains__(tile, prohibited) ? tile : false; });
+				if (prohibited) neighbours = neighbours.filter(function (tile) { return !Base.__contains__(tile, prohibited) ? tile : false; });
 				/** confirm neighbours remain **/
 				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
@@ -209,6 +209,8 @@ class Path extends Graph {
 		var prohibited = costs.prohibited || false;
 		/** set include tiles **/
 		var allowed = costs.allowed || false;
+		/** set cost type for type of path **/
+		var penalty = costs.path_type || false;
 		/** set graph weight **/
 		start.g = 0;
 		/** set distanct weight **/
@@ -260,6 +262,16 @@ class Path extends Graph {
 							/** confirm costs and costs has property types by matching if object exists **/
 							if (Base.__contains__(neighbour, allowed)) {
 								node.g = node.g + node.cost;
+							}
+							/** confirm that cost type is string **/
+							if (penalty && neighbour.type_cost instanceof Object) {
+								/** **/
+								for (var type in neighbour.type_cost) {
+									if (type === penalty) {
+										node.g = node.g + neighbour.type_cost[type];
+										break;
+									}
+								}
 							}
 							/** set new graph weight for tile including the cost of movement to node **/
 							var ng = node.g + ((column - node.column === 0 || row - node.row === 0) ? 1 : SQRT2);
