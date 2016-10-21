@@ -90,6 +90,17 @@
 					}
 				});
 
+				/** collect all tiles that are sand **/
+				new Queue(graph.getTilesByAttribute({ class_name: "sand"}, "grid")).process(function (tile) {
+					/** if rng is hit, add stipple **/
+					if (Base.__random__(0, 3) === 0) {
+						/** draw stipple to map **/
+						base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { 
+							fillStyle: Canvas.RGBA(0, 0, 0, Base.__rfloat__(0.000, 0.060, 4)) });	
+					}
+				});
+
+
 				/** set base path using inherited graph but as a copy of inherited graph **/
 				var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
 
