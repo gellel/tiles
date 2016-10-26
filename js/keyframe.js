@@ -8,7 +8,7 @@ keyframe.start = function (functions) {
 	/** set function to supplied or use default for testing **/
 	this.functions = functions || function (delta) { console.log(delta); };
 	/** set animation function to single function or function stack **/
-	this.animate = (keyframe.functions.length) ? function (delta) { if (keyframe.abort) return; for (var i = 0, f = keyframe.functions; i < f.length; i++) { f[i](delta); }; keyframe.id = window.requestAnimationFrame(keyframe.animate); } : function (delta) { if (keyframe.abort) return; keyframe.functions(delta); keyframe.id = window.requestAnimationFrame(keyframe.animate); };
+	this.animate = (keyframe.functions instanceof Array) ? function (delta) { if (keyframe.abort) return; for (var i = 0, f = keyframe.functions; i < f.length; i++) { f[i](delta); }; keyframe.id = window.requestAnimationFrame(keyframe.animate); } : function (delta) { if (keyframe.abort) return; keyframe.functions(delta); keyframe.id = window.requestAnimationFrame(keyframe.animate); };
 	/** run request animation frames **/
 	this.animate();
 };

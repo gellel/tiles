@@ -87,7 +87,7 @@ class Graph extends Grid {
 		/** @param: {direction} is type {string} **/
 		/** @return: is type {object} **/
 		/** return object **/
-		return "top" === direction ? {x: 0, y: -1} : "right" === direction ? {x: 1, y: 0} : "bottom" === direction ? {x: 0, y: 1} : {x: -1, y: 0};
+		return "top" === direction ? { x: 0, y: -1} : "topleft" === direction ? { x: -1, y: -1 } : "topright" === direction ? { x: 1, y: -1 } : "right" === direction ? { x: 1, y: 0 } : "bottom" === direction ? { x: 0, y: 1 } :  "bottomleft" === direction ? { x: -1, y: 1 } : "bottomright" === direction ? { x: 1, y: 1 } : { x: -1, y: 0 };
 	}
 
 	static getRandomDirectionString (directions) {
@@ -500,6 +500,17 @@ class Graph extends Grid {
 		return Graph.getAdjacentTiles(this.grid, tile, this.directions, copy);
 	}
 
+	getAllAdjacentTiles (tile, copy) {
+		/** @description: returns item from this grid **/
+		/** @param: {tile} is type {object} **/
+		/** @param: {copy} is type {boolean} **/
+		/** @return: is type {array} **/
+		var directions = this.directions.slice();
+		/** update directions to contain all possible angles **/
+		directions.push("topleft", "topright", "bottomleft", "bottomright");
+		return Graph.getAdjacentTiles(this.grid, tile, directions, copy);
+	}
+
 	getSpecificAdjacentTile (tile, direction, copy) {
 		/** @description: returns item from this grid **/
 		/** @param: {tile} is type {object} **/
@@ -659,7 +670,6 @@ class Graph extends Grid {
 		this.grid = config.grid || this.graph(config.columns, config.rows, config.__class__);
 		/** update grid reference **/
 		this.__grid__({ columns: this.grid.length, rows: this.grid[0].length });
-
 	}
 
 	constructor (config) {
