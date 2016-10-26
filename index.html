@@ -170,6 +170,25 @@
 				//hexg.drawGridLines({ strokeStyle: Canvas.RGBA(255, 255, 255, 0.15) });
 
 
+
+				function editor (graph, simplex, canvas) {
+					/** create editor container **/
+					document.body.insertNode("div", { id: "editor", style: "position: absolute; z-index: 5; background-color: rgba(0, 0, 0, 0.2); "}, function (div) {
+						/** **/
+						var slides = simplex.getScalable();
+						/** **/
+						for (var key in slides) {
+							/** **/
+							div.insertNode("input", Object.assign(slides[key], { type: "range" })).bind("input", function () {
+								/** set new simplex value **/
+								simplex[this.id] = this.value;
+							});
+						}
+					});
+				};
+
+				editor(graph, simplex, base);
+
 				
 			}); 
 
