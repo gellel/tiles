@@ -99,7 +99,7 @@ function editRange (section, prop, update) {
 				/** create horizotal padding **/
 				dx.insertNode("div", { class: "rp-xs-3 lp-xs-3" }, function (dy) {
 					/** create vertical padding **/
-					dy.insertNode("input", { type: "range", class: "col-xs-12 tp-xs-3 bp-xs-3 font-xs-6", name: prop.id, value: prop.value, min: prop.min, max: prop.max }, function (range) {
+					dy.insertNode("input", { type: "range", class: "col-xs-12 tp-xs-3 bp-xs-3 font-xs-6", name: prop.id, value: prop.value, min: prop.min, max: prop.max, step: prop.step }, function (range) {
 						/** event listener for input changes **/
 						range.bind("input", function () {
 							/** update simplex object **/
