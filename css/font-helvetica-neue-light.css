@@ -1,0 +1,14 @@
+@font-face {
+    font-family: HelveticaNeueLight;
+    src:	url(../fonts/helveticaneue-light.eot?dh2pc2);
+    src:	url(../fonts/helveticaneue-light.eot?#iefix-dh2pc2) format('embedded-opentype'), 
+    		url(../fonts/helveticaneue-light.ttf?dh2pc2) format('truetype'), 
+    		url(../fonts/helveticaneue-light.woff?dh2pc2) format('woff'), 
+    		url(../fonts/helveticaneue-light.svg?dh2pc2#helveticaneue-light) format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+	font-family: 'HelveticaNeueLight', sans-serif;
+}

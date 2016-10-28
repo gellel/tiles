@@ -1,0 +1,14 @@
+@font-face {
+    font-family: HelveticaNeueThin;
+    src:	url(https://s.yimg.com/av/gemini/fonts//helveticaneue-thin.eot?dh2pc2);
+    src:	url(https://s.yimg.com/av/gemini/fonts//helveticaneue-thin.eot?#iefix-dh2pc2) format('embedded-opentype'), 
+    		url(https://s.yimg.com/av/gemini/fonts//helveticaneue-thin.ttf?dh2pc2) format('truetype'), 
+    		url(https://s.yimg.com/av/gemini/fonts//helveticaneue-thin.woff?dh2pc2) format('woff'), 
+    		url(https://s.yimg.com/av/gemini/fonts//helveticaneue-thin.svg?dh2pc2#helveticaneue-thin) format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+	font-family: 'HelveticaNeueThin', sans-serif;
+}

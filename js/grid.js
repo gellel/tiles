@@ -2,6 +2,18 @@ class Grid extends Base {
 	
 	/** @description: set grid measurements for use as configuration within graphs and tiles **/
 
+	width () {
+		/** @description: returns pixel width **/
+		/** @return: is type {string} **/
+		return this.gridWidth + "px";
+	}
+
+	height () {
+		/** @description: returns pixel height **/
+		/** @return: is type {string} **/
+		return this.gridHeight + "px";
+	}
+
 	__grid__ (config) {
 		/** @description: private method for grid to organise expected {this} data **/
 		/** @param: {config} is type {object} **/

@@ -5,8 +5,12 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta http-equiv="Content-Language" content="en">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>
-	<body>
+	<body class="vh-xs-12 flex-xs pos-xs-relative">
+		
+		<section id="frame" class="tm-xs-auto rm-xs-auto bm-xs-auto lm-xs-auto z-xs-1 pos-xs-relative"></section>
+		<section id="editor" class="t-xs-6 l-xs-6 z-xs-2 pos-xs-absolute"></section>
 
 		<script src="js/prototypes.js"></script>
 		<script src="js/keyframe.js"></script>
@@ -20,176 +24,103 @@
 		<script src="js/simplex.js"></script>
 		<script src="js/character.js"></script>
 		<script src="js/canvas.js"></script>
+		<script src="js/editor.js"></script>
 		<script type="text/javascript">
 
 			window.getScript("json/tiles_as.js", function () {
 
+				/** set frame container **/
+				var frame = document.getElementById("frame");
+
+				/** set editor container **/
+				var editor = document.getElementById("editor");
+
 				/** set base grid measurements **/
-				var grid = new Grid(
-					{ __init__: true, columns: 160, rows: 60, scale: 10 });
+				window.grid = new Grid(
+					{ __init__: true, columns: 120, rows: 40, scale: 10 });
 
 				/** set base graph of grid from default; use tile class for all nodes in graph **/
-				var graph = new Graph(
+				window.graph = new Graph(
 					Object.assign(grid.__this__(), { __class__: Tile }));
 
 				/** set base canvas for drawing world environment **/
-				var base = new Canvas(
-					Object.assign(grid.__this__(), { parent: document.getElementById("frames"), attr: { style: "position: absolute; z-index: 1" } }));
+				window.base = new Canvas(
+					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 1" } }));
 
 				/** set base canvas for drawing paths through world **/
-				var dirs = new Canvas(
-					Object.assign(grid.__this__(), { parent: document.getElementById("frames"), attr: { style: "position: absolute; z-index: 2" } }));
+				window.dirs = new Canvas(
+					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 2" } }));
 				
 				/** set base canvas for drawing characters within world **/
-				var stage = new Canvas(
-					Object.assign(grid.__this__(), { parent: document.getElementById("frames"), attr: { style: "position: absolute; z-index: 3" } }));
+				window.stage = new Canvas(
+					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 3" } }));
 
 				/** set base canvas for drawing grid overlay or other ui elements **/
-				var hexg = new Canvas(
-					Object.assign(grid.__this__(), { parent: document.getElementById("frames"), attr: { style: "position: absolute; z-index: 4" } }));
+				window.hexg = new Canvas(
+					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 4" } }));
 
 				/** set base textures for world **/
-				var textures = geography.tropic.tiles;
+				window.textures = geography.tropic.tiles;
 
 				/** set base simplex processor for world generation **/
-				var simplex = new Simplex({
-					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length - Base.__random__(0, 5), min: 0 });
-
-
-				/** edit all tiles within base graph and assign their tile type, classification, cost, etc. **/
-				graph.editTiles(function (tile) {
-					return Object.assign(Object.assign(tile, { noise: parseInt(Math.abs(simplex.noise2d(tile.column, tile.row))) }), textures[tile.noise]);
+				window.simplex = new Simplex({
+					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0
 				});
+
+				/** set parent frame dimensions **/
+				frame.setStyles({ width: grid.width(), height: grid.height() });
 				
-				/** iterate over all tiles and paint canvas **/
-				graph.getTiles(function (tile) {
-					base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: tile.colour.hex });
-				});	
-
-				/** collect all tiles that are water **/
-				new Queue(graph.getTilesByAttribute({ class_name: ["ocean", "sea", "coast"]}, "grid")).process(function (tile) {
-					/** if rng is hit, add stipple **/
-					if (Base.__random__(0, 8) === 0) {
-						/** collect random measurement for small grid quarter square **/
-						var pos = tile.getRandomOutsideQuarter();
-						/** draw stipple to map **/
-						base.drawGeometry("fill", pos.left, pos.top, pos.width, pos.height, { 
-							fillStyle: Canvas.RGBA(255, 255, 255, Base.__rfloat__(0.000, 0.150, 4))
-						});	
-					}
-				});
-				
-				/** collect all tiles that are wash **/
-				new Queue(graph.getTilesByAttribute({ class_name: "wash"}, "grid")).process(function (tile) {
-					/** if rng is hit, add stipple **/
-					if (Base.__random__(0, 4) === 0) {
-						/** draw stipple to map **/
-						base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { 
-							fillStyle: Canvas.RGBA(255, 255, 255, Base.__rfloat__(0.000, 0.350, 4)) });	
-					}
-				});
-
-				/** collect all tiles that are sand **/
-				new Queue(graph.getTilesByAttribute({ class_name: "sand"}, "grid")).process(function (tile) {
-					/** if rng is hit, add stipple **/
-					if (Base.__random__(0, 3) === 0) {
-						/** draw stipple to map **/
-						base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { 
-							fillStyle: Canvas.RGBA(0, 0, 0, Base.__rfloat__(0.000, 0.060, 4)) });	
-					}
-				});
 
 
-				/** set base path using inherited graph but as a copy of inherited graph **/
-				var path = new Path(Object.assign(graph.__this__(), { __copy__: true }));
-				/** end required **/
+				function createBias (c1, r1, c2, r2) {
 
+					var cx = c1 / parseFloat(c2);
 
-				/** fire type path **/
+					var cy = r1 / parseFloat(r2);
 
-				/** select tiles that are accessible by type **/
-				var a_start = path.getTilesByAttribute(
-					{ class_name: ["hill", "grass", "sand"] }, "grid")[0];
+					if (!isFinite(cx) || isNaN(cx)) cx = 0;
+					if (!isFinite(cy) || isNaN(cy)) cy = 0;
 
-				/** set random finishing row in last column **/
-				var a_end = path.getTile(grid.columns - 1, Base.__random__(0, grid.rows - 1));
+					var fx = cx * 2 - 1;
+					var fy = cy * 2 - 1;
 
-				/** set path **/
-				var a_path = path.astar(a_start.column, a_start.row, a_end.column, a_end.row, {
-					prohibited: { 
-						class_name: ["ocean", "sea"]
-					},
-					path_type: "fire"
-				});
+					return Math.max(Math.abs(fx), Math.abs(fy));
+				}
 
-				/** draw path **/
-				new Queue(a_path).process(function (tile) {
-					dirs.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGBA(255, 0, 0, 0.80)})
-				});
-
-				/** draw attempted start **/
-				dirs.drawGeometry("fill", a_start.x, a_start.y, a_start.width, a_start.height, { 
-					fillStyle: Canvas.RGB(255, 50, 50)});
-
-				/** draw attempted end **/
-				dirs.drawGeometry("fill", a_end.x, a_end.y, a_end.width, a_end.height, { 
-					fillStyle: Canvas.RGB(255, 50, 50)});
-
-				/** reset calculations for this path **/
-				path.reset();
-
-
-				/** b path **/
-				var b_start = path.getTilesByAttribute(
-					{ class_name: ["ocean", "sea"], psd_name: ["coast_3", "coast_4"]}, "grid")[0];
-
-				var b_end = path.getTile(grid.columns - 1, Base.__random__(0, grid.rows - 1));
-
-				var b_path = path.astar(b_start.column, b_start.row, b_end.column, b_end.row, {
-					prohibited: { 
-						class_name: ["alpine", "hill"], 
-						psd_name: ["grass_4"] 
-					},
-					allow: { 
-						class_name: ["grass"] 
-					},
-					path_type: "water"
-				});
-
-				new Queue(b_path).process(function (tile) {
-					dirs.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: Canvas.RGBA(0, 0, 255, 0.80)})
-				});
-
-				dirs.drawGeometry("fill", b_start.x, b_start.y, b_start.width, b_start.height, { 
-					fillStyle: Canvas.RGB(50, 0, 255)});
-
-				dirs.drawGeometry("fill", b_end.x, b_end.y, b_end.width, b_end.height, { 
-					fillStyle: Canvas.RGB(50, 0, 255)});
-
-				/** draw grid overlay **/
-				//hexg.drawGridLines({ strokeStyle: Canvas.RGBA(255, 255, 255, 0.15) });
-
-
-
-				function editor (graph, simplex, canvas) {
-					/** create editor container **/
-					document.body.insertNode("div", { id: "editor", style: "position: absolute; z-index: 5; background-color: rgba(0, 0, 0, 0.2); "}, function (div) {
-						/** **/
-						var slides = simplex.getScalable();
-						/** **/
-						for (var key in slides) {
-							/** **/
-							div.insertNode("input", Object.assign(slides[key], { type: "range" })).bind("input", function () {
-								/** set new simplex value **/
-								simplex[this.id] = this.value;
-							});
-						}
-					});
-				};
-
-				editor(graph, simplex, base);
 
 				
+
+				function createTerrain () {
+					graph.getTiles(function (tile) {
+
+						
+						var fn = createBias(tile.column, tile.row, tile.columns, tile.rows);
+
+						//var fc = createCurve(fn);
+
+						var a = simplex.noise2d(tile.column, tile.row, fn);
+				
+						var f = parseInt(Math.abs(a));
+
+						var t = textures[f];
+
+
+						if (t) base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: t.colour.hex })
+						
+						
+
+					})
+				}
+				
+
+
+
+
+				
+
+				createEditor(editor, simplex.getAdjustable(), createTerrain);
+				createTerrain();
+
 			}); 
 
 

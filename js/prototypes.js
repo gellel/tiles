@@ -2,19 +2,28 @@
     "use strict";
 
     el.prototype.hasClass = function (cls) {
+        if (this.classList) this.classList.contains(cls);
         return new RegExp('(\\s|^)' + cls + '(\\s|$)').test(this.className);
     };
 
     el.prototype.addClass = function (cls) {
+        if (this.classList) this.classList.add(cls);
         if (!this.hasClass(cls)) {
             this.className = ((/\s$/).test(this.className)) ? this.className + cls : this.className + ' ' + cls;
         }
     };
 
     el.prototype.removeClass = function (cls) {
+        if (this.classList) this.classList.remove(cls);
         if (this.hasClass(cls)) {
             var reg = new RegExp('(\\s|^)'+ cls +'(\\s|$)');
             this.className = this.className.replace(reg,' ');
+        }
+    }
+
+    el.prototype.setStyles = function (styles) {
+        for (var key in styles) {
+            this.style[key] = styles[key];
         }
     }
 
@@ -22,12 +31,6 @@
         for (var key in attributes) {
             this.setAttribute(key, attributes[key]);
         };
-    };
-
-    el.prototype.observe = function (observables, callback) {
-        for (var i = 0; i < observables.length; i++) {
-            this[observables[i].name](observables[i].data);
-        }
     };
 
     el.prototype.bind = function (event, callback, propegation) {

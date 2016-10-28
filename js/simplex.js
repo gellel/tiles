@@ -78,12 +78,17 @@ class Simplex {
 		return value;
 	}
 
-	noise2d (x, y, soft) {
+	noise2d (x, y, bias, soft) {
 		/** @description: generates a noise value for 2d simplex **/
 		/** @param: {x} is type {number} **/
 		/** @param: {y} is type {number} **/
+		/** @param: {bias} is type {number} **/
 		/** @param: {soft} is type {boolean} **/
 		/** @return: is type {float} **/
+		/** set default bias **/
+		bias = bias || 0;
+		/** set range **/
+		var range = this.max - this.min;
 		/** set copy of base amplitude **/
 		var amplitude = this.amplitude;
 		/** set copy of base frequency **/
@@ -101,7 +106,7 @@ class Simplex {
 			/** scale y value by copied frequency **/
 			var yf = y * frequency;
 			/** set noise value and scale by copied amplitude **/
-			noise = noise + this.rawNoise2d(xf, yf) * amplitude;
+			noise = noise + this.rawNoise2d(xf, yf, bias) * amplitude;
 			/** set new max amplitude **/
     		maxAmplitude = maxAmplitude + amplitude;
     		/** rescale amplitude **/
@@ -110,23 +115,22 @@ class Simplex {
 			frequency = frequency * 2;
 		};
 
-		if (soft) {
-			/** take the average of the iterations **/
-			noise = noise / maxAmplitude;
-			/** soften with scale **/
-			noise * (this.max - this.min) / 2 + (this.max + this.min) / 2;
-		}
-		else {
-			noise = this.scale(this.min, noise / maxAmplitude, this.range);
-		}
+		/** distribute noise **/
+		noise = noise / maxAmplitude;
+		/** scale noise **/
+		noise = this.scale(this.min, noise, range);
+		/** soften noise **/
+		if (soft) noise = noise * range / 2 + range / 2;
+
 	
   		return noise;
 	}
 
-	rawNoise2d (x, y) {
+	rawNoise2d (x, y, bias) {
 		/** @description: generates a noise value for 2d simplex **/
 		/** @param: {x} is type {number} **/
 		/** @param: {y} is type {number} **/
+		/** @param: {bias} is type {number} **/
 		/** @return: is type {float} **/
 		/** cache permanance **/
 		var perm = this.perm;
@@ -228,7 +232,7 @@ class Simplex {
 		}
 
 		/** add values from each corner to generate simplex noise value; values returned as interval between [-1, 1] **/
-		return 70.14805770654148 * (n0 + n1 + n2);
+		return 70.14805770654148 * (n0 + n1 + n2) - (bias);
 	}
 
 	seed () {
@@ -277,24 +281,16 @@ class Simplex {
 		return this[id];
 	}
 
-	getScalable (config) {
+	getAdjustable (config) {
 		/** @description: creates formatted object for defining HTML5 range input **/
 		/** @param: {config} is type {object} **/
 		/** @return: is type {object} **/
 		/** set base config **/
+
 		config = config || {};
-		/** set base config mininum slider maximum value **/
-		config.min = config.min || this.min_max || 0;
-		/** set base config maximum slider maximum value **/
-		config.max = config.max || this.max_max || this.max;
-		/** set base config octave slider maximum value **/
-		config.octaves = config.octaves || this.octaves_max || this.octaves;
-		/** set base config frequency slider maximum value **/
-		config.frequency = config.frequency || this.frequency_max || this.frequency;
-		/** set base config persistence slider maximum value **/
-		config.persistence = config.persistence || this.persistence_max || this.persistence;
+		
 		/** assign scales to object **/
-		return this.setScaleStep({ min: { min: this.min, max: this.setScaleMax("min", config.min) }, max: { min: 0, max: this.setScaleMax("max", config.max) }, octaves: { min: 0, max: this.setScaleMax("octaves", config.octaves) }, frequency: { min: 0, max: this.setScaleMax("frequency", config.frequency) }, persistence: { min: 0, max: this.setScaleMax("persistence", config.persistence) } });
+		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence } });
 	}
 
 	setScaleStep (config) {
@@ -329,17 +325,15 @@ class Simplex {
 		/** set base frequency for constructor **/
 		this.frequency = config.frequency || 0.001;
 		/** set base min for constructor **/
-		this.min = !isNaN(config.min) ? parseFloat(config.min) : -1.0;
+		this.min = !isNaN(config.min) ? config.min : -1.0;
 		/** set base max for constructor **/
-		this.max = !isNaN(config.max) ? parseFloat(config.max) : 1.0;
+		this.max = !isNaN(config.max) ? config.max : 1.0;
 		/** set base octaves for constructor **/
 		this.octaves = parseInt(config.octaves) || 1;
 		/** set base persistence for constructor **/
 		this.persistence = config.persistence || 0.50;
 		/** set base random calculator for constructor **/
 		this.random = config.random || Math.random;
-		/** set base range for constructor **/
-		this.range = this.max - this.min;
 		/** set base scale for constructor **/
 		this.scale = Simplex.scaleInt;
 		/** set base permutation **/
