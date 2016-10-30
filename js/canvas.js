@@ -89,42 +89,6 @@ class Canvas extends Grid {
 		this.drawGeometry(config.fill, config.x, config.y, config.gridTileWidth, config.gridTileHeight, config.style || style);
 	}
 
-	drawUsedTiles (tiles, style) {
-		for (var i = 0; i < tiles.length; i++) {
-			for (var j = 0; j < tiles[i].length; j++) {
-				if (!tiles[i][j].walkable) {
-					this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
-				}
-			}
-		}
-	}
-
-	drawVisitedTiles (tiles, style) {
-		for (var i = 0; i < tiles.length; i++) {
-			for (var j = 0; j < tiles[i].length; j++) {
-				if (tiles[i][j].visited) {
-					this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
-				}
-			}
-		}
-	}
-
-	drawCostTiles (tiles, style, cost) {
-		for (var i = 0; i < tiles.length; i++) {
-			for (var j = 0; j < tiles[i].length; j++) {
-				if (tiles[i][j].cost) {
-					if (cost && typeof cost === "boolean") {
-					}
-					else if (cost && typeof cost === "number") {
-						if (cost === tiles[i][j].cost) {
-							this.drawGridSquare(Object.assign(tiles[i][j], { style: style }));
-						}
-					}
-				}
-			}
-		}
-	}
-
 	drawRegExp (type) {
 		/** @description: for selecting the correct drawing method from regular expression **/
 		/** @param type is type {string} **/
