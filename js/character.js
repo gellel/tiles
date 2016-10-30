@@ -58,10 +58,13 @@ class Character extends Tile {
 	}
 
 	getVelocityIntegersFromTile (position) {
-
+		/** @description: function for obtaining character speed as integer from supplied tile **/
+		/** @param: {position} is type {object} **/
+		/** set base x coordinate **/
 		var x = this.column === position.column ? 0 : this.column > position.column ? -this.speed : this.speed;
+		/** set base y coordinate **/
 		var y = this.row === position.row ? 0 : this.row > position.row ? -this.speed : this.speed;
-
+		/** return object **/
 		return { x: x, y: y };
 	}
 
