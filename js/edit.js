@@ -85,4 +85,8 @@ class Editor {
 
 	}
 
+	constructor () {
+		
+	}
+
 }
