@@ -60,7 +60,7 @@ class Simplex {
 		return g[0] * x + g[1] * y + g[2] * z + g[3] * w;
 	}
 
-	static scaleInt (min, value, range) {
+	static scale (min, value, range) {
 		/** @description: scales perlin index **/
 		/** @param: {min} is type {number} **/
 		/** @param: {value} is type {number} **/
@@ -69,13 +69,43 @@ class Simplex {
 		return min + ((value + 1) / 2) * range;
 	}
 
-	static scaleVoid (min, value, range) {
-		/** @description: returns base perlin **/
-		/** @param: {min} is type {number} **/
-		/** @param: {value} is type {number} **/
+	static bias (x1, y1, x2, y2, sx, sy) {
+		/** @description: returns offset for noise **/
+		/** @param: {x1} is type {number} **/
+		/** @param: {y1} is type {number} **/
+		/** @param: {x2} is type {number} **/
+		/** @param: {y2} is type {number} **/
+		/** @param: {sx} is type {number} **/
+		/** @param: {sy} is type {number} **/
+		/** @return: is type {number} **/
+		/** handle arguments **/
+		if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) return 0;
+		/** set base scale x **/
+		sx = sx || 2;
+		/** set base scale y **/
+		sy = sy || 2;
+		/** set corner x **/
+		var cx = x1 / parseFloat(x2);
+		/** set corner y **/
+		var cy = y1 / parseFloat(y2);
+		/** set base cx if incorrect number **/
+		if (!isFinite(cx) || isNaN(cx)) cx = 0;
+		/** set base cy if incorrect number **/
+		if (!isFinite(cy) || isNaN(cy)) cy = 0;
+		/** scale fall off x **/
+		var fx = cx * sx - 1;
+		/** scale fall off y **/
+		var fy = cy * sx - 1;
+		/** return fall off **/
+		return Math.max(Math.abs(fx), Math.abs(fy));
+	}
+
+	static soften (noise, range) {
+		/** @description: scales and distributes noise by range **/
+		/** @param: {noise} is type {number} **/
 		/** @param: {range} is type {number} **/
 		/** @return: is type {number} **/
-		return value;
+		return noise * range / 2 + range / 2;
 	}
 
 	noise2d (x, y, bias, soft) {
@@ -85,8 +115,6 @@ class Simplex {
 		/** @param: {bias} is type {number} **/
 		/** @param: {soft} is type {boolean} **/
 		/** @return: is type {float} **/
-		/** set default bias **/
-		bias = bias || 0;
 		/** set range **/
 		var range = this.max - this.min;
 		/** set copy of base amplitude **/
@@ -114,15 +142,13 @@ class Simplex {
 			/** rescale frequency **/
 			frequency = frequency * 2;
 		};
-
 		/** distribute noise **/
 		noise = noise / maxAmplitude;
 		/** scale noise **/
 		noise = this.scale(this.min, noise, range);
 		/** soften noise **/
 		if (soft) noise = noise * range / 2 + range / 2;
-
-	
+		/** retun scaled noise **/
   		return noise;
 	}
 
@@ -142,6 +168,7 @@ class Simplex {
 		var GRAD3 = Simplex.GRAD3();
 		/** cache DOT2D **/
 		var dot2D = Simplex.DOT2D;
+		/** cache bias **/
 
 		/** set noise distribution from three corners within square **/
 		var n0;
@@ -268,18 +295,6 @@ class Simplex {
 		}
 	}
 
-	setScaleMax (id, max) {
-		/** @description: sets a maximum for scale adjustment for simplex noise property **/
-		/** @param: {id} is type {string} **/
-		/** @param: {max} is type {number} **/
-		/** @return: is type {number} **/
-		/** reset id to become new max reference **/
-		id = id + "_max";
-		/** assign property new max **/
-		this[id] = !isNaN(max) ? max : this[id] ? this[id] : 1;
-		/** return defined max **/
-		return this[id];
-	}
 
 	getAdjustable (config) {
 		/** @description: creates formatted object for defining HTML5 range input **/
@@ -335,7 +350,9 @@ class Simplex {
 		/** set base random calculator for constructor **/
 		this.random = config.random || Math.random;
 		/** set base scale for constructor **/
-		this.scale = Simplex.scaleInt;
+		this.scale = Simplex.scale;
+		/** set base bias for constructor **/
+		this.bias = config.bias || Simplex.bias;
 		/** set base permutation **/
 		this.seed();
 	}
