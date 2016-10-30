@@ -8,7 +8,10 @@ class Base {
 		/** @param: {max} is type {float} **/
 		/** @param: {decimal} is type {integer} **/
 		/** @return: is type {integer} or is type {object} **/
-		return (Math.random() * (min - max) + max).toFixed(4)
+		/** set base decimal **/
+		decimal = !isNaN(decimal) ? decimal : 4;
+		/** return float value **/
+		return (Math.random() * (min - max) + max).toFixed(decimal);
 	}
 
 	static __random__ (min, max, enumerable) {
