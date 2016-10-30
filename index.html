@@ -83,9 +83,9 @@
 
 						
 
-						var fn = Curve.arc(tile.column, tile.row, tile.columns, tile.rows, 2, 2, "linear")
+						var fn = Curve.arc(tile.column, tile.row, tile.columns, tile.rows, 2, 2)
 
-
+						fn = Curve.sin(fn, 0.5, 1)
 
 						var a = simplex.noise2d(tile.column, tile.row, fn);
 				

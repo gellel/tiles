@@ -122,6 +122,20 @@ class Curve {
 		return Math.max(Math.abs(fx), Math.abs(fy));
 	}
 
+	static sin (value, a, b) {
+		/** @description: returns gradient sin wave for reducing falloff **/
+		/** @param: {value} is type {number} **/
+		/** @param: {a} is type {number} **/
+		/** @param: {b} is type {number} **/
+		/** @return: is type {number} **/
+		/** set base a number for formula **/	
+		a = !isNaN(a) ? a : 3;
+		/** set base b number for formula **/
+		b = !isNaN(b) ? b : 2.2;	
+		/** return gradient **/
+		return Math.pow(value, a) / (Math.pow(value, a) + Math.pow((b - b * value), a));
+	}
+
 	static arc (x1, y1, x2, y2, sx, sy, curve) {
 		/** @description: returns falloff distance with smoothing **/
 		/** @param: {x1} is type {number} **/
