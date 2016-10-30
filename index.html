@@ -93,8 +93,10 @@
 
 						var t = textures[f];
 
+						var c = t.colour ? t.colour.hex : t.hex;
 
-						if (t) base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: t.colour.hex })
+
+						if (t) base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: c })
 						
 						
 						

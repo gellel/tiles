@@ -53,4 +53,4 @@ var geography = {
 	}
 };
 
-console.log("var: \"geography\" parsed.");
+console.log("var: \"alt geography\" parsed.");
