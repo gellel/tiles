@@ -152,7 +152,7 @@ class Editor {
 	}
 
 
-	static grid (parent, properties, noise, update) {
+	static grid (parent, properties, update) {
 		/** @description: static method to generate grid editor for map **/
 		/** @param: {parent} is type {HTMLNode} **/
 		/** @param: {properties} is type {object} **/
@@ -164,7 +164,23 @@ class Editor {
 		properties = properties || {};
 		/** **/
 		parent.insertNode("div", { id: "grid" }, function (div) {
-
+			/** set container for title **/
+			div.insertNode("div", { class: "title-container" }, function (div) {
+				/** create title **/
+				Editor.title(div, { title: "grid" });
+			});
+			/** set container for noise adjustors **/
+			div.insertNode("div", { class: "edits-container" }, function (div) {
+				/** create flex container **/
+				div.insertNode("div", { class: "flex-xs dir-xs-row" }, function (div) {
+					/** create columns editor **/
+					Editor.field(div, { key: true, name: "cols", value: properties.columns });
+					/** create rows editor **/
+					Editor.field(div, { key: true, name: "rows", value: properties.rows });
+					/** create scale editor **/
+					Editor.field(div, { key: true, name: "scale", value: properties.scale });
+				});
+			});
 		});
 	}
 
@@ -174,7 +190,7 @@ class Editor {
 	}
 
 	static create (parent, properties, simplex, update) {
-		
+
 	}
 	
 
