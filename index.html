@@ -10,8 +10,10 @@
 	<body class="vh-xs-12 flex-xs pos-xs-relative">
 		
 		<section id="frame" class="tm-xs-auto rm-xs-auto bm-xs-auto lm-xs-auto z-xs-1 pos-xs-relative"></section>
-		<section id="editor" class="t-xs-6 l-xs-6 z-xs-2 pos-xs-absolute">
-			
+		
+		<section id="editor" class="vw-xs-3 t-xs-6 l-xs-6 z-xs-2 pos-xs-absolute" style="background-color: white; border: 1px solid #ececec;">
+	
+
 		</section>
 
 		<script src="js/prototypes.js"></script>
@@ -27,7 +29,7 @@
 		<script src="js/curve.js"></script>
 		<script src="js/character.js"></script>
 		<script src="js/canvas.js"></script>
-		<script src="js/editor.js"></script>
+		<script src="js/edit.js"></script>
 		<script type="text/javascript">
 
 			window.getScript("json/tiles_as.js", function () {
@@ -75,17 +77,16 @@
 				
 
 
+				var adjust = simplex.getAdjustable();
+
 
 				function createTerrain () {
 					
 					graph.getTiles(function (tile) {
 
+						var fn = Curve.arc(tile.column, tile.row, tile.columns, tile.rows, 2, 2);
 
-						
-
-						var fn = Curve.arc(tile.column, tile.row, tile.columns, tile.rows, 2, 2)
-
-						fn = Curve.sin(fn, 0.5, 1)
+						//fn = Curve.sin(fn, 2, 2.2)
 
 						var a = simplex.noise2d(tile.column, tile.row, fn);
 				
@@ -95,22 +96,17 @@
 
 						var c = t.colour ? t.colour.hex : t.hex;
 
-
-						if (t) base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: c })
-						
-						
-						
+						if (t) base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: c });
 
 					});
 				}
-				
 
 
 
 
-				
+				Editor.noise(editor, adjust, simplex, createTerrain)
 
-				createEditor(editor, simplex.getAdjustable(), createTerrain);
+
 				createTerrain();
 
 			}); 

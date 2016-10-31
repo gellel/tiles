@@ -8,7 +8,7 @@ function editTitle (node) {
 			/** create heading **/
 			div.insertNode("h4", function (header) {
 				/** create heading span **/
-				header.insertNode("span", "node");
+				header.insertNode("span", "editor");
 			});
 		});
 	});

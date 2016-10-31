@@ -2,8 +2,7 @@
     "use strict";
 
     el.prototype.hasClass = function (cls) {
-        if (this.classList) this.classList.contains(cls);
-        return new RegExp('(\\s|^)' + cls + '(\\s|$)').test(this.className);
+        return this.classList ? this.classList.contains(cls) : new RegExp('(\\s|^)' + cls + '(\\s|$)').test(this.className); 
     };
 
     el.prototype.addClass = function (cls) {
@@ -67,15 +66,6 @@
         var parameters = Array.prototype.slice.call(arguments);
         this.appendChild(document.createTextNode(parameters[0]));
         if (typeof parameters[1] === "function") parameters[1](this);
-    };
-
-    el.prototype.transitionEvent = function () {
-        var transitions = { 'transition': 'transitionend', 'OTransition': 'oTransitionEnd', 'MozTransition': 'transitionend', 'WebkitTransition': 'webkitTransitionEnd' };
-        for (var t in transitions) {
-            if (this.style[t]) {
-                return transitions[t];
-            }
-        };
     };
 
     el.prototype.removeTextNode = function () {
@@ -169,8 +159,6 @@
             "type": "text/javascript",
             "src": url + queryconcat + "callback=window.jsonp.response"
         });
-
-
     };
 
     win.jsonf = {};
@@ -186,6 +174,7 @@
             "src": url + queryconcat + "callback=window.jsonf.json_" + id + ""
         });
     };
+
     win.getScript = function (source, callback) {
         var script = document.createElement('script');
         var prior = document.getElementsByTagName('script')[0];
@@ -207,20 +196,6 @@
 
         script.src = source;
     };
-
-    win.getRandomInt = function (min, max) {
-        var randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
-        if (window.lastRandomInt) {
-            if (randomInt === window.randomInt) {
-                win.getRandomInt(min, max);
-            }
-            else {
-                win.lastRandomInt = randomInt;
-            }
-        }
-        return randomInt;
-    };
-
 
     win.transition = {};
     win.transition.elements = {};

@@ -115,6 +115,8 @@ class Simplex {
 		/** @param: {bias} is type {number} **/
 		/** @param: {soft} is type {boolean} **/
 		/** @return: is type {float} **/
+		/** set base bias **/
+		bias = !isNaN(bias) ? bias : 0;
 		/** set range **/
 		var range = this.max - this.min;
 		/** set copy of base amplitude **/
@@ -316,12 +318,10 @@ class Simplex {
 		for (var key in config) {
 			/** confirm key is unique property **/
 			if (config.hasOwnProperty(key)) {
-				/** set the object key object to have an id **/
-				config[key].id = key;
 				/** set the step for next value to 1 if it is an integer otherwise use the lowest number of the float and set to 1 **/
 				config[key].step = config[key].max % 1 ? parseFloat(config[key].max.toString().replace(/\d/g, '0').replace(/0$/, "1")) : 1;	
 				/** set the value **/
-				config[key].value = config[key].id === "min" ? config[key].min : this[key];					
+				config[key].value = key === "min" ? config[key].min : this[key];					
 			}
 		}
 		/** return object **/
