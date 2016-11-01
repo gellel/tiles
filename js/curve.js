@@ -7,7 +7,7 @@ class Curve {
 		return value; 
 	}
 
-	static  easeInQuad (value) { 
+	static easeInQuad (value) { 
 		/** @description: create curve accelerating from zero velocity **/
 		/** @param: {value} is type {number} **/
 		/** @return: is type {number} **/
@@ -117,7 +117,7 @@ class Curve {
 		/** scale fall off x **/
 		var fx = cx * sx - 1;
 		/** scale fall off y **/
-		var fy = cy * sx - 1;
+		var fy = cy * sy - 1;
 		/** return fall off **/
 		return Math.max(Math.abs(fx), Math.abs(fy));
 	}

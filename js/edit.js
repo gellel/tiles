@@ -28,15 +28,15 @@ class Editor {
 		/** set base properties object **/
 		properties = properties || {};
 		/** create padding for y axis **/
-		parent.insertNode("div", { class: "tp-xs-3 bp-xs-3" }, function (div) {
+		parent.insertNode("div", { class: "tp-xs-2 bp-xs-2" }, function (div) {
 			/** create padding for x axis **/
-			div.insertNode("div", { class: "rp-xs-3 lp-xs-3" }, function (div) {
+			div.insertNode("div", { class: "rp-xs-2 lp-xs-2" }, function (div) {
 				/** create padding for y axis **/
-				div.insertNode("div", { class: "tp-xs-3 bp-xs-3" }, function (div) {
+				div.insertNode("div", { class: "tp-xs-2 bp-xs-2" }, function (div) {
 					/** create padding for x axis **/
-					div.insertNode("div", { class: "rp-xs-3 lp-xs-3" }, function (div) {
+					div.insertNode("div", { class: "rp-xs-2 lp-xs-2" }, function (div) {
 						/** create heading element **/
-						div.insertNode("h5", { class: "font-xs-7" }, function (heading) {
+						div.insertNode("h5", { class: "font-xs-6" }, function (heading) {
 							/** insert title text **/
 							heading.insertNode("span", properties.title || "test", { class: "font-weight-400" });
 						});
@@ -53,21 +53,21 @@ class Editor {
 		/** set item to grow in size where available **/
 		parent.insertNode("div", { class: "col-xs-grow" }, function (div) {
 			/** set y axis padding **/
-			div.insertNode("div", { class: "tp-xs-3 bp-xs-3" }, function (div) {
+			div.insertNode("div", { class: "tp-xs-2 bp-xs-2" }, function (div) {
 				/** set x axis padding **/
-				div.insertNode("div", { class: "rp-xs-3 lp-xs-3" }, function (div) {
+				div.insertNode("div", { class: "rp-xs-2 lp-xs-2" }, function (div) {
 					/** create flex container **/
 					div.insertNode("div", { class: "flex-xs dir-xs-row align-xs-center" }, function (div) {
 						/** confirm they key is to be included **/
 						if (properties.key) {
 							/** remove key from item **/
 							delete properties.key;
-							/** set item to 33% of container size **/
+							/** set item to 22% of container size **/
 							div.insertNode("div", { class: "col-xs-4", style: "background-color: whitesmoke;" }, function (div) {
 								/** set y axis padding **/
-								div.insertNode("div", { class: "tp-xs-3 bp-xs-3" }, function (div) {
+								div.insertNode("div", { class: "tp-xs-2 bp-xs-2" }, function (div) {
 									/** set x axis padding **/
-									div.insertNode("div", { class: "rp-xs-3 lp-xs-3" }, function (div) {
+									div.insertNode("div", { class: "rp-xs-2 lp-xs-2" }, function (div) {
 										/** create paragraph **/
 										div.insertNode("p", { class: "font-xs-6 font-align-center" }, function (p) {
 											/** insert field title **/
@@ -84,7 +84,7 @@ class Editor {
 								/** set x axis padding **/
 								div.insertNode("div", { class: "rp-xs-0 lp-xs-0" }, function (div) {
 									/** create input element **/
-									Editor.input(div, Object.assign(properties, { type: "number", style: "background-color: #e8e8e8;", class: "col-xs-12 tp-xs-3 rp-xs-3 bp-xs-3 lp-xs-3 font-xs-6" }), functs);
+									Editor.input(div, Object.assign(properties, { type: properties.type || "number", style: "background-color: #e8e8e8;", class: "col-xs-12 tp-xs-2 rp-xs-2 bp-xs-2 lp-xs-2 font-xs-6" }), functs);
 								});
 							});
 						});
@@ -151,6 +151,42 @@ class Editor {
 		}
 	}
 
+	static curve (parent, properties, curve, update) {
+		/** @param: {parent} is type {HTMLNode} **/
+		/** @param: {properties} is type {object} **/
+		/** @param: {curve} is type {class} **/
+		/** @param: {update} is type {function} **/
+		/** set base parent node **/
+		parent = parent || document.body;
+		/** set base properties object **/
+		properties = properties || {};
+		/** **/
+		parent.insertNode("div", { id: "curve" }, function (div) {
+			/** set container for title **/
+			div.insertNode("div", { class: "title-container" }, function (div) {
+				/** create title **/
+				Editor.title(div, { title: "scale curve" });
+			});
+			/** set container for noise adjustors **/
+			div.insertNode("div", { class: "edits-container" }, function (div) {
+				/** create flex container **/
+				div.insertNode("div", { class: "flex-xs dir-xs-row" }, function (div) {
+					/** create columns editor **/
+					Editor.field(div, { key: true, reference: "use", type: "checkbox", name: "arc", value: properties.arc }, { change: function () {
+						properties.arc = this.checked;
+						update();
+					}});
+					/** create columns editor **/
+					Editor.field(div, { key: true, name: "method", type: "text", name: "curve", value: properties.curve }, { input: function () {
+						if (curve[this.value]) {
+							properties.curve = this.value;
+							update();
+						}
+					}});
+				});
+			});
+		});
+	}
 
 	static grid (parent, properties, update) {
 		/** @description: static method to generate grid editor for map **/
@@ -192,8 +228,6 @@ class Editor {
 	static create (parent, properties, simplex, update) {
 
 	}
-	
-
 
 	constructor () {
 		

@@ -7,11 +7,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>
-	<body class="vh-xs-12 flex-xs pos-xs-relative">
+	<body class="vh-xs-12 flex-xs pos-xs-relative" style="overflow: hidden;">
 		
 		<section id="frame" class="tm-xs-auto rm-xs-auto bm-xs-auto lm-xs-auto z-xs-1 pos-xs-relative"></section>
 		
-		<section id="editor" class="vw-xs-3 t-xs-6 l-xs-6 z-xs-2 pos-xs-absolute" style="background-color: white; border: 1px solid #ececec;">
+		<section id="editor" class="flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;">
 	
 
 		</section>
@@ -69,7 +69,7 @@
 
 				/** set base simplex processor for world generation **/
 				window.simplex = new Simplex({
-					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0
+					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0, fx: grid.columns, fy: grid.rows, sx: 2, sy: 2, curve: "linear"
 				});
 
 				/** set parent frame dimensions **/
@@ -79,18 +79,25 @@
 
 				var adjust = simplex.getAdjustable();
 
+			
 
 				function createTerrain () {
 					
 					graph.getTiles(function (tile) {
 
-						var fn = Curve.arc(tile.column, tile.row, tile.columns, tile.rows, 2, 2);
+						//var fn = Curve.arc(tile.column, tile.row, simplex.fx, simplex.fy, simplex.sx, simplex.sy);
 
 						//fn = Curve.sin(fn, 2, 2.2)
 
-						var a = simplex.noise2d(tile.column, tile.row, fn);
+						var s = simplex.arc ? Curve.arc : false;
+
+						//console.log(s)
+
+						var a = simplex.noise2d(tile.column, tile.row, s);
 				
 						var f = parseInt(Math.abs(a));
+
+						f = Math.max(simplex.min, Math.min(f, simplex.max - 1))
 
 						var t = textures[f];
 
@@ -107,8 +114,8 @@
 
 
 
-				Editor.grid(editor, grid);
 				Editor.noise(editor, adjust, simplex, createTerrain)
+				Editor.curve(editor, simplex, Curve, createTerrain);
 
 
 				createTerrain();

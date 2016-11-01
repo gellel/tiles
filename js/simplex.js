@@ -107,6 +107,7 @@ class Simplex {
 		/** @return: is type {number} **/
 		return noise * range / 2 + range / 2;
 	}
+	
 
 	noise2d (x, y, bias, soft) {
 		/** @description: generates a noise value for 2d simplex **/
@@ -116,7 +117,7 @@ class Simplex {
 		/** @param: {soft} is type {boolean} **/
 		/** @return: is type {float} **/
 		/** set base bias **/
-		bias = !isNaN(bias) ? bias : 0;
+		bias = typeof bias === "function" ? bias(x, y, this.fx, this.fy, this.sx, this.sy, this.curve) : !isNaN(bias) ? bias : 0;
 		/** set range **/
 		var range = this.max - this.min;
 		/** set copy of base amplitude **/
@@ -149,7 +150,7 @@ class Simplex {
 		/** scale noise **/
 		noise = this.scale(this.min, noise, range);
 		/** soften noise **/
-		if (soft) noise = noise * range / 2 + range / 2;
+		if (typeof soft === "function") noise = soft(noise);
 		/** retun scaled noise **/
   		return noise;
 	}
@@ -307,7 +308,7 @@ class Simplex {
 		config = config || {};
 		
 		/** assign scales to object **/
-		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence } });
+		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence }, fx: { min: 0, max: this.fx }, fy: { min: 0, max: this.fy }, sx: { min: 0, max: this.sx }, sy: { min: 0, max: this.sy } });
 	}
 
 	setScaleStep (config) {
@@ -352,7 +353,19 @@ class Simplex {
 		/** set base scale for constructor **/
 		this.scale = Simplex.scale;
 		/** set base bias for constructor **/
-		this.bias = config.bias || Simplex.bias;
+		this.bias = config.bias || false;
+		/** set bias falloff x **/
+		this.fx = config.fx || 0;
+		/** set bias falloff y **/
+		this.fy = config.fy || 0;
+		/** set bias scale x **/
+		this.sx = config.sx || 0;
+		/** set bias scale y **/
+		this.sy = config.sy || 0;
+		/** set curve status **/
+		this.arc = config.arc || false;
+		/** set curve method **/
+		this.curve = config.curve || false;
 		/** set base permutation **/
 		this.seed();
 	}
