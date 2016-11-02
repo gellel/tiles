@@ -1,5 +1,31 @@
 class Simplex {
 
+	static scale_soften (noise, min, max) {
+		/** @description: softens the scale of simplex noise **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {min} is type {number} **/
+		/** @param: {max} is type {number} **/
+		/** @return: is type {number} **/
+		return noise * (max - min) / 2 + (max + min) / 2;
+	}
+
+	static scale_normal (noise, min, max) {
+		/** @description: scales perlin index **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {min} is type {number} **/
+		/** @param: {max} is type {number} **/
+		/** @return: is type {number} **/
+		return min + ((noise + 1) / 2) * (min - max);
+	}
+
+	static distribute_normal (noise, amplitude) {
+		/** @description: distributes perlin noise by max amplitude value **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {amplitude} is type {number} **/
+		/** @return: is type {number} **/
+		return noise / amplitude;
+	}
+
 	static G2 () {
 		/** @description: returns base expression gradient 2 **/
 		/** @return: is type {float} **/
@@ -60,55 +86,6 @@ class Simplex {
 		return g[0] * x + g[1] * y + g[2] * z + g[3] * w;
 	}
 
-	static scale (min, value, range) {
-		/** @description: scales perlin index **/
-		/** @param: {min} is type {number} **/
-		/** @param: {value} is type {number} **/
-		/** @param: {range} is type {number} **/
-		/** @return: is type {number} **/
-		return min + ((value + 1) / 2) * range;
-	}
-
-	static bias (x1, y1, x2, y2, sx, sy) {
-		/** @description: returns offset for noise **/
-		/** @param: {x1} is type {number} **/
-		/** @param: {y1} is type {number} **/
-		/** @param: {x2} is type {number} **/
-		/** @param: {y2} is type {number} **/
-		/** @param: {sx} is type {number} **/
-		/** @param: {sy} is type {number} **/
-		/** @return: is type {number} **/
-		/** handle arguments **/
-		if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) return 0;
-		/** set base scale x **/
-		sx = sx || 2;
-		/** set base scale y **/
-		sy = sy || 2;
-		/** set corner x **/
-		var cx = x1 / parseFloat(x2);
-		/** set corner y **/
-		var cy = y1 / parseFloat(y2);
-		/** set base cx if incorrect number **/
-		if (!isFinite(cx) || isNaN(cx)) cx = 0;
-		/** set base cy if incorrect number **/
-		if (!isFinite(cy) || isNaN(cy)) cy = 0;
-		/** scale fall off x **/
-		var fx = cx * sx - 1;
-		/** scale fall off y **/
-		var fy = cy * sx - 1;
-		/** return fall off **/
-		return Math.max(Math.abs(fx), Math.abs(fy));
-	}
-
-	static soften (noise, range) {
-		/** @description: scales and distributes noise by range **/
-		/** @param: {noise} is type {number} **/
-		/** @param: {range} is type {number} **/
-		/** @return: is type {number} **/
-		return noise * range / 2 + range / 2;
-	}
-	
-
 	noise2d (x, y, bias, soft) {
 		/** @description: generates a noise value for 2d simplex **/
 		/** @param: {x} is type {number} **/
@@ -118,8 +95,6 @@ class Simplex {
 		/** @return: is type {float} **/
 		/** set base bias **/
 		bias = typeof bias === "function" ? bias(x, y, this.fx, this.fy, this.sx, this.sy, this.curve) : !isNaN(bias) ? bias : 0;
-		/** set range **/
-		var range = this.max - this.min;
 		/** set copy of base amplitude **/
 		var amplitude = this.amplitude;
 		/** set copy of base frequency **/
@@ -145,14 +120,8 @@ class Simplex {
 			/** rescale frequency **/
 			frequency = frequency * 2;
 		};
-		/** distribute noise **/
-		noise = noise / maxAmplitude;
-		/** scale noise **/
-		noise = this.scale(this.min, noise, range);
-		/** soften noise **/
-		//if (typeof soft === "function") noise = soft(noise);
 		/** retun scaled noise **/
-  		return noise;
+  		return this.scale(this.distribution(noise, maxAmplitude), this.min, this.max);
 	}
 
 	rawNoise2d (x, y, bias) {
@@ -349,7 +318,9 @@ class Simplex {
 		/** set base random calculator for constructor **/
 		this.random = config.random || Math.random;
 		/** set base scale for constructor **/
-		this.scale = Simplex.scale;
+		this.scale = config.scale || Simplex.scale_normal;
+		/** set base distribution for constructor **/
+		this.distribution = config.distribution || Simplex.distribute_normal;
 		/** set base bias for constructor **/
 		this.bias = config.bias || false;
 		/** set bias falloff x **/

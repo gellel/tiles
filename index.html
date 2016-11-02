@@ -36,6 +36,9 @@
 
 			window.getScript("json/tiles_as.js", function () {
 
+				/** set base textures for world **/
+				window.textures = geography.tropic.tiles;
+
 				/** set frame container **/
 				var frame = document.getElementById("frame");
 
@@ -66,19 +69,10 @@
 				window.hexg = new Canvas(
 					Object.assign(grid.__this__(), { parent: frame, attr: { class: "z-xs-4 pos-xs-absolute" } }));
 
-				/** set base textures for world **/
-				window.textures = geography.tropic.tiles;
-
 				/** set base simplex processor for world generation **/
 				window.simplex = new Simplex({
 					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0, fx: grid.columns, fy: grid.rows, sx: 2, sy: 2, curve: "linear"
-				});
-
-				/** set parent frame dimensions **/
-				
-
-
-				window.c = new Character();
+				});				
 
 				/** set base path for testing **/
 				window.path = new Path(
@@ -88,8 +82,30 @@
 
 				var adjust = simplex.getAdjustable();
 
-				
+				/*
+				graph.getTiles(function (tile) {
 
+					if (tile.column === 0) {
+							
+						var cx = tile.column / tile.columns;
+
+						var cy = tile.row / tile.rows;
+						
+						var sx = 2;
+						var sy = 2;
+
+						var fx = cx * sx - 1;
+						var fy = cy * sy - 1;
+
+						var fn = Math.max(Math.abs(fx), Math.abs(fy));
+
+						simplex.noise2d(tile.column, tile.row);
+						//var fc = 
+					}
+				});
+
+				*/
+				
 				function createTerrain () {
 					
 					graph.getTiles(function (tile) {
@@ -116,10 +132,6 @@
 					});
 				}
 
-				function updateGrid (columns, rows, scale, grids) {
-
-				}
-
 
 
 				Editor.noise(editor, adjust, simplex, createTerrain)
@@ -127,6 +139,7 @@
 
 
 				createTerrain();
+				
 
 			}); 
 
