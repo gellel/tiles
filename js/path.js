@@ -320,13 +320,13 @@ class Path extends Graph {
 			/** set new grid reference **/
 			var grid = [];
 			/** enumerate over defined columns **/
-			for (var i = 0; i < this.columns; i++) {
+			for (var i = 0, clen = this.columns; i < clen; i++) {
 				/** set new column reference **/
 				var column = [];
 				/** enumerate over rows **/
-				for (var j = 0; j < this.rows; j++) {
+				for (var j = 0, rlen = this.rows; j < rlen; j++) {
 					/** append copy of tile object to row **/
-					column.push(Graph.getTileCopy(this.grid, i, j));
+					column.push(Graph.getTile(this.grid, i, j, true));
 				}
 				/** apend column to grid **/
 				grid.push(column);

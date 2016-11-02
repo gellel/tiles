@@ -80,7 +80,9 @@
 
 				window.c = new Character();
 
-				window.path = new Path(graph.__this__())
+				/** set base path for testing **/
+				window.path = new Path(
+					Object.assign(graph.__this__(), { __copy__: true }))
 
 
 
