@@ -44,9 +44,9 @@ class Graph extends Grid {
 		/** handle arguments **/
 		if (!grid instanceof Array || typeof callback !== "function") return false;
 		/** enumerate over this grid columns **/
-		for (var i = 0, collen = grid.length; i < collen; i++) {
+		for (var i = 0, clen = grid.length; i < clen; i++) {
 			/** enumerate over this grid rows **/
-			for (var j = 0, rowlen = grid[i].length; j < rowlen; j++) {
+			for (var j = 0, rlen = grid[i].length; j < rlen; j++) {
 				/** attempt to get tile **/
 				var result = callback(Graph.getTile(grid, i, j, copy));
 				/** optional break clause **/
@@ -192,7 +192,7 @@ class Graph extends Grid {
 		/** set base array to hold found tiles **/
 		var tiles = [];
 		/** enumerate over grid **/
-		for (var i = 0; i < directions.length; i++) {
+		for (var i = 0, len = directions.length; i < len; i++) {
 			/** find direction direction **/
 			tiles.push(Graph.getSpecificAdjacentTile(grid, tile, directions[i], copy));
 		}
@@ -284,9 +284,9 @@ class Graph extends Grid {
 		/** handle arguments **/
 		if (!typeof callback === "function") return false;
 		/** enumrate over grid **/
-		for (var i = 0, collen = grid.length; i < collen; i++) {
+		for (var i = 0, clen = grid.length; i < clen; i++) {
 			/** enumate over column **/
-			for (var j = 0, rowlen = grid[i].length; j < rowlen; j++) {
+			for (var j = 0, rlen = grid[i].length; j < rlen; j++) {
 				/** fetch tile **/
 				var tile = Graph.getTile(grid, i, j);
 				/** response **/
