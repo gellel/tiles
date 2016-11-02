@@ -262,7 +262,7 @@ class Graph extends Grid {
 		}
 	}
 
-	static setTileKeyValue(grid, column, row, key, value) {
+	static editTileKeyValue(grid, column, row, key, value) {
 		/** @description: sets found tile key to value **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
@@ -363,10 +363,7 @@ class Graph extends Grid {
 		/** @param: {tile} is type {object} **/
 		/** @param: {copy} is type {boolean} **/
 		/** @return: is type {array} **/
-		var directions = this.directions.slice();
-		/** update directions to contain all possible angles **/
-		directions.push("topleft", "topright", "bottomleft", "bottomright");
-		return Graph.getAdjacentTiles(this.grid, tile, directions, copy);
+		return Graph.getAdjacentTiles(this.grid, tile, [].concat.apply(this.directions, ["topleft", "topright", "bottomleft", "bottomright"]), copy);
 	}
 
 	getSpecificAdjacentTile (tile, direction, copy) {
