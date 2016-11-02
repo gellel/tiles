@@ -236,6 +236,17 @@ class Tile extends Base {
 		return this[quarter]();
 	}
 
+	getWithinBounds (x, y) {
+		/** @description: confirm that supplied x & y are within boundary of tile **/
+		/** @param: {x} is type {number} **/
+		/** @param: {y} is type {number} **/
+		/** @return: is type {boolean} **/
+		/** handle arguments **/
+		if (isNaN(x) || isNaN(y)) return false;
+		/** confirm that supplied x is within or equal to the left and right point as well as top and bottom point **/
+		return (x >= this.getLeftPoint() && x <= this.getRightPoint()) && (y >= this.getTopPoint() && y <= this.getBottomPoint()) ? true : false;
+	}
+
 	setPositionX (x) {
 	 	/** @description: function for setting tiles x position by supplied integer **/
 	 	/** @param: {x} is type {integer} **/

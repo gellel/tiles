@@ -156,7 +156,7 @@ class Path extends Graph {
 				/** filter unfound tiles **/
 				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
 				/** filter out unwanted **/
-				if (prohibited) neighbours = neighbours.filter(function (tile) { return !Base.__contains__(tile, prohibited) ? tile : false; });
+				if (prohibited) neighbours = neighbours.filter(function (tile) { return !OBJECT.contains(tile, prohibited) ? tile : false; });
 				/** confirm neighbours remain **/
 				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
@@ -244,7 +244,7 @@ class Path extends Graph {
 				/** filter unfound tiles **/
 				neighbours = neighbours.filter(function (tile) { return tile ? tile : false });
 				/** filter out unwanted by matching that object does not contain listed types **/
-				if (prohibited) neighbours = neighbours.filter(function (tile) { return !Base.__contains__(tile, prohibited) ? tile : false; });
+				if (prohibited) neighbours = neighbours.filter(function (tile) { return !OBJECT.contains(tile, prohibited) ? tile : false; });
 				/** confirm neighbours remain **/
 				if (neighbours && neighbours.length) {
 					/** enumerate over neighbour tiles **/
@@ -260,7 +260,7 @@ class Path extends Graph {
 							/** set row reference for cached tile **/
 							var row = neighbour.row;
 							/** confirm costs and costs has property types by matching if object exists **/
-							if (Base.__contains__(neighbour, allowed)) {
+							if (OBJECT.contains(neighbour, allowed)) {
 								/** add cost to node cost **/
 								if (typeof node.cost === "number") node.g = node.g + node.cost;
 							}

@@ -25,7 +25,7 @@ class Canvas extends Grid {
 		/** @description: creates a rgb integer using supplied arguments with 255 as ceiling **/
 		/** @param: {int} is type {integer} **/
 		/** @return: is type {integer} **/
-		return Base.__random__(min, 255);
+		return MATH.rint(min, 255);
 	}
 
 	static RandomAlphaInt (pmin, pmax, smin, smax) {
@@ -35,7 +35,7 @@ class Canvas extends Grid {
 		/** @param: {smin} is type {integer} **/
 		/** @param: {smax} is type {integer} **/
 		/** @return: is type {string} **/
-		return "0" + "." + Base.__random__(pmin, pmax) + Base.__random__(smin, smax);
+		return "0" + "." + MATH.rint(pmin, pmax) + MATH.rint(smin, smax);
 	}
 
 	static attributes (grid) {

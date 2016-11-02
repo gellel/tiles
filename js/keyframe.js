@@ -2,9 +2,8 @@
 window.keyframe = {};
 
 keyframe.start = function (functions) {
-	  /**************************************************/
-	 /** function for running request animation frame **/
-	/**************************************************/
+	/** @description: function for running request animation frame **/
+	/** @param: {functions} is type {function} or {array} **/
 	/** set function to supplied or use default for testing **/
 	this.functions = functions || function (delta) { console.log(delta); };
 	/** set animation function to single function or function stack **/
@@ -14,9 +13,8 @@ keyframe.start = function (functions) {
 };
 
 keyframe.end = function (callback) {
-	  /*************************************************/
-	 /** function for ending request animation frame **/
-	/*************************************************/
+	/** @description: function for ending request animation frame **/
+	/** @param: {callback} is type {function} **/
 	/** cancel instance of animation frame **/
 	window.cancelAnimationFrame(keyframe.id);
 	/** callback if supplied **/

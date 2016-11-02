@@ -188,7 +188,7 @@ class Character extends Tile {
 		/** ensure init **/
 		config.__init__ = true;
 		/** call super, but with trimmed object to avoid inherited map tile costs if assigned **/
-		super(Base.__trim__(config, ["__class__", "f", "g", "closed", "cost", "open", "h", "visited", "opened", "parent", "walkable"]));
+		super(OBJECT.trim(config, ["__class__", "f", "g", "closed", "cost", "open", "h", "visited", "opened", "parent", "walkable"]));
 		/** set call to this definition handler **/
 		this.__character__(config);
 	}

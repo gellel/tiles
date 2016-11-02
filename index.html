@@ -7,16 +7,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>
-	<body class="vh-xs-12 flex-xs pos-xs-relative" style="overflow: hidden;">
+	<body class="vh-xs-12 flex-xs dir-xs-row" style="overflow: hidden;">
 		
-		<section id="frame" class="tm-xs-auto rm-xs-auto bm-xs-auto lm-xs-auto z-xs-1 pos-xs-relative"></section>
+		<section id="frame" class="col-xs-grow flex-xs justify-xs-center align-xs-center"></section>
 		
-		<section id="editor" class="flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;">
+		<section id="editor" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;">
 	
 
 		</section>
 
 		<script src="js/prototypes.js"></script>
+		<script src="js/math.js"></script>
+		<script src="js/object.js"></script>
 		<script src="js/keyframe.js"></script>
 		<script src="js/queue.js"></script>
 		<script src="js/heap.js"></script>
@@ -50,19 +52,19 @@
 
 				/** set base canvas for drawing world environment **/
 				window.base = new Canvas(
-					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 1" } }));
+					Object.assign(grid.__this__(), { parent: frame, attr: { class: "z-xs-1 pos-xs-absolute" } }));
 
 				/** set base canvas for drawing paths through world **/
 				window.dirs = new Canvas(
-					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 2" } }));
+					Object.assign(grid.__this__(), { parent: frame, attr: { class: "z-xs-2 pos-xs-absolute" } }));
 				
 				/** set base canvas for drawing characters within world **/
 				window.stage = new Canvas(
-					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 3" } }));
+					Object.assign(grid.__this__(), { parent: frame, attr: { class: "z-xs-3 pos-xs-absolute" } }));
 
 				/** set base canvas for drawing grid overlay or other ui elements **/
 				window.hexg = new Canvas(
-					Object.assign(grid.__this__(), { parent: frame, attr: { style: "position: absolute; z-index: 4" } }));
+					Object.assign(grid.__this__(), { parent: frame, attr: { class: "z-xs-4 pos-xs-absolute" } }));
 
 				/** set base textures for world **/
 				window.textures = geography.tropic.tiles;
@@ -73,13 +75,18 @@
 				});
 
 				/** set parent frame dimensions **/
-				frame.setStyles({ width: grid.width(), height: grid.height() });
 				
+
+
+				window.c = new Character();
+
+				window.path = new Path(graph.__this__())
+
 
 
 				var adjust = simplex.getAdjustable();
 
-			
+				
 
 				function createTerrain () {
 					
@@ -91,7 +98,6 @@
 
 						var s = simplex.arc ? Curve.arc : false;
 
-						//console.log(s)
 
 						var a = simplex.noise2d(tile.column, tile.row, s);
 				

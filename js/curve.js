@@ -152,7 +152,4 @@ class Curve {
 		return curve(Curve.distance(x1, y1, x2, y2, sx, sy));
 	}
 
-	constructor (config) {
-
-	}
 }

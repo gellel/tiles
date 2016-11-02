@@ -150,7 +150,7 @@ class Simplex {
 		/** scale noise **/
 		noise = this.scale(this.min, noise, range);
 		/** soften noise **/
-		if (typeof soft === "function") noise = soft(noise);
+		//if (typeof soft === "function") noise = soft(noise);
 		/** retun scaled noise **/
   		return noise;
 	}
@@ -239,7 +239,7 @@ class Simplex {
 		    n0 = 0.0;
 		} 
 		else {
-		    t0 *= t0;
+		    t0 = t0 * t0;
 		    n0 = t0 * t0 * dot2D(GRAD3[gi0], x0, y0);
 		}
 
@@ -248,7 +248,7 @@ class Simplex {
 		if (t1 < 0) {
 		    n1 = 0.0;
 		} else {
-		    t1 *= t1;
+		    t1 = t1 * t1;
 		    n1 = t1 * t1 * dot2D(GRAD3[gi1], x1, y1);
 		}
 
@@ -257,7 +257,7 @@ class Simplex {
 		if (t2 < 0) {
 		    n2 = 0.0;
 		} else {
-		    t2 *= t2;
+		    t2 = t2 * t2;
 		    n2 = t2 * t2 * dot2D(GRAD3[gi2], x2, y2);
 		}
 
@@ -304,9 +304,7 @@ class Simplex {
 		/** @param: {config} is type {object} **/
 		/** @return: is type {object} **/
 		/** set base config **/
-
 		config = config || {};
-		
 		/** assign scales to object **/
 		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence }, fx: { min: 0, max: this.fx }, fy: { min: 0, max: this.fy }, sx: { min: 0, max: this.sx }, sy: { min: 0, max: this.sy } });
 	}
