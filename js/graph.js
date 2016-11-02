@@ -158,6 +158,28 @@ class Graph extends Grid {
 		return grid[column] && grid[column][start] && grid[column][target] ? grid[column].slice(start, target) : [];
 	}
 
+	static getTilesByRow (grid, row, start, target) {
+		/** @description: returns array of tiles from row from supplied starting point to target **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @return: is type {array} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(row) || isNaN(start) || isNaN(target)) return [];
+		/** confirm that row item exists in range **/
+		if (!grid[0][row] || !grid[start][row] || !grid[target][row]) return [];
+		/** set base container for tiles **/
+		var tiles = [];
+		/** iterate over clipped length **/
+		for (var i = start, len = target; i < len; i++) {
+			/** push item to collection **/
+			tiles.push(grid[i][row]);
+		}
+		/** return tiles **/
+		return tiles;
+	}
+
 	static getAdjacentTiles (grid, tile, directions, copy) {
 		/** @description: returns item from this grid **/
 		/** @param: {grid} is type {array} **/
