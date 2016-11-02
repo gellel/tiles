@@ -312,6 +312,50 @@ class Graph extends Grid {
 		if (tile) tile[key] = value;
 	}
 
+	static removeTile (grid, column, row) {
+		/** @description: removes tile from grid array at position **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @return: is type {boolean} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(column) || isNaN(row)) return false;
+		/** attempt to find tile **/
+		var tile = Graph.getTile(grid, column, row);
+		/** confirm found and remove **/
+		if (tile) return Boolean(grid[column].splice(row, 1).length);
+	}
+
+	static removeColumn (grid, column) {
+		/** @description: removes column from array at position **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {boolean} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(column)) return false;
+		/** confirm column within grid and remove item **/
+		if (grid[column]) return Boolean(grid.splice(column, 1).length);
+	}
+
+	static removeRow (grid, row) {
+		/** @description: removes column from array at position **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {row} is type {integer} **/
+		/** @return: is type {boolean} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(row)) return false;	
+		/** confirm row within grid **/
+		if (grid[0][row]) {
+			/** enumerate over grid columns **/
+			for (var i = 0, len = grid.length; i < len; i++) {
+				/** remove item from column **/
+				grid[i].splice(row, 1);
+			}
+		}
+		/** return result **/
+		return true;
+	}
+
 	static reset (grid) {
 		/** @description: resets calculations on graph **/
 		/** @param: {grid} is type {array} **/
@@ -338,22 +382,6 @@ class Graph extends Grid {
 			/** return edited tile **/
 			return tile;
 		});
-	}
-
-	editTile (column, row, config) {
-		/** @description: edits array items in 2d array using supplied coordinates and optional array **/
-		/** @param: {array} is type {array} **/
-		/** @param: {column} is type {integer} **/
-		/** @param: {config} is type {object} **/
-		/** @param: {callback} is type {function} **/
-		return Graph.editTile(this.grid, column, row, config);
-	}
-
-	editTiles (callback) {
-		/** @description: edits all tiles **/
-		/** @param: {callback} is type {function} **/
-		/** @param: {grid} is type {array} **/
-		return Graph.editTiles(this.grid, callback);
 	}
 
 	getTile (column, row, copy) {
@@ -460,14 +488,56 @@ class Graph extends Grid {
 		return Graph.getRandomRowInt(this.grid, column);
 	}
 
-	setTileKeyValue(grid, column, row, key, value) {
+	editTile (column, row, config) {
+		/** @description: edits array items in 2d array using supplied coordinates and optional array **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {config} is type {object} **/
+		/** @param: {callback} is type {function} **/
+		return Graph.editTile(this.grid, column, row, config);
+	}
+
+	editTiles (callback) {
+		/** @description: edits all tiles **/
+		/** @param: {callback} is type {function} **/
+		/** @param: {grid} is type {array} **/
+		return Graph.editTiles(this.grid, callback);
+	}
+
+	editTileKeyValue(grid, column, row, key, value) {
 		/** @description: sets found tile key to value **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
 		/** @param: {row} is type {integer} **/
 		/** @param: {key} is type {string} **/
 		/** @param: {value} is type {*} **/
-		return Graph.setTileKeyValue(this.grid, column, row, key, value);
+		return Graph.editTileKeyValue(this.grid, column, row, key, value);
+	}
+
+	removeTile (column, row) {
+		/** @description: removes tile from grid array at position **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @return: is type {boolean} **/
+		return Graph.removeTile(this.grid, column, row);
+	}
+
+	removeColumn (column) {
+		/** @description: removes column from array at position **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {boolean} **/
+		/** handle arguments **/
+		return Graph.removeColumn(this.grid, column);
+	}
+
+	removeRow (row) {
+		/** @description: removes row from array at position **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {boolean} **/
+		/** handle arguments **/
+		return Graph.removeRow(this.grid, row);
 	}
 
 	reset () {
