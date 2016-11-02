@@ -28,6 +28,7 @@ class Graph extends Grid {
 		/** @description: returns random integer from grid length **/
 		/** @param: {grid} is type {array} **/
 		/** @return: is type {integer} **/
+		/** handle arguments **/
 		if (!grid instanceof Array) return false;
 		/** return item from array length **/
 		return MATH.rint(0, grid.length);
@@ -38,9 +39,32 @@ class Graph extends Grid {
 		/** @param: {array} is type {array} **/
 		/** @param: {column} is type {integer} **/
 		/** @return: is type {integer} **/
+		/** handle arguments **/
 		if (!grid || !grid instanceof Array || isNaN(column)) return false;
 		/** return array item integer **/
 		return MATH.rint(0, column);
+	}
+
+	static getTileByCoordinates (grid, scaleX, scaleY, x, y, search) {
+		/** @description: selects tile from x and y integers **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {scale} is type {number} **/
+		/** @param: {x} is type {integer} **/
+		/** @param: {y} is type {integer} **/
+		/** @param: {search} is type {boolean} **/
+		/** @return: is type {object} or {boolean:false} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(scaleX) || isNaN(scaleY) || isNaN(x) || isNaN(y)) return false;
+		/** add x coordinate to the scale then get the base of the number, then minus the offset from grid length to adjust for out of bounds **/
+		var column = Math.floor((scaleX + x) / scaleX) - 1;
+		/** add y coordinate to the scale then get the base of the number, then minus the offset from grid length to adjust for out of bounds **/
+		var row = Math.floor((scaleY + y) / scaleY) - 1;
+		/** attempt to locate tile **/
+		var tile = Graph.getTile(grid, column, row);
+		/** confirm tile found and is within bounds **/
+		if (tile && tile.getWithinBounds(x, y)) return tile;
+		/** attempt long search **/
+		return search ? Graph.getTiles(grid, function (t) { if (t.getWithinBounds(x, y)) { tile = t; } }) : false;
 	}
 
 	static getTilesByAttribute (grid, attributes, column) {
@@ -48,6 +72,7 @@ class Graph extends Grid {
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
 		/** @return: is type {object} **/
+		/** handle arguments **/
 		if (!grid || !grid instanceof Array) return false;
 		/** set base column or fetch from random **/
 		column = !isNaN(column) ? grid[column] : column === "grid" ? [].concat.apply([], grid) : grid[Graph.getRandomColumnInt(grid)];
@@ -69,7 +94,7 @@ class Graph extends Grid {
 		/** @description: returns string for direction lookup **/
 		/** @param: {direction} is type {array} **/
 		/** @return: is type {object} **/
-		/** handle directions requirement **/
+		/** handle arguments **/
 		if (!directions || !directions instanceof Array) return false;
 		/** return random string from directions **/
 		return MATH.rint(0, directions.length, directions);
@@ -82,7 +107,7 @@ class Graph extends Grid {
 		/** @param: {config} is type {object} **/
 		/** set base config **/
 		config = config || {};
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!grid instanceof Array || isNaN(column) || isNaN(row) || !config instanceof Object) return false;
 		/** fetch tile from copied or this instance **/
 		var tile = Graph.getTile(grid, column, row);
@@ -99,7 +124,7 @@ class Graph extends Grid {
 		/** @description: edits all tiles **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {callback} is type {function} **/
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!typeof callback === "function") return false;
 		/** enumrate over grid **/
 		for (var i = 0, collen = grid.length; i < collen; i++) {
@@ -121,7 +146,7 @@ class Graph extends Grid {
 		/** @param: {column} is type {integer} **/
 		/** @param: {row} is type {integer} **/
 		/** @param: {copy} is type {boolean} **/
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!grid instanceof Array || (isNaN(column) || isNaN(row))) return false;
 		/** attempt to find item **/
 		return (grid[column] && grid[column][row]) ? copy ? OBJECT.create(grid[column][row]) : grid[column][row] : false;
@@ -132,14 +157,16 @@ class Graph extends Grid {
 		/** @param: {grid} is type {array} **/
 		/** @param: {callback} is type {function} **/
 		/** @param: {copy} is type {boolean} **/
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!grid instanceof Array || typeof callback !== "function") return false;
 		/** enumerate over this grid columns **/
 		for (var i = 0, collen = grid.length; i < collen; i++) {
 			/** enumerate over this grid rows **/
 			for (var j = 0, rowlen = grid[i].length; j < rowlen; j++) {
 				/** attempt to get tile **/
-				callback(Graph.getTile(grid, i, j, copy));
+				var result = callback(Graph.getTile(grid, i, j, copy));
+				/** optional break clause **/
+				if (result) return result;
 			}
 		}
 	} 
@@ -149,7 +176,7 @@ class Graph extends Grid {
 		/** @param: {grid} is type {object} **/
 		/** @param: {copy} is type {boolean} **/
 		/** @return: is type {object} **/
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!grid instanceof Array) return false;
 		/** set base column integer **/
 		var column = MATH.rint(0, grid.length);
@@ -165,7 +192,7 @@ class Graph extends Grid {
 		/** @param: {number} is type {number}
 		/** @param: {copy} is type {boolean} **/
 		/** @return: is type {array} **/
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!grid instanceof Array || isNaN(number)) return false;
 		/** set base array to contain tiles **/
 		var tiles = [];
@@ -185,7 +212,7 @@ class Graph extends Grid {
 		/** @param: {directions} is type {array} **/
 		/** @param: {copy} is type {boolean} **/
 		/** @return: is type {array} **/
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!grid instanceof Array || !tile instanceof Object || !directions instanceof Array) return false;
 		/** set base array to hold found tiles **/
 		var tiles = [];
@@ -204,7 +231,7 @@ class Graph extends Grid {
 		/** @param: {tile} is type {object} **/
 		/** @param: {direction} is type {string} **/
 		/** @param: {copy} is type {boolean} **/
-		/** handle requirements **/
+		/** handle arguments **/
 		if (!grid instanceof Array || !tile instanceof Object || !direction instanceof String) return false;
 		/** set offset integers to find tile next to supplied tile **/
 		var integers = Graph.getDirectionIntegers(direction);
@@ -216,7 +243,7 @@ class Graph extends Grid {
 		return Graph.getTile(grid, column, row, copy);
 	}
 
-	static setTile(grid, column, row, key, value) {
+	static setTileKeyValue(grid, column, row, key, value) {
 		/** @description: sets found tile key to value **/
 		/** @param: {grid} is type {array} **/
 		/** @param: {column} is type {integer} **/
@@ -235,6 +262,9 @@ class Graph extends Grid {
 		/** @description: resets calculations on graph **/
 		/** @param: {grid} is type {array} **/
 		/** edit all tiles in grid **/
+		/** handle arguments **/
+		if (!grid instanceof Array) return;
+		/** itearate through all tiles **/
 		Graph.editTiles(grid, function (tile) {
 			/** iterate over keys in found tile **/
 			for (var key in tile) {
@@ -328,6 +358,15 @@ class Graph extends Grid {
 		return Graph.getSpecificAdjacentTile(this.grid, tile, direction, copy);
 	}
 
+	getTileByCoordinates (x, y, search) {
+		/** @description: returns item from grid using supplied x and y coordinates **/
+		/** @param: {x} is type {integer} **/
+		/** @param: {y} is type {integer} **/
+		/** @param: {search} is type {boolean} **/
+		/** @return: is type {object} or {boolean:false} **/
+		return Graph.getTileByCoordinates(this.grid, this.gridTileWidth, this.gridTileHeight, x, y, search);
+	}
+
 	getTilesByAttribute (attributes, column) {
 		/** @description: returns item from supplied grid 2d array with optional column **/
 		/** @param: {attributes} is type {object} **/
@@ -350,6 +389,16 @@ class Graph extends Grid {
 		/** @return: is type {integer} **/
 		/** return array item integer **/
 		return Graph.getRandomRowInt(this.grid, column);
+	}
+
+	setTileKeyValue(grid, column, row, key, value) {
+		/** @description: sets found tile key to value **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @param: {key} is type {string} **/
+		/** @param: {value} is type {*} **/
+		return Graph.setTileKeyValue(this.grid, column, row, key, value);
 	}
 
 	reset () {
