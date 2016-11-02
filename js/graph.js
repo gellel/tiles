@@ -145,6 +145,19 @@ class Graph extends Grid {
 		return row;
 	}
 
+	static getTilesByColumn (grid, column, start, target) {
+		/** @description: returns array of tiles from column from supplied starting point to target **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {start} is type {integer} **/
+		/** @param: {row} is type {integer} **/
+		/** @return: is type {array} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(column) || isNaN(start) || isNaN(target)) return [];
+		/** confirm grid in range and return subsection **/
+		return grid[column] && grid[column][start] && grid[column][target] ? grid[column].slice(start, target) : [];
+	}
+
 	static getAdjacentTiles (grid, tile, directions, copy) {
 		/** @description: returns item from this grid **/
 		/** @param: {grid} is type {array} **/
@@ -356,6 +369,24 @@ class Graph extends Grid {
 		/** @param: {copy} is type {boolean} **/
 		/** @return: is type {array} **/
 		return Graph.getAdjacentTiles(this.grid, tile, this.directions, copy);
+	}
+
+	getTilesByColumn (column, start, target) {
+		/** @description: returns item from this grid within subsection **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {start} is type {start} **/
+		/** @param: {target} is type {target} **/
+		/** @return: is type {array} **/
+		return Graph.getTilesByColumn(this.grid, column, start, target);	
+	}
+
+	getTilesByRow (row, start, target) {
+		/** @description: returns item from this grid within subsection **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {start} is type {start} **/
+		/** @param: {target} is type {target} **/
+		/** @return: is type {array} **/
+		return Graph.getTilesByRow(this.grid, row, start, target);	
 	}
 
 	getAllAdjacentTiles (tile, copy) {
