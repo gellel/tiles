@@ -111,6 +111,25 @@ class Graph extends Grid {
 		return search ? Graph.getTiles(grid, function (t) { if (t.getWithinBounds(x, y)) { tile = t; } }) : false;
 	}
 
+	static getTilesByCoordinates (grid, data, search) {
+		/** @description: selects multiple tiles from x and y integers **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {data} is type {array} **/
+		/** @param: {search} is type {boolean} **/
+		/** @return: is type {array} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || !data instanceof Array) return [];
+		/** set base container for tile results **/
+		var tiles = [];
+		/** enumerate over data **/
+		for (var i = 0, len = data.length; i < len; i++) {
+			/** attempt to locate tile and push result to array **/
+			tiles.push(Graph.getTileByCoordinates(grid, data[i], search));
+		}
+		/** return populated array **/
+		return tiles;
+	}
+
 	static getTilesByAttribute (grid, attributes, column) {
 		/** @description: returns item from supplied grid 2d array with optional column **/
 		/** @param: {grid} is type {array} **/
