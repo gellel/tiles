@@ -93,7 +93,7 @@
 						*/
 
 						var adjust = function (n) {
-							return n - Curve.arc(tile.column, tile.row, tile.columns, tile.rows)
+							return n - Curve.arc(tile.column, tile.row, tile.columns, tile.rows, simplex.sx, simplex.sy, simplex.fx, simplex.fy, simplex.curve)
 						}
 
 						var distribute = function (n, amp) {
