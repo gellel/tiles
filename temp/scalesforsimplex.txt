@@ -1,0 +1,30 @@
+
+	static noise_scale_soften (noise, min, max) {
+		/** @description: softens the scale of simplex noise **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {min} is type {number} **/
+		/** @param: {max} is type {number} **/
+		/** @return: is type {number} **/
+		return noise * (max - min) / 2 + (max + min) / 2;
+	}
+
+	static noise_scale_normal (noise, min, max) {
+		/** @description: scales perlin index **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {min} is type {number} **/
+		/** @param: {max} is type {number} **/
+		/** @return: is type {number} **/
+		return min + ((noise + 1) / 2) * (min - max);
+	}
+
+	static noise_distribute_normal (noise, amplitude) {
+		/** @description: distributes perlin noise by max amplitude value **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {amplitude} is type {number} **/
+		/** @return: is type {number} **/
+		return noise / amplitude;
+	}
+
+	static distribute_spread (noise, amplitude) {
+		return noise / 1.656789;
+	}

@@ -47,7 +47,7 @@
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
-					{ __init__: true, columns: 110, rows: 60, scale: 10 });
+					{ __init__: true, columns: 100, rows: 50, scale: 10 });
 
 				/** set base graph of grid from default; use tile class for all nodes in graph **/
 				window.graph = new Graph(
@@ -81,44 +81,32 @@
 
 
 				var adjust = simplex.getAdjustable();
-
-				/*
-				graph.getTiles(function (tile) {
-
-					if (tile.column === 0) {
-							
-						var cx = tile.column / tile.columns;
-
-						var cy = tile.row / tile.rows;
-						
-						var sx = 2;
-						var sy = 2;
-
-						var fx = cx * sx - 1;
-						var fy = cy * sy - 1;
-
-						var fn = Math.max(Math.abs(fx), Math.abs(fy));
-
-						simplex.noise2d(tile.column, tile.row);
-						//var fc = 
-					}
-				});
-
-				*/
+				
 				
 				function createTerrain () {
 					
 					graph.getTiles(function (tile) {
-
-						//var fn = Curve.arc(tile.column, tile.row, simplex.fx, simplex.fy, simplex.sx, simplex.sy);
-
-						//fn = Curve.sin(fn, 2, 2.2)
-
+						/*
 						var s = simplex.arc ? Curve.arc : false;
 
-
 						var a = simplex.noise2d(tile.column, tile.row, s);
-				
+						*/
+
+						var adjust = function (n) {
+							return n - Curve.arc(tile.column, tile.row, tile.columns, tile.rows)
+						}
+
+						var distribute = function (n, amp) {
+							return n / amp;
+						}
+
+						var scale = function (n, min, max) {
+							return min + ((n + 1) / 2) * (min - max);
+						}
+
+						var a = simplex.noise2d(tile.column, tile.row, adjust, distribute, scale);
+
+
 						var f = parseInt(Math.abs(a));
 
 						f = Math.max(simplex.min, Math.min(f, simplex.max - 1))
@@ -139,6 +127,8 @@
 
 
 				createTerrain();
+
+				
 				
 
 			}); 

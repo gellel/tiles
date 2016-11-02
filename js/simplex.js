@@ -1,31 +1,5 @@
 class Simplex {
 
-	static scale_soften (noise, min, max) {
-		/** @description: softens the scale of simplex noise **/
-		/** @param: {noise} is type {number} **/
-		/** @param: {min} is type {number} **/
-		/** @param: {max} is type {number} **/
-		/** @return: is type {number} **/
-		return noise * (max - min) / 2 + (max + min) / 2;
-	}
-
-	static scale_normal (noise, min, max) {
-		/** @description: scales perlin index **/
-		/** @param: {noise} is type {number} **/
-		/** @param: {min} is type {number} **/
-		/** @param: {max} is type {number} **/
-		/** @return: is type {number} **/
-		return min + ((noise + 1) / 2) * (min - max);
-	}
-
-	static distribute_normal (noise, amplitude) {
-		/** @description: distributes perlin noise by max amplitude value **/
-		/** @param: {noise} is type {number} **/
-		/** @param: {amplitude} is type {number} **/
-		/** @return: is type {number} **/
-		return noise / amplitude;
-	}
-
 	static G2 () {
 		/** @description: returns base expression gradient 2 **/
 		/** @return: is type {float} **/
@@ -86,15 +60,116 @@ class Simplex {
 		return g[0] * x + g[1] * y + g[2] * z + g[3] * w;
 	}
 
-	noise2d (x, y, bias, soft) {
+	static RAW2D (perm, permMod12, x, y) {
 		/** @description: generates a noise value for 2d simplex **/
+		/** @param: {perm} is type {Uint8Array} **/
+		/** @param: {permMod12} is type {Uint8Array} **/
 		/** @param: {x} is type {number} **/
 		/** @param: {y} is type {number} **/
-		/** @param: {bias} is type {number} **/
-		/** @param: {soft} is type {boolean} **/
 		/** @return: is type {float} **/
-		/** set base bias **/
-		bias = typeof bias === "function" ? bias(x, y, this.fx, this.fy, this.sx, this.sy, this.curve) : !isNaN(bias) ? bias : 0;
+		/** cache G2 algorithm **/
+		var G2 = Simplex.G2();
+		/** cache G3 grid **/
+		var GRAD3 = Simplex.GRAD3();
+		/** set noise distribution from three corners within square **/
+		var n0;
+		/** **/
+		var n1;
+		/** **/ 
+		var n2;
+		/** skew geometry space to calculate the simplex cell **/
+		var s = (x + y) * 0.5 * (Math.sqrt(3.0) - 1.0);
+		/** set direction axis **/
+		var i = Math.floor(x + s);
+		/** set direction axis **/
+		var j = Math.floor(y + s);
+		/** **/
+		var t = (i + j) * G2;
+		/** reset corner to supplied x position **/
+		var X0 = i - t;
+		/** reset corner to supplied y position **/
+		var Y0 = j - t;
+		/** set the x distance from the origin square **/
+		var x0 = x - X0;
+		/** set the y distance from the origin square **/
+		var y0 = y - Y0;
+		/** set offset for second middle corner of simplex x **/
+		var i1;
+		/** set offset for second middle corner of simplex y **/
+		var j1;
+		/** confirm offsets for second (middle) corner of simplex in (i,j) coords **/
+		if (x0 > y0) { 
+			/** set lower triangle, XY order: (0, 0) -> (1, 0) -> (1, 1) **/
+		    i1 = 1;
+		    /** **/
+		    j1 = 0;
+		} 
+		else { 
+			/** set upper triangle, YX order: (0, 0) -> (0, 1) -> (1, 1) **/
+		    i1 = 0;
+		    /** **/
+		    j1 = 1;
+		}
+		/** set offset for middle corner x as unskewed **/
+		var x1 = x0 - i1 + G2;
+		/** set offset for middle corner y as unskewed **/
+		var y1 = y0 - j1 + G2;
+		/** set offset for last corner x as skewed **/
+		var x2 = x0 - 1.0 + 2.0 * G2;
+		/** set offset for last corner y as skewed **/
+		var y2 = y0 - 1.0 + 2.0 * G2;
+		/** calculate hashed gradient indices of the three simplex corners from defined offsets **/
+		var ii = i & 255;
+		var jj = j & 255;
+		var gi0 = permMod12[ii + perm[jj]];
+		var gi1 = permMod12[ii + i1 + perm[jj + j1]];
+		var gi2 = permMod12[ii + 1 + perm[jj + 1]];
+		/** calculate the contribution from the three corners **/
+		var t0 = 0.5 - x0 * x0 - y0 * y0;
+		/** **/
+		if (t0 < 0) {
+		    n0 = 0.0;
+		}
+		/** **/
+		else {
+		    t0 = t0 * t0;
+		    n0 = t0 * t0 * Simplex.DOT2D(GRAD3[gi0], x0, y0);
+		}
+		/** **/
+		var t1 = 0.5 - x1 * x1 - y1 * y1;
+		/** **/
+		if (t1 < 0) {
+		    n1 = 0.0;
+		} else {
+		    t1 = t1 * t1;
+		    n1 = t1 * t1 * Simplex.DOT2D(GRAD3[gi1], x1, y1);
+		}
+		/** **/
+		var t2 = 0.5 - x2 * x2 - y2 * y2;
+		/** **/
+		if (t2 < 0) {
+		    n2 = 0.0;
+		} else {
+		    t2 = t2 * t2;
+		    n2 = t2 * t2 * Simplex.DOT2D(GRAD3[gi2], x2, y2);
+		}
+		/** add values from each corner to generate simplex noise value; values returned as interval between [-1, 1] **/
+		return 70.14805770654148 * (n0 + n1 + n2);
+	}
+
+	noise2d (x, y, adjust, distribute, scale) {
+		/** @description: adjust base noise value for 2d noise **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {adjust} is type {function} **/
+		/** @param: {distribute} is type {function} **/
+		/** @param: {scale} is type {function} **/
+		/** @return: is type {number} **/
+		/** set base adjust **/
+		adjust = typeof adjust === "function" ? adjust : function (n) { return n };
+		/** set base distribute **/
+		distribute = typeof distribute === "function" ? distribute : function (n, a) { return n / a };
+		/** set base scale **/
+		scale = typeof scale === "function" ? scale : function (n, min, max) { return min + ((n + 1) / 2) * (min - max) };
 		/** set copy of base amplitude **/
 		var amplitude = this.amplitude;
 		/** set copy of base frequency **/
@@ -112,7 +187,7 @@ class Simplex {
 			/** scale y value by copied frequency **/
 			var yf = y * frequency;
 			/** set noise value and scale by copied amplitude **/
-			noise = noise + this.rawNoise2d(xf, yf, bias) * amplitude;
+			noise = noise + adjust(Simplex.RAW2D(this.perm, this.permMod12, xf, yf)) * amplitude;
 			/** set new max amplitude **/
     		maxAmplitude = maxAmplitude + amplitude;
     		/** rescale amplitude **/
@@ -120,118 +195,8 @@ class Simplex {
 			/** rescale frequency **/
 			frequency = frequency * 2;
 		};
-		/** retun scaled noise **/
-  		return this.scale(this.distribution(noise, maxAmplitude), this.min, this.max);
-	}
-
-	rawNoise2d (x, y, bias) {
-		/** @description: generates a noise value for 2d simplex **/
-		/** @param: {x} is type {number} **/
-		/** @param: {y} is type {number} **/
-		/** @param: {bias} is type {number} **/
-		/** @return: is type {float} **/
-		/** cache permanance **/
-		var perm = this.perm;
-		/** cache permance modulo **/
-		var permMod12 = this.permMod12;
-		/** cache G2 algorithm **/
-		var G2 = Simplex.G2();
-		/** cache G3 grid **/
-		var GRAD3 = Simplex.GRAD3();
-		/** cache DOT2D **/
-		var dot2D = Simplex.DOT2D;
-		/** cache bias **/
-
-		/** set noise distribution from three corners within square **/
-		var n0;
-		/** **/
-		var n1;
-		/** **/ 
-		var n2;
-
-		/** skew geometry space to calculate the simplex cell **/
-		var s = (x + y) * 0.5 * (Math.sqrt(3.0) - 1.0);
-		/** set direction axis **/
-		var i = Math.floor(x + s);
-		/** set direction axis **/
-		var j = Math.floor(y + s);
-		/** **/
-		var t = (i + j) * G2;
-		/** reset corner to supplied x position **/
-		var X0 = i - t;
-		/** reset corner to supplied y position **/
-		var Y0 = j - t;
-		/** set the x distance from the origin square **/
-		var x0 = x - X0;
-		/** set the y distance from the origin square **/
-		var y0 = y - Y0;
-
-		/** set offset for second middle corner of simplex x **/
-		var i1;
-		/** set offset for second middle corner of simplex y **/
-		var j1;
-
-		/** confirm offsets for second (middle) corner of simplex in (i,j) coords **/
-		if (x0 > y0) { 
-			/** set lower triangle, XY order: (0, 0) -> (1, 0) -> (1, 1) **/
-		    i1 = 1;
-		    /** **/
-		    j1 = 0;
-		} 
-		else { 
-			/** set upper triangle, YX order: (0, 0) -> (0, 1) -> (1, 1) **/
-		    i1 = 0;
-		    /** **/
-		    j1 = 1;
-		}
-
-		/** set offset for middle corner x as unskewed **/
-		var x1 = x0 - i1 + G2;
-		/** set offset for middle corner y as unskewed **/
-		var y1 = y0 - j1 + G2;
-		/** set offset for last corner x as skewed **/
-		var x2 = x0 - 1.0 + 2.0 * G2;
-		/** set offset for last corner y as skewed **/
-		var y2 = y0 - 1.0 + 2.0 * G2;
-
-		/** calculate hashed gradient indices of the three simplex corners from defined offsets **/
-		var ii = i & 255;
-		var jj = j & 255;
-		var gi0 = permMod12[ii + perm[jj]];
-		var gi1 = permMod12[ii + i1 + perm[jj + j1]];
-		var gi2 = permMod12[ii + 1 + perm[jj + 1]];
-
-		/** calculate the contribution from the three corners **/
-		var t0 = 0.5 - x0 * x0 - y0 * y0;
-
-		if (t0 < 0) {
-		    n0 = 0.0;
-		} 
-		else {
-		    t0 = t0 * t0;
-		    n0 = t0 * t0 * dot2D(GRAD3[gi0], x0, y0);
-		}
-
-		var t1 = 0.5 - x1 * x1 - y1 * y1;
-
-		if (t1 < 0) {
-		    n1 = 0.0;
-		} else {
-		    t1 = t1 * t1;
-		    n1 = t1 * t1 * dot2D(GRAD3[gi1], x1, y1);
-		}
-
-		var t2 = 0.5 - x2 * x2 - y2 * y2;
-
-		if (t2 < 0) {
-		    n2 = 0.0;
-		} else {
-		    t2 = t2 * t2;
-		    n2 = t2 * t2 * dot2D(GRAD3[gi2], x2, y2);
-		}
-
-		/** add values from each corner to generate simplex noise value; values returned as interval between [-1, 1] **/
-		return 70.14805770654148 * (n0 + n1 + n2) - (bias);
+		/** return scaled noise **/
+  		return scale(distribute(noise, maxAmplitude), this.min, this.max);
 	}
 
 	seed () {
@@ -247,7 +212,7 @@ class Simplex {
 		for (var i = 255; i > 0; i--) {
 			/** set new random seeds for perlin noise **/
 			var n = Math.floor((i + 1) * this.random());
-			/** **/
+			/** set permutation for quadrant **/
 			var q = p[i];
 			/** **/
 			p[i] = p[n];
@@ -266,7 +231,6 @@ class Simplex {
 			this.permMod12[i] = this.perm[i] % 12;
 		}
 	}
-
 
 	getAdjustable (config) {
 		/** @description: creates formatted object for defining HTML5 range input **/
@@ -317,12 +281,6 @@ class Simplex {
 		this.persistence = config.persistence || 0.50;
 		/** set base random calculator for constructor **/
 		this.random = config.random || Math.random;
-		/** set base scale for constructor **/
-		this.scale = config.scale || Simplex.scale_normal;
-		/** set base distribution for constructor **/
-		this.distribution = config.distribution || Simplex.distribute_normal;
-		/** set base bias for constructor **/
-		this.bias = config.bias || false;
 		/** set bias falloff x **/
 		this.fx = config.fx || 0;
 		/** set bias falloff y **/
