@@ -24,122 +24,6 @@ class Graph extends Grid {
 		return OBJECT.create({ columns: columns, rows: rows, column: column, row: row, x: x, y: y, gridTileWidth: gridTileWidth, gridTileHeight: gridTileHeight, g: g, h: h, f: f, cost: cost || 0, walkable: walkable || true, opened: opened, closed: closed, visited: visited || false, parent: parent, __class__: __class__, __init__: true });
 	}
 
-	static getRandomColumnInt (grid) {
-		/** @description: returns random integer from grid length **/
-		/** @param: {grid} is type {array} **/
-		/** @return: is type {integer} **/
-		/** handle arguments **/
-		if (!grid instanceof Array) return false;
-		/** return item from array length **/
-		return MATH.rint(0, grid.length);
-	}
-
-	static getRandomRowInt (grid, column) {
-		/** @description: returns random integer from grid length **/
-		/** @param: {array} is type {array} **/
-		/** @param: {column} is type {integer} **/
-		/** @return: is type {integer} **/
-		/** handle arguments **/
-		if (!grid || !grid instanceof Array || isNaN(column)) return false;
-		/** return array item integer **/
-		return MATH.rint(0, column);
-	}
-
-	static getTileByCoordinates (grid, scaleX, scaleY, x, y, search) {
-		/** @description: selects tile from x and y integers **/
-		/** @param: {grid} is type {array} **/
-		/** @param: {scale} is type {number} **/
-		/** @param: {x} is type {integer} **/
-		/** @param: {y} is type {integer} **/
-		/** @param: {search} is type {boolean} **/
-		/** @return: is type {object} or {boolean:false} **/
-		/** handle arguments **/
-		if (!grid instanceof Array || isNaN(scaleX) || isNaN(scaleY) || isNaN(x) || isNaN(y)) return false;
-		/** add x coordinate to the scale then get the base of the number, then minus the offset from grid length to adjust for out of bounds **/
-		var column = Math.floor((scaleX + x) / scaleX) - 1;
-		/** add y coordinate to the scale then get the base of the number, then minus the offset from grid length to adjust for out of bounds **/
-		var row = Math.floor((scaleY + y) / scaleY) - 1;
-		/** attempt to locate tile **/
-		var tile = Graph.getTile(grid, column, row);
-		/** confirm tile found and is within bounds **/
-		if (tile && tile.getWithinBounds(x, y)) return tile;
-		/** attempt long search **/
-		return search ? Graph.getTiles(grid, function (t) { if (t.getWithinBounds(x, y)) { tile = t; } }) : false;
-	}
-
-	static getTilesByAttribute (grid, attributes, column) {
-		/** @description: returns item from supplied grid 2d array with optional column **/
-		/** @param: {grid} is type {array} **/
-		/** @param: {column} is type {integer} **/
-		/** @return: is type {object} **/
-		/** handle arguments **/
-		if (!grid || !grid instanceof Array) return false;
-		/** set base column or fetch from random **/
-		column = !isNaN(column) ? grid[column] : column === "grid" ? [].concat.apply([], grid) : grid[Graph.getRandomColumnInt(grid)];
-		/** filter **/
-		var row = column.filter(function (tile) { if (OBJECT.contains(tile, attributes)) return tile; });
-		/** return first **/
-		return row;
-	}
-
-	static getDirectionIntegers (direction) {
-		/** @description: returns object with offset column and row integers **/
-		/** @param: {direction} is type {string} **/
-		/** @return: is type {object} **/
-		/** return object **/
-		return "top" === direction ? { x: 0, y: -1} : "topleft" === direction ? { x: -1, y: -1 } : "topright" === direction ? { x: 1, y: -1 } : "right" === direction ? { x: 1, y: 0 } : "bottom" === direction ? { x: 0, y: 1 } :  "bottomleft" === direction ? { x: -1, y: 1 } : "bottomright" === direction ? { x: 1, y: 1 } : { x: -1, y: 0 };
-	}
-
-	static getRandomDirectionString (directions) {
-		/** @description: returns string for direction lookup **/
-		/** @param: {direction} is type {array} **/
-		/** @return: is type {object} **/
-		/** handle arguments **/
-		if (!directions || !directions instanceof Array) return false;
-		/** return random string from directions **/
-		return MATH.rint(0, directions.length, directions);
-	}
-
-	static editTile (grid, column, row, config) {
-		/** @description: edits array items in 2d array using supplied coordinates and optional array **/
-		/** @param: {grid} is type {array} **/
-		/** @param: {column} is type {integer} **/
-		/** @param: {config} is type {object} **/
-		/** set base config **/
-		config = config || {};
-		/** handle arguments **/
-		if (!grid instanceof Array || isNaN(column) || isNaN(row) || !config instanceof Object) return false;
-		/** fetch tile from copied or this instance **/
-		var tile = Graph.getTile(grid, column, row);
-		/** confirm tile found **/
-		if (tile) {
-			/** update tile **/
-			tile = Object.assign(tile, config);
-			/** update tile reference in grid **/
-			grid[column][row] = config.__class__ ? new config.__class__(tile) : tile;
-		}
-	}
-
-	static editTiles (grid, callback) {
-		/** @description: edits all tiles **/
-		/** @param: {grid} is type {array} **/
-		/** @param: {callback} is type {function} **/
-		/** handle arguments **/
-		if (!typeof callback === "function") return false;
-		/** enumrate over grid **/
-		for (var i = 0, collen = grid.length; i < collen; i++) {
-			/** enumate over column **/
-			for (var j = 0, rowlen = grid[i].length; j < rowlen; j++) {
-				/** fetch tile **/
-				var tile = Graph.getTile(grid, i, j);
-				/** response **/
-				var response = callback(tile);
-				/** perform edit **/
-				Graph.editTile(grid, i, j, response);
-			}
-		}
-	}
-
 	static getTile (grid, column, row, copy) {
 		/** @description: returns item from this grid 2d array using column and row to locate items **/
 		/** @param: {grid} is type {array} **/
@@ -205,6 +89,43 @@ class Graph extends Grid {
 		return tiles;
 	}
 
+	static getTileByCoordinates (grid, scaleX, scaleY, x, y, search) {
+		/** @description: selects tile from x and y integers **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {scale} is type {number} **/
+		/** @param: {x} is type {integer} **/
+		/** @param: {y} is type {integer} **/
+		/** @param: {search} is type {boolean} **/
+		/** @return: is type {object} or {boolean:false} **/
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(scaleX) || isNaN(scaleY) || isNaN(x) || isNaN(y)) return false;
+		/** add x coordinate to the scale then get the base of the number, then minus the offset from grid length to adjust for out of bounds **/
+		var column = Math.floor((scaleX + x) / scaleX) - 1;
+		/** add y coordinate to the scale then get the base of the number, then minus the offset from grid length to adjust for out of bounds **/
+		var row = Math.floor((scaleY + y) / scaleY) - 1;
+		/** attempt to locate tile **/
+		var tile = Graph.getTile(grid, column, row);
+		/** confirm tile found and is within bounds **/
+		if (tile && tile.getWithinBounds(x, y)) return tile;
+		/** attempt long search **/
+		return search ? Graph.getTiles(grid, function (t) { if (t.getWithinBounds(x, y)) { tile = t; } }) : false;
+	}
+
+	static getTilesByAttribute (grid, attributes, column) {
+		/** @description: returns item from supplied grid 2d array with optional column **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {object} **/
+		/** handle arguments **/
+		if (!grid || !grid instanceof Array) return false;
+		/** set base column or fetch from random **/
+		column = !isNaN(column) ? grid[column] : column === "grid" ? [].concat.apply([], grid) : grid[Graph.getRandomColumnInt(grid)];
+		/** filter **/
+		var row = column.filter(function (tile) { if (OBJECT.contains(tile, attributes)) return tile; });
+		/** return first **/
+		return row;
+	}
+
 	static getAdjacentTiles (grid, tile, directions, copy) {
 		/** @description: returns item from this grid **/
 		/** @param: {grid} is type {array} **/
@@ -241,6 +162,85 @@ class Graph extends Grid {
 		var row = tile.row + integers.y;
 		/** attempt to find tile **/
 		return Graph.getTile(grid, column, row, copy);
+	}
+
+	static getRandomColumnInt (grid) {
+		/** @description: returns random integer from grid length **/
+		/** @param: {grid} is type {array} **/
+		/** @return: is type {integer} **/
+		/** handle arguments **/
+		if (!grid instanceof Array) return false;
+		/** return item from array length **/
+		return MATH.rint(0, grid.length);
+	}
+
+	static getRandomRowInt (grid, column) {
+		/** @description: returns random integer from grid length **/
+		/** @param: {array} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @return: is type {integer} **/
+		/** handle arguments **/
+		if (!grid || !grid instanceof Array || isNaN(column)) return false;
+		/** return array item integer **/
+		return MATH.rint(0, column);
+	}
+
+	static getDirectionIntegers (direction) {
+		/** @description: returns object with offset column and row integers **/
+		/** @param: {direction} is type {string} **/
+		/** @return: is type {object} **/
+		/** return object **/
+		return "top" === direction ? { x: 0, y: -1} : "topleft" === direction ? { x: -1, y: -1 } : "topright" === direction ? { x: 1, y: -1 } : "right" === direction ? { x: 1, y: 0 } : "bottom" === direction ? { x: 0, y: 1 } :  "bottomleft" === direction ? { x: -1, y: 1 } : "bottomright" === direction ? { x: 1, y: 1 } : { x: -1, y: 0 };
+	}
+
+	static getRandomDirectionString (directions) {
+		/** @description: returns string for direction lookup **/
+		/** @param: {direction} is type {array} **/
+		/** @return: is type {object} **/
+		/** handle arguments **/
+		if (!directions || !directions instanceof Array) return false;
+		/** return random string from directions **/
+		return MATH.rint(0, directions.length, directions);
+	}
+
+	static editTile (grid, column, row, config) {
+		/** @description: edits array items in 2d array using supplied coordinates and optional array **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {column} is type {integer} **/
+		/** @param: {config} is type {object} **/
+		/** set base config **/
+		config = config || {};
+		/** handle arguments **/
+		if (!grid instanceof Array || isNaN(column) || isNaN(row) || !config instanceof Object) return false;
+		/** fetch tile from copied or this instance **/
+		var tile = Graph.getTile(grid, column, row);
+		/** confirm tile found **/
+		if (tile) {
+			/** update tile **/
+			tile = Object.assign(tile, config);
+			/** update tile reference in grid **/
+			grid[column][row] = config.__class__ ? new config.__class__(tile) : tile;
+		}
+	}
+
+	static editTiles (grid, callback) {
+		/** @description: edits all tiles **/
+		/** @param: {grid} is type {array} **/
+		/** @param: {callback} is type {function} **/
+		/** handle arguments **/
+		if (!typeof callback === "function") return false;
+		/** enumrate over grid **/
+		for (var i = 0, collen = grid.length; i < collen; i++) {
+			/** enumate over column **/
+			for (var j = 0, rowlen = grid[i].length; j < rowlen; j++) {
+				/** fetch tile **/
+				var tile = Graph.getTile(grid, i, j);
+				/** response **/
+				var response = callback(tile);
+				/** perform edit **/
+				Graph.editTile(grid, i, j, response);
+			}
+		}
 	}
 
 	static setTileKeyValue(grid, column, row, key, value) {
