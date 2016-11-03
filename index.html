@@ -90,7 +90,7 @@
 
 							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
-							return noise - Curve.sin(d, 1, 2);
+							return noise - Curve.sin(d, 0, 0.1);
 						}
 
 						var distribute = function (noise, amplitude) {

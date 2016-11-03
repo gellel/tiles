@@ -118,8 +118,12 @@ class Curve {
 		a = !isNaN(a) ? a : 3;
 		/** set base b number for formula; controls where the S shape begins to slide into a curve from lower x **/
 		b = !isNaN(b) ? b : 2.2;	
+		/** create gradient curve **/
+		var sin = Math.pow(value, a) / (Math.pow(value, a) + Math.pow((b - b * value), a));
+		/** handle nan case **/
+		sin = isNaN(sin) ? 0 : sin;
 		/** return gradient **/
-		return Math.pow(value, a) / (Math.pow(value, a) + Math.pow((b - b * value), a));
+		return sin;
 	}
 
 	static arc (x1, y1, x2, y2, curve) {
