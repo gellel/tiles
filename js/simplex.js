@@ -169,7 +169,7 @@ class Simplex {
 		/** set base distribute **/
 		distribute = typeof distribute === "function" ? distribute : function (n, a) { return n / a };
 		/** set base scale **/
-		scale = typeof scale === "function" ? scale : function (n, min, max) { return min + ((n + 1) / 2) * (min - max) };
+		scale = typeof scale === "function" ? scale : function (n, min, max) { return min + ((n + 1) / 2) * (min - max); };
 		/** set copy of base amplitude **/
 		var amplitude = this.amplitude;
 		/** set copy of base frequency **/
@@ -182,12 +182,14 @@ class Simplex {
 		var maxAmplitude = 0;
 		/** enumerate over config octaves **/
 		for (var i = 0; i < this.octaves; i++) {
-			/** scale x value by copied frequency **/
+			/** scale x value by copied frequency (center scale using: x - width / 2) **/
 			var xf = x * frequency;
-			/** scale y value by copied frequency **/
+			/** scale y value by copied frequency (center scale using: y - height / 2) **/
 			var yf = y * frequency;
+			/** get raw noise (with possible adjustment) **/
+			var n = adjust(Simplex.RAW2D(this.perm, this.permMod12, xf, yf));
 			/** set noise value and scale by copied amplitude **/
-			noise = noise + adjust(Simplex.RAW2D(this.perm, this.permMod12, xf, yf)) * amplitude;
+			noise = noise + n * amplitude;
 			/** set new max amplitude **/
     		maxAmplitude = maxAmplitude + amplitude;
     		/** rescale amplitude **/
@@ -239,7 +241,7 @@ class Simplex {
 		/** set base config **/
 		config = config || {};
 		/** assign scales to object **/
-		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence }, fx: { min: 0, max: this.fx }, fy: { min: 0, max: this.fy }, sx: { min: 0, max: this.sx }, sy: { min: 0, max: this.sy } });
+		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence } });
 	}
 
 	setScaleStep (config) {
@@ -272,27 +274,15 @@ class Simplex {
 		/** set base frequency for constructor **/
 		this.frequency = config.frequency || 0.001;
 		/** set base min for constructor **/
-		this.min = !isNaN(config.min) ? config.min : -1.0;
+		this.min = !isNaN(config.min) ? config.min : -1;
 		/** set base max for constructor **/
-		this.max = !isNaN(config.max) ? config.max : 1.0;
+		this.max = !isNaN(config.max) ? config.max : 1;
 		/** set base octaves for constructor **/
 		this.octaves = parseInt(config.octaves) || 1;
 		/** set base persistence for constructor **/
 		this.persistence = config.persistence || 0.50;
 		/** set base random calculator for constructor **/
 		this.random = config.random || Math.random;
-		/** set bias falloff x **/
-		this.fx = config.fx || 0;
-		/** set bias falloff y **/
-		this.fy = config.fy || 0;
-		/** set bias scale x **/
-		this.sx = config.sx || 0;
-		/** set bias scale y **/
-		this.sy = config.sy || 0;
-		/** set curve status **/
-		this.arc = config.arc || false;
-		/** set curve method **/
-		this.curve = config.curve || false;
 		/** set base permutation **/
 		this.seed();
 	}

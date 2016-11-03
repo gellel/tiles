@@ -114,28 +114,26 @@ class Curve {
 		/** @param: {a} is type {number} **/
 		/** @param: {b} is type {number} **/
 		/** @return: is type {number} **/
-		/** set base a number for formula **/	
+		/** set base a number for formula; controls the S shape of the curve **/	
 		a = !isNaN(a) ? a : 3;
-		/** set base b number for formula **/
+		/** set base b number for formula; controls where the S shape begins to slide into a curve from lower x **/
 		b = !isNaN(b) ? b : 2.2;	
 		/** return gradient **/
 		return Math.pow(value, a) / (Math.pow(value, a) + Math.pow((b - b * value), a));
 	}
 
-	static arc (x1, y1, x2, y2, sx, sy, curve) {
+	static arc (x1, y1, x2, y2, curve) {
 		/** @description: returns falloff distance with smoothing **/
 		/** @param: {x1} is type {number} **/
 		/** @param: {y1} is type {number} **/
 		/** @param: {x2} is type {number} **/
 		/** @param: {y2} is type {number} **/
-		/** @param: {sx} is type {number} **/
-		/** @param: {sy} is type {number} **/
 		/** @param: {curve} is type {function} or {string} **/
 		/** @return: is type {number} **/
 		/** handle arguments **/
 		curve = typeof curve === "function" ? curve : typeof curve === "string" ? Curve[curve] : Curve.linear;
 		/** return fall off **/
-		return curve(Curve.distance(x1, y1, x2, y2, sx, sy));
+		return curve(Curve.distance(x1, y1, x2, y2));
 	}
 
 }

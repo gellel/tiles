@@ -71,8 +71,7 @@
 
 				/** set base simplex processor for world generation **/
 				window.simplex = new Simplex({
-					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0, fx: grid.columns, fy: grid.rows, sx: 2, sy: 2, curve: "linear"
-				});				
+					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0 });
 
 				/** set base path for testing **/
 				window.path = new Path(
@@ -87,41 +86,39 @@
 					
 					graph.getTiles(function (tile) {
 
-		
+						var adjust = function (noise) {
 
+							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
+
+							return noise - Curve.sin(d, 1, 2);
+						}
+
+						var distribute = function (noise, amplitude) {
+							return noise / amplitude;
+						}
+
+						var normalise = function (noise, min, max) {
+
+							noise = ((noise * (max - min) / 2) + (max + min) / 2);
+
+							noise = Math.abs(parseInt(noise));
+
+							noise = MATH.clip(noise, simplex.min, (simplex.max - 1));
+
+							return noise;
+						}
+
+						var x = tile.column - parseInt(tile.columns / 2);
 						
-						var adjust = function (n) {
+						var y = tile.row - parseInt(tile.rows / 2);
 
-							var fo = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
+						var n = simplex.noise2d(x, y, adjust, distribute, normalise);
 
-							//var d = n - Curve.sin(fo)
-
-							//d = Curve.sin(d)
-
-							return MATH.clip(n, -1, 1)
-						}
-
-						var distribute = function (n, amp) {
-							return n / amp;
-						}
-
-						var scale = function (n, min, max) {
-							return min + ((n + 1) / 2) * (min - max);
-						}
-
-						var a = simplex.noise2d(tile.column, tile.row, adjust, distribute, scale);
-
-
-						var f = parseInt(Math.abs(a));
-
-						f = Math.max(simplex.min, Math.min(f, simplex.max - 1))
-
-						var t = textures[f];
+						var t = textures[n];
 
 						var c = t.colour ? t.colour.hex : t.hex;
 
-						if (t) base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: c });
-						
+						base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: c });
 
 					});
 				}
@@ -129,7 +126,7 @@
 
 
 				Editor.noise(editor, adjust, simplex, createTerrain)
-				Editor.curve(editor, simplex, Curve, createTerrain);
+				//Editor.curve(editor, simplex, Curve, createTerrain);
 
 
 				createTerrain();
