@@ -208,7 +208,7 @@ class Simplex {
 			/** **/
 			p[i] = i;
 		}
-		/** **/
+		/** set seed random distribution **/
 		for (var i = 255; i > 0; i--) {
 			/** set new random seeds for perlin noise **/
 			var n = Math.floor((i + 1) * this.random());
@@ -219,11 +219,11 @@ class Simplex {
 			/** **/
 			p[n] = q;
 		}
-		/** **/
+		/** set new binary array **/
 		this.perm = new Uint8Array(512);
-		/** **/
+		/** set new binary array **/
 		this.permMod12 = new Uint8Array(512);
-		/** **/
+		/** set bytes **/
 		for (var i = 0; i < 512; i++) {
 			/** **/
 			this.perm[i] = p[i & 255];

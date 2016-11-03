@@ -91,34 +91,20 @@ class Curve {
 		return value < .5 ? 16 * value * value * value * value * value : 1 + 16 * (--value) * value * value * value * value; 
 	}
 
-	static distance (x1, y1, x2, y2, sx, sy) {
+	static distance (x1, y1, x2, y2) {
 		/** @description: returns falloff distance **/
 		/** @param: {x1} is type {number} **/
 		/** @param: {y1} is type {number} **/
 		/** @param: {x2} is type {number} **/
 		/** @param: {y2} is type {number} **/
-		/** @param: {sx} is type {number} **/
-		/** @param: {sy} is type {number} **/
 		/** @return: is type {number} **/
 		/** handle arguments **/
 		if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) return 0;
-		/** set base scale x **/
-		sx = typeof sx === "number" ? sx : 2;
-		/** set base scale y **/
-		sy = typeof sy === "number" ? sy : 2;
-		/** set corner x **/
-		var cx = x1 / parseFloat(x2);
-		/** set corner y **/
-		var cy = y1 / parseFloat(y2);
-		/** set base cx if incorrect number **/
-		if (!isFinite(cx) || isNaN(cx)) cx = 0;
-		/** set base cy if incorrect number **/
-		if (!isFinite(cy) || isNaN(cy)) cy = 0;
-		/** scale fall off x **/
-		var fx = cx * sx - 1;
-		/** scale fall off y **/
-		var fy = cy * sy - 1;
-		/** return fall off **/
+		/** set fall distance for x position relative to supplied x offset (x2) **/
+		var fx = x1 / x2 * 2 - 1;
+		/** set fall distance for y position relative to supplied y offset (y2) **/
+		var fy = y1 / y2 * 2 - 1;
+		/** set highest fall distance from distance offsets and return highest **/
 		return Math.max(Math.abs(fx), Math.abs(fy));
 	}
 

@@ -47,7 +47,7 @@
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
-					{ __init__: true, columns: 100, rows: 50, scale: 10 });
+					{ __init__: true, columns: 80, rows: 60, scale: 10 });
 
 				/** set base graph of grid from default; use tile class for all nodes in graph **/
 				window.graph = new Graph(
@@ -86,14 +86,19 @@
 				function createTerrain () {
 					
 					graph.getTiles(function (tile) {
-						/*
-						var s = simplex.arc ? Curve.arc : false;
 
-						var a = simplex.noise2d(tile.column, tile.row, s);
-						*/
+		
 
+						
 						var adjust = function (n) {
-							return n - Curve.arc(tile.column, tile.row, tile.columns, tile.rows, simplex.sx, simplex.sy, simplex.fx, simplex.fy, simplex.curve)
+
+							var fo = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
+
+							//var d = n - Curve.sin(fo)
+
+							//d = Curve.sin(d)
+
+							return MATH.clip(n, -1, 1)
 						}
 
 						var distribute = function (n, amp) {
@@ -116,6 +121,7 @@
 						var c = t.colour ? t.colour.hex : t.hex;
 
 						if (t) base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: c });
+						
 
 					});
 				}
