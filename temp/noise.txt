@@ -1,0 +1,12 @@
+noise notes: 
+
+frequency:
+	- Frequency zoom:
+		- when supplying noise2d with x and y, using the formula (x - width / 2) centers the zoom for the x axis; same is true for the y axis (y - height / 2)
+
+water:
+	- Curve.sin: 
+		- supplying noise with a: 0 and b: 0.1 create interesting water based maps
+
+	- Curve.bezier:
+		- creating a bezier function would allow the noise falloff to be scaled to create more islands reliably
