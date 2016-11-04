@@ -32,6 +32,7 @@
 		<script src="js/character.js"></script>
 		<script src="js/canvas.js"></script>
 		<script src="js/edit.js"></script>
+		<script src="js/terrain.js"></script>
 		<script type="text/javascript">
 
 			window.getScript("json/tiles_as.js", function () {
@@ -47,7 +48,7 @@
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
-					{ __init__: true, columns: 80, rows: 80, scale: 5 });
+					{ __init__: true, columns: 60, rows: 60, scale: 10 });
 
 				/** set base graph of grid from default; use tile class for all nodes in graph **/
 				window.graph = new Graph(
@@ -71,7 +72,7 @@
 
 				/** set base simplex processor for world generation **/
 				window.simplex = new Simplex({
-					frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0 });
+					frequency: 0.0110, persistence: 0.44, octaves: 4, max: textures.length, min: 0 });
 
 				/** set base path for testing **/
 				window.path = new Path(
@@ -80,7 +81,7 @@
 
 
 
-				
+				/** get adjustable mets **/				
 				var adjust = simplex.getAdjustable();
 				
 				
@@ -89,7 +90,7 @@
 					graph.getTiles(function (tile) {
 
 						var adjust = function (noise) {
-
+							
 							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
 							var b = Curve.bezier(d, simplex.p0 || 0, simplex.p1 || 0, simplex.p2 || 0, simplex.p3 || 0);
@@ -128,13 +129,42 @@
 				}
 
 
-
-				Editor.noise(editor, adjust, simplex, createTerrain)
-				//Editor.curve(editor, simplex, Curve, createTerrain);
-
-
-				createTerrain();
 				
+				
+				var createProceduralTerrain = function () {
+
+					for (var i = 0; i < textures.length; i++) {
+						/** set simplex config for procedural image **/
+						var sx = { octaves: 4, frequency: 0.15, persistence: 1, perm: simplex.perm, permMod12: simplex.permMod12 };
+						/** s, width, height, scale, colour, dithers **/
+						textures[i].img = Terrain.img(sx, 10, 10, 10, textures[i].colour.hex);
+					}
+
+					/** create procedural textures **/
+					graph.getTiles(function (tile) {
+
+						var x = tile.column - parseInt(tile.columns / 2);
+							
+						var y = tile.row - parseInt(tile.rows / 2);
+
+						var n = simplex.noise2d(x, y);
+
+						var t = textures[Math.abs(parseInt(n))];
+
+						var image = new Image();
+						image.onload = function() {
+							base.context.drawImage(image, tile.x, tile.y, tile.width, tile.height)
+						};
+						image.src = t.img;
+
+					});
+				
+				}
+
+			//	createProceduralTerrain()
+			//	Editor.noise(editor, adjust, simplex, createProceduralTerrain);
+				Editor.noise(editor, adjust, simplex, createTerrain);
+				createTerrain();
 				
 				
 

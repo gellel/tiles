@@ -180,6 +180,14 @@ class Simplex {
 		normalise = typeof normalise === "function" ? normalise : function (n, min, max) { return min + ((n + 1) / 2) * (min - max); };
 		/** set base octaves **/
 		octaves = octaves === 0 ? 1 : octaves;
+		/** set base amplitude **/
+		amplitude = !isNaN(amplitude) ? amplitude : 1;
+		/** set base frequency **/
+		frequency = !isNaN(frequency) ? frequency : 0.5;
+		/** set base min **/
+		min = !isNaN(min) ? min : -1;
+		/** set base max **/
+		max = !isNaN(max) ? max : 1;
 		/** set base noise value **/
 		var noise = 0;
 		/** set base max amplitude **/
@@ -217,16 +225,22 @@ class Simplex {
 
 	seed () {
 		/** @description: generates random seeded points along calculation distance for smooth random distribution **/
+		/** set base permutation points **/
 		this.points = new Uint8Array(256);
+		/** set permutation container **/
 		this.perm = new Uint8Array(512);
+		/** set modulo permutation **/
 		this.permMod12 = new Uint8Array(512);
-		
+		/** enumerate over points **/
 		for (var i = 0; i < 256; i++) {
+			/** set seed **/
 			this.points[i] = this.random() * 256;
 		}
-		
+		/** enumerate over bytes **/
 		for (i = 0; i < 512; i++) {
+			/** set int permutation **/
 			this.perm[i] = this.points[i & 255];
+			/** set modulus permutation **/
 			this.permMod12[i] = this.perm[i] % 12;
 		}
 	}
