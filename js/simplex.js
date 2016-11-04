@@ -1,30 +1,30 @@
 class Simplex {
 
-	static G2 () {
+	static get G2 () {
 		/** @description: returns base expression gradient 2 **/
 		/** @return: is type {float} **/
 		return (3.0 - Math.sqrt(3.0)) / 6.0;
 	}
 
-	static G3 () {
+	static get G3 () {
 		/** @description: returns base expression gradient 3 **/
 		/** @return: is type {float} **/
 		return 1.0 / 6.0;
 	}
 
-	static G4 () {
+	static get G4 () {
 		/** @description: returns base expression for gradient 4 **/
 		/** @return: is type {float} **/
 		return (5.0 - Math.sqrt(5.0)) / 20.0;
 	}
 
-	static GRAD3 () {
+	static get GRAD3 () {
 		/** @description: holds 3d array for matrix **/
 		/** @return: is type {array} **/
 		return [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0], [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1], [0, 1, 1], [0, -1, -1], [0, 1, -1], [0, -1, -1]];
 	}
 
-	static GRAD4 () {
+	static get GRAD4 () {
 		/** @description: holds 4d array for matrix **/
 		/** @return: is type {array} **/
 		return [[0, 1, 1, 1], [0, 1, 1, -1], [0, 1, -1, 1], [0, 1, -1, -1], [0, -1, 1, 1], [0, -1, 1, -1], [0, -1, -1, 1], [0, -1, -1, -1], [1, 0, 1, 1], [1, 0, 1, -1], [1, 0, -1, 1], [1, 0, -1, -1], [-1, 0, 1, 1], [-1, 0, 1, -1], [-1, 0, -1, 1], [-1, 0, -1, -1], [1, 1, 0, 1], [1, 1, 0, -1], [1, -1, 0, 1], [1, -1, 0, -1], [-1, 1, 0, 1], [-1, 1, 0, -1], [-1, -1, 0, 1], [-1, -1, 0, -1], [1, 1, 1, 0], [1, 1, -1, 0], [1, -1, 1, 0], [1, -1, -1, 0], [-1, 1, 1, 0], [-1, 1, -1, 0], [-1, -1, 1, 0], [-1, -1, -1, 0]]
@@ -68,9 +68,9 @@ class Simplex {
 		/** @param: {y} is type {number} **/
 		/** @return: is type {float} **/
 		/** cache G2 algorithm **/
-		var G2 = Simplex.G2();
+		var G2 = Simplex.G2;
 		/** cache G3 grid **/
-		var GRAD3 = Simplex.GRAD3();
+		var GRAD3 = Simplex.GRAD3;
 		/** set noise distribution from three corners within square **/
 		var n0;
 		/** **/
