@@ -175,12 +175,12 @@ class Simplex {
 		/** set base adjust **/
 		adjust = typeof adjust === "function" ? adjust : function (n) { return n };
 		/** set base distribute **/
-		distribute = typeof distribute === "function" ? distribute : function (n, a) { return n / a };
+		distribute = typeof distribute === "function" ? distribute : function (n, a) { return n = n / a };
 		/** set base scale **/
 		normalise = typeof normalise === "function" ? normalise : function (n, min, max) { return min + ((n + 1) / 2) * (min - max); };
 		/** set base octaves **/
 		octaves = octaves === 0 ? 1 : octaves;
-		/** set base amplitude **/
+		/** set base amplitude adjustment **/
 		amplitude = !isNaN(amplitude) ? amplitude : 1;
 		/** set base frequency **/
 		frequency = !isNaN(frequency) ? frequency : 0.5;
@@ -188,6 +188,8 @@ class Simplex {
 		min = !isNaN(min) ? min : -1;
 		/** set base max **/
 		max = !isNaN(max) ? max : 1;
+		/** set base amplitude **/
+		var a = 1;
 		/** set base noise value **/
 		var noise = 0;
 		/** set base max amplitude **/
@@ -201,11 +203,11 @@ class Simplex {
 			/** get raw noise (with possible adjustment) **/
 			var n = adjust(Simplex.RAW2D(perm, permMod12, xf, yf));
 			/** set noise value and scale by copied amplitude **/
-			noise = noise + n * amplitude;
+			noise = noise + n * a;
 			/** set new max amplitude **/
-    		maxAmplitude = maxAmplitude + amplitude;
+    		maxAmplitude = (maxAmplitude + a) + amplitude;
     		/** rescale amplitude **/
-			amplitude = amplitude * persistence;
+			a = a * persistence;
 			/** rescale frequency **/
 			frequency = frequency * 2;
 		};
@@ -252,7 +254,7 @@ class Simplex {
 		/** set base config **/
 		config = config || {};
 		/** assign scales to object **/
-		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, amplitude: { min: 0, max: this.amplitude }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence }, /*p0: { min: 0, max: 0 }, p0: { min: 0, max: 0 }, p1: { min: 0, max: 0 }, p2: { min: 0, max: 0 }, p3: { min: 0, max: 0 }*/ });
+		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 1, max: this.octaves }, amplitude: { min: 0, max: this.amplitude < 1 ? 1 : this.amplitude }, frequency: { min: 0, max: this.frequency < 1 ? 1 : this.frequency }, persistence: { min: 0, max: this.persistence < 1 ? 1 : this.persistence }, p0: { min: -1, max: 1, step: 0.01, value: 0 }, p0: { min: -1, max: 1, step: 0.01, value: 0 }, p1: { min: -1, max: 1, step: 0.01, value: 0 }, p2: { min: -1, max: 1, step: 0.01, value: 0 }, p3: { min: -1, max: 1, step: 0.01, value: 0 } });
 	}
 
 	setScaleStep (config) {
@@ -264,9 +266,9 @@ class Simplex {
 			/** confirm key is unique property **/
 			if (config.hasOwnProperty(key)) {
 				/** set the step for next value to 1 if it is an integer otherwise use the lowest number of the float and set to 1 **/
-				config[key].step = config[key].max % 1 ? parseFloat(config[key].max.toString().replace(/\d/g, '0').replace(/0$/, "1")) : 1;	
+				if (config[key].step === undefined) config[key].step = this[key] % 1 ? parseFloat(this[key].toString().replace(/\d/g, '0').replace(/0$/, "1")) : 1;	
 				/** set the value **/
-				config[key].value = key === "min" ? config[key].min : this[key];					
+				if (config[key].value === undefined) config[key].value = key === "min" ? config[key].min : this[key];					
 			}
 		}
 		/** return object **/
@@ -281,7 +283,7 @@ class Simplex {
 		/** set base config **/
 		config = config || {};
 		/** set base amplitude for constructor **/
-		this.amplitude = !isNaN(config.amplitude) ? config.amplitude : 1;
+		this.amplitude = !isNaN(config.amplitude) ? config.amplitude : 0.001;
 		/** set base frequency for constructor **/
 		this.frequency = !isNaN(config.frequency) ? config.frequency : 0.001;
 		/** set base min for constructor **/
