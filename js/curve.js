@@ -140,4 +140,29 @@ class Curve {
 		return curve(Curve.distance(x1, y1, x2, y2));
 	}
 
+	static bezier (t, p0, p1, p2, p3) {
+		/** @description: returns bezier curve value **/
+		/** @param: {t} is type {number} **/
+		/** @param: {p0} is type {number} **/
+		/** @param: {p1} is type {number} **/
+		/** @param: {p2} is type {number} **/ 
+		/** @param: {p3} is type {number} **/
+		/** @return: is type {number} **/
+		var u = 1 - t;
+		var tt = t * t;
+		var uu = u * u;
+		var uuu = uu * u;
+		var ttt = tt * t;
+		/** first term **/
+		var p = uuu * p0;
+		/** second term **/
+		p = p + 3 * uu * t * p1;
+		/** third term **/ 
+		p = p + 3 * u * tt * p2;
+		/** fourth term **/
+		p = p + ttt * p3;
+		/** return curve point **/
+		return p;
+	}
+
 }

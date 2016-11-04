@@ -3,7 +3,7 @@ var geography = {
 		psd_asset: "squares.psd",
 		tiles: [
 
-			/** ocean **/
+			
 			{	
 				class_name: "ocean",
 				type: "water",
@@ -49,7 +49,7 @@ var geography = {
 					grass: 0
 				}
 			},
-			/** sea **/
+
 			{
 				class_name: "sea",
 				type: "water",
@@ -110,7 +110,7 @@ var geography = {
 					grass: 0
 				}
 			},
-			/** coast **/
+
 			{
 				class_name: "coast",
 				psd_name: "coast_4",
@@ -167,7 +167,6 @@ var geography = {
 					grass: 0
 				}
 			},
-			/** wash **/
 			
 			{	
 				class_name: "wash",
@@ -184,7 +183,6 @@ var geography = {
 				}
 			},
 
-			/** sand **/
 			{	
 				class_name: "sand",
 				psd_name: "sand_2",
@@ -214,8 +212,6 @@ var geography = {
 				}
 			},
 			
-			
-			/** grass **/
 			{
 				class_name: "grass",
 				psd_name: "grass_6",
@@ -300,7 +296,7 @@ var geography = {
 					grass: 0
 				}
 			},
-			/** hill **/
+
 			{
 				class_name: "hill",
 				psd_name: "hill_4",
@@ -357,7 +353,7 @@ var geography = {
 					grass: 0
 				}
 			},
-			/** alpine **/ 
+
 			{
 				class_name: "alpine",
 				psd_name: "alpine_6",

@@ -47,7 +47,7 @@
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
-					{ __init__: true, columns: 80, rows: 60, scale: 10 });
+					{ __init__: true, columns: 60, rows: 60, scale: 10 });
 
 				/** set base graph of grid from default; use tile class for all nodes in graph **/
 				window.graph = new Graph(
@@ -90,7 +90,9 @@
 
 							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
-							return noise - Curve.sin(d, 0, 0.1);
+							var b = Curve.bezier(d, simplex.p0 || 0, simplex.p1 || 0, simplex.p2 || 0, simplex.p3 || 0);
+
+							return noise - (d - b);
 						}
 
 						var distribute = function (noise, amplitude) {
