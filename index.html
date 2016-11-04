@@ -95,7 +95,7 @@
 
 							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
-							return noise - Curve.bezier(d, simplex.p0 || 0,  simplex.p1 || 0, simplex.p2 || 0,  simplex.p3 || 0);
+							return noise - d - Curve.bezier(d, simplex.p0 || 0,  simplex.p1 || 0, simplex.p2 || 0,  simplex.p3 || 0);
 						}
 
 						var distribute = function (noise, amplitude) {
@@ -114,7 +114,7 @@
 						}
 						
 
-						var x = tile.column - tile.columns / 2;
+						var x = tile.column // - tile.columns / 2;
 						
 						var y = tile.row // - tile.rows;
 
