@@ -47,7 +47,7 @@
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
-					{ __init__: true, columns: 60, rows: 60, scale: 10 });
+					{ __init__: true, columns: 80, rows: 80, scale: 5 });
 
 				/** set base graph of grid from default; use tile class for all nodes in graph **/
 				window.graph = new Graph(
@@ -71,7 +71,7 @@
 
 				/** set base simplex processor for world generation **/
 				window.simplex = new Simplex({
-					amplitude: 0.010, frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0 });
+					frequency: 0.0110, persistence: 0.44, octaves: 3, max: textures.length, min: 0 });
 
 				/** set base path for testing **/
 				window.path = new Path(
@@ -79,6 +79,8 @@
 
 
 
+
+				
 				var adjust = simplex.getAdjustable();
 				
 				
@@ -132,7 +134,7 @@
 
 
 				createTerrain();
-
+				
 				
 				
 

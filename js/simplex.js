@@ -157,37 +157,41 @@ class Simplex {
 		return 70.14805770654148 * (n0 + n1 + n2);
 	}
 
-	noise2d (x, y, adjust, distribute, scale) {
+	static N2D (perm, permMod12, x, y, amplitude, frequency, persistence, octaves, min, max, adjust, distribute, normalise) {
 		/** @description: adjust base noise value for 2d noise **/
-		/** @param: {noise} is type {number} **/
+		/** @param: {perm} is type {Uint8Array} **/
+		/** @param: {permMod12} is type {Uint8Array} **/
+		/** @param: {x} is type {number} **/
+		/** @param: {y} is type {number} **/
+		/** @param: {amplitude} is type {number} **/
+		/** @param: {persistence} is type {number} **/
+		/** @param: {octaves} is type {integer} **/
+		/** @param: {min} is type {number} **/
+		/** @param: {max} is type {number} **/
 		/** @param: {adjust} is type {function} **/
 		/** @param: {distribute} is type {function} **/
-		/** @param: {scale} is type {function} **/
+		/** @param: {normalise} is type {function} **/
 		/** @return: is type {number} **/
 		/** set base adjust **/
 		adjust = typeof adjust === "function" ? adjust : function (n) { return n };
 		/** set base distribute **/
 		distribute = typeof distribute === "function" ? distribute : function (n, a) { return n / a };
 		/** set base scale **/
-		scale = typeof scale === "function" ? scale : function (n, min, max) { return min + ((n + 1) / 2) * (min - max); };
-		/** set copy of base amplitude **/
-		var amplitude = this.amplitude;
-		/** set copy of base frequency **/
-		var frequency = this.frequency;
-		/** set copy of base persistence **/
-		var persistence = this.persistence;
+		normalise = typeof normalise === "function" ? normalise : function (n, min, max) { return min + ((n + 1) / 2) * (min - max); };
+		/** set base octaves **/
+		octaves = octaves === 0 ? 1 : octaves;
 		/** set base noise value **/
 		var noise = 0;
 		/** set base max amplitude **/
 		var maxAmplitude = 0;
 		/** enumerate over config octaves **/
-		for (var i = 0; i < this.octaves; i++) {
+		for (var i = 0; i < octaves; i++) {
 			/** scale x value by copied frequency (center scale using: x - width / 2) **/
 			var xf = x * frequency;
 			/** scale y value by copied frequency (center scale using: y - height / 2) **/
 			var yf = y * frequency;
 			/** get raw noise (with possible adjustment) **/
-			var n = adjust(Simplex.RAW2D(this.perm, this.permMod12, xf, yf));
+			var n = adjust(Simplex.RAW2D(perm, permMod12, xf, yf));
 			/** set noise value and scale by copied amplitude **/
 			noise = noise + n * amplitude;
 			/** set new max amplitude **/
@@ -198,38 +202,31 @@ class Simplex {
 			frequency = frequency * 2;
 		};
 		/** return scaled noise **/
-  		return scale(distribute(noise, maxAmplitude), this.min, this.max);
+  		return normalise(distribute(noise, maxAmplitude), min, max);
+	}
+
+	noise2d (x, y, adjust, distribute, normalise) {
+		/** @description: adjust base noise value for 2d noise **/
+		/** @param: {noise} is type {number} **/
+		/** @param: {adjust} is type {function} **/
+		/** @param: {distribute} is type {function} **/
+		/** @param: {normalise} is type {function} **/
+		/** @return: is type {number} **/
+		return Simplex.N2D(this.perm, this.permMod12, x, y, this.amplitude, this.frequency, this.persistence, this.octaves, this.min, this.max, adjust, distribute, normalise);
 	}
 
 	seed () {
 		/** @description: generates random seeded points along calculation distance for smooth random distribution **/
-		/** set seed **/
-		var p = new Uint8Array(256);
-		/** populate seeded **/
-		for (var i = 0; i < 256; i++) {
-			/** **/
-			p[i] = i;
-		}
-		/** set seed random distribution **/
-		for (var i = 255; i > 0; i--) {
-			/** set new random seeds for perlin noise **/
-			var n = Math.floor((i + 1) * this.random());
-			/** set permutation for quadrant **/
-			var q = p[i];
-			/** **/
-			p[i] = p[n];
-			/** **/
-			p[n] = q;
-		}
-		/** set new binary array **/
+		this.points = new Uint8Array(256);
 		this.perm = new Uint8Array(512);
-		/** set new binary array **/
 		this.permMod12 = new Uint8Array(512);
-		/** set bytes **/
-		for (var i = 0; i < 512; i++) {
-			/** **/
-			this.perm[i] = p[i & 255];
-			/** **/
+		
+		for (var i = 0; i < 256; i++) {
+			this.points[i] = this.random() * 256;
+		}
+		
+		for (i = 0; i < 512; i++) {
+			this.perm[i] = this.points[i & 255];
 			this.permMod12[i] = this.perm[i] % 12;
 		}
 	}
@@ -241,7 +238,7 @@ class Simplex {
 		/** set base config **/
 		config = config || {};
 		/** assign scales to object **/
-		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence }, /*p0: { min: 0, max: 0 }, p0: { min: 0, max: 0 }, p1: { min: 0, max: 0 }, p2: { min: 0, max: 0 }, p3: { min: 0, max: 0 }*/ });
+		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 0, max: this.octaves }, amplitude: { min: 0, max: this.amplitude }, frequency: { min: 0, max: this.frequency }, persistence: { min: 0, max: this.persistence }, /*p0: { min: 0, max: 0 }, p0: { min: 0, max: 0 }, p1: { min: 0, max: 0 }, p2: { min: 0, max: 0 }, p3: { min: 0, max: 0 }*/ });
 	}
 
 	setScaleStep (config) {
@@ -270,9 +267,9 @@ class Simplex {
 		/** set base config **/
 		config = config || {};
 		/** set base amplitude for constructor **/
-		this.amplitude = 1;
+		this.amplitude = !isNaN(config.amplitude) ? config.amplitude : 1;
 		/** set base frequency for constructor **/
-		this.frequency = config.frequency || 0.001;
+		this.frequency = !isNaN(config.frequency) ? config.frequency : 0.001;
 		/** set base min for constructor **/
 		this.min = !isNaN(config.min) ? config.min : -1;
 		/** set base max for constructor **/
