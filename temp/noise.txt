@@ -2,7 +2,8 @@ noise notes:
 
 frequency:
 	- Frequency zoom:
-		- when supplying noise2d with x and y, using the formula (x - width / 2) centers the zoom for the x axis; same is true for the y axis (y - height / 2)
+		- when supplying noise2d with x and y, using the formula (x - width / 2) centers the zoom for the x axis; same is true for the y axis (y - height / 2). 
+			- this rule works for any corner. if you only use (x - width) you will zoom top right
 
 water:
 	- Curve.sin: 

@@ -114,9 +114,9 @@
 						}
 						
 
-						var x = tile.column// - parseInt(tile.columns / 2);
+						var x = tile.column - tile.columns / 2;
 						
-						var y = tile.row// - parseInt(tile.rows / 2);
+						var y = tile.row // - tile.rows;
 
 						var n = simplex.noise2d(x, y, adjust, distribute, normalise);
 
