@@ -11,10 +11,9 @@
 		
 		<section id="frame" class="col-xs-grow flex-xs justify-xs-center align-xs-center"></section>
 		
-		<section id="editor" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;">
-	
+		<section id="editor" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;"></section>
 
-		</section>
+		<section id="textures" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;"></section>
 
 		<script src="js/prototypes.js"></script>
 		<script src="js/math.js"></script>
@@ -35,16 +34,18 @@
 		<script src="js/terrain.js"></script>
 		<script type="text/javascript">
 
+
+
 			window.getScript("json/tiles_as.js", function () {
 
-				/** set base textures for world **/
-				window.textures = geography.tropic.tiles;
-
+				
 				/** set frame container **/
 				var frame = document.getElementById("frame");
 
 				/** set editor container **/
 				var editor = document.getElementById("editor");
+
+				var e = document.getElementById("textures");
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
@@ -72,27 +73,29 @@
 
 				/** set base simplex processor for world generation **/
 				window.simplex = new Simplex({
-					frequency: 0.0110, persistence: 0.44, octaves: 4, max: textures.length, min: 0 });
+					frequency: 0.0110, persistence: 0.44, octaves: 4 });
 
 				/** set base path for testing **/
 				window.path = new Path(
 					Object.assign(graph.__this__(), { __copy__: true }))
 
 
-
-
-				/** get adjustable mets **/				
-				var adjust = simplex.getAdjustable();
+				/** set base simplex textures **/
+				simplex.textures = geography.tropic.tiles;
+				/** set base texture range **/
+				simplex.range = Terrain.textureRange(simplex.textures);
+				/** set max to new **/
+				simplex.max = simplex.range.length;
+				/** set min to new **/
+				simplex.min = 0;
 				
-					
+				function terrainrange () {
 
-				function createTerrain () {
-					
+					simplex.max = simplex.range.length;
+
 					graph.getTiles(function (tile) {
 
-					
 						var adjust = function (noise) {
-
 
 							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
@@ -114,64 +117,33 @@
 							return noise;
 						}
 						
-
-						var x = tile.column// - tile.columns / 2;
+						var x = tile.column;
 						
-						var y = tile.row// - tile.rows / 2;
+						var y = tile.row;
 
 						var n = simplex.noise2d(x, y, adjust, distribute, normalise);
 
-						var t = textures[parseInt(Math.abs(n))];
+						var r = simplex.range[n];
+
+						var t = simplex.textures[r];
 
 						var c = t.colour ? t.colour.hex : t.hex;
 
 						base.drawGeometry("fill", tile.x, tile.y, tile.width, tile.height, { fillStyle: c });
 						
-
 					});
 				}
 
 
 				
+
+				Editor.noise(editor, simplex.getAdjustable(), simplex, terrainrange);
+				Editor.textures(e, simplex, Terrain.textureRange, terrainrange)
+
+
+				terrainrange();
+
 				
-				var createProceduralTerrain = function () {
-
-					for (var i = 0; i < textures.length; i++) {
-						// set simplex config for procedural image
-						var sx = { octaves: 4, frequency: 0.15, persistence: 1, perm: simplex.perm, permMod12: simplex.permMod12 };
-						// s, width, height, scale, colour, dithers 
-						textures[i].img = Terrain.img(sx, 10, 10, 10, textures[i].colour.hex);
-					}
-
-					graph.getTiles(function (tile) {
-
-						var x = tile.column - parseInt(tile.columns / 2);
-							
-						var y = tile.row - parseInt(tile.rows / 2);
-
-						var n = simplex.noise2d(x, y);
-
-						var t = textures[Math.abs(parseInt(n))];
-
-						var image = new Image();
-						image.onload = function() {
-							base.context.drawImage(image, tile.x, tile.y, tile.width, tile.height)
-						};
-						image.src = t.img;
-
-					});
-				
-				}
-
-			//	createProceduralTerrain()
-			//	Editor.noise(editor, adjust, simplex, createProceduralTerrain);
-				
-
-
-				Editor.noise(editor, adjust, simplex, createTerrain);
-				createTerrain();
-			
-
 			}); 
 
 

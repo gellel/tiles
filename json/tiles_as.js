@@ -17,7 +17,8 @@ var geography = {
 					fire: 3,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "ocean",
@@ -32,7 +33,8 @@ var geography = {
 					fire: 2,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "ocean",
@@ -47,7 +49,8 @@ var geography = {
 					fire: 1,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 
 			{
@@ -63,7 +66,8 @@ var geography = {
 					fire: 6,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "sea",
@@ -78,7 +82,8 @@ var geography = {
 					fire: 5,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "sea",
@@ -93,7 +98,8 @@ var geography = {
 					fire: 4,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "sea",
@@ -108,7 +114,8 @@ var geography = {
 					fire: 3,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 
 			{
@@ -123,7 +130,8 @@ var geography = {
 					fire: 2,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "coast",
@@ -137,7 +145,8 @@ var geography = {
 					fire: 1,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "coast",
@@ -151,7 +160,8 @@ var geography = {
 					fire: 2,
 					water: 0,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "coast",
@@ -165,7 +175,8 @@ var geography = {
 					fire: 1,
 					water: 1,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			
 			{	
@@ -180,7 +191,8 @@ var geography = {
 					fire: 1,
 					water: 1,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 
 			{	
@@ -195,7 +207,8 @@ var geography = {
 					fire: 0,
 					water: 1,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "sand",
@@ -209,7 +222,8 @@ var geography = {
 					fire: 0,
 					water: 2,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			
 			{
@@ -224,7 +238,8 @@ var geography = {
 					fire: 0,
 					water: 1,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "grass",
@@ -238,7 +253,8 @@ var geography = {
 					fire: 0,
 					water: 2,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "grass",
@@ -252,7 +268,8 @@ var geography = {
 					fire: 0,
 					water: 3,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "grass",
@@ -266,7 +283,8 @@ var geography = {
 					fire: 0,
 					water: 4,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "grass",
@@ -280,7 +298,8 @@ var geography = {
 					fire: 0,
 					water: 5,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "grass",
@@ -294,7 +313,8 @@ var geography = {
 					fire: 0,
 					water: 6,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 
 			{
@@ -309,7 +329,8 @@ var geography = {
 					fire: 1,
 					water: 1,
 					grass: 1
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "hill",
@@ -323,7 +344,8 @@ var geography = {
 					fire: 1,
 					water: 2,
 					grass: 1
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "hill",
@@ -337,7 +359,8 @@ var geography = {
 					fire: 0,
 					water: 3,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "hill",
@@ -351,7 +374,8 @@ var geography = {
 					fire: 0,
 					water: 4,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 
 			{
@@ -366,7 +390,8 @@ var geography = {
 					fire: 0,
 					water: 1,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "alpine",
@@ -380,7 +405,8 @@ var geography = {
 					fire: 0,
 					water: 2,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "alpine",
@@ -394,7 +420,8 @@ var geography = {
 					fire: 0,
 					water: 3,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "alpine",
@@ -408,7 +435,8 @@ var geography = {
 					fire: 0,
 					water: 4,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			},
 			{
 				class_name: "alpine",
@@ -422,7 +450,8 @@ var geography = {
 					fire: 0,
 					water: 5,
 					grass: 0
-				}
+				},
+				tile_range: 1
 			}
 
 		]

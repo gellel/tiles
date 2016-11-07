@@ -1,6 +1,6 @@
 class Terrain {
-	
-	static img (s, width, height, scale, colour, dithers, RGB) {
+
+	static textureImage (s, width, height, scale, colour, dithers, RGB) {
 		/** @description: proceedurally creates colour texture **/
 		/** @param: {s} is type {object} **/
 		/** @param: {width} is type {integer} **/
@@ -64,6 +64,52 @@ class Terrain {
 		}
 		/* return data string **/
 		return c.toDataURL();
+	}
+
+	static textureRange (t) {
+		/** @description: creates an extended texture lookup array **/
+		/** set storage for keys **/
+		var k = {};
+		/** set new array for texture ranges **/
+		var s = [];	
+		/** enumerate over textures **/
+		for (var i = 0, len = t.length; i < len; i++) {
+			/** set range object **/
+			var r = {};
+			/** set range end **/
+			r.end = t[i].tile_range || 1;
+			/** set range start (based on position in array and repetitions of previous item) **/
+			r.start = t[i - 1] ? k[i - 1].end : 0; 
+			/** create end point from range **/
+			r.end = r.start + r.end;
+			/** set repetitions **/
+			r.range = r.end - r.start;
+			/** set key lookup for next selection **/
+			k[i] = r;
+			/** confirm that range is not zero **/
+			if (t[i].tile_range) {
+				/** enumerate over ranges **/
+				for (var j = 0; j < r.range; j++) {
+					/** push required into range **/
+					s.push(i);
+				}
+			}
+		}
+		/** return new array **/
+		return s;
+	}
+
+	create () {
+
+
+	}
+
+	constructor (config) {
+		config = config || {};
+
+		this.textures = config.textures || [{hex: "cyan"}, {hex: "magenta"}, {hex: "yellow"}, {hex: "aquamarine"}]
+		this.range = Terrain.textureRange(this.textures);
+		this.grid = config.grid instanceof Array ? config.grid : [{x: 0, y: 0, width: 10, height: 10}, {x: 10, y: 0, width: 10, height: 10}, {x: 20, y: 0, width: 10, height: 10}, {x: 30, y: 0, width: 10, height: 10}];
 	}
 
 }

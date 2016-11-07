@@ -151,82 +151,48 @@ class Editor {
 		}
 	}
 
-	static curve (parent, properties, curve, update) {
+	
+
+	static textures (parent, simplex, textureUpdate, update) {
+		/** @description: static method to generate noise editor for map **/
 		/** @param: {parent} is type {HTMLNode} **/
 		/** @param: {properties} is type {object} **/
-		/** @param: {curve} is type {class} **/
+		/** @param: {textureUpdate} is type {function} **/
 		/** @param: {update} is type {function} **/
 		/** set base parent node **/
 		parent = parent || document.body;
 		/** set base properties object **/
-		properties = properties || {};
-		/** **/
-		parent.insertNode("div", { id: "curve" }, function (div) {
-			/** set container for title **/
-			div.insertNode("div", { class: "title-container" }, function (div) {
-				/** create title **/
-				Editor.title(div, { title: "scale curve" });
-			});
-			/** set container for noise adjustors **/
-			div.insertNode("div", { class: "edits-container" }, function (div) {
-				/** create flex container **/
-				div.insertNode("div", { class: "flex-xs dir-xs-row" }, function (div) {
-					/** create columns editor **/
-					Editor.field(div, { key: true, reference: "use", type: "checkbox", name: "arc", value: properties.arc }, { change: function () {
-						properties.arc = this.checked;
-						update();
-					}});
-					/** create columns editor **/
-					Editor.field(div, { key: true, name: "method", type: "text", name: "curve", value: properties.curve }, { input: function () {
-						if (curve[this.value]) {
-							properties.curve = this.value;
-							update();
-						}
-					}});
+		var properties = simplex.textures || {};
+		/** iterate over properties **/
+		for (var i = 0, len = properties.length; i < len; i++) {
+			/** set reference id for field **/
+			parent.insertNode("div", { id: properties[i].psd_name }, function (div) {
+				/** set container for title **/
+				div.insertNode("div", { class: "title-container" }, function (div) {
+					/** create title **/
+					Editor.title(div, { title: properties[i].psd_name });
+				});
+				/** set container for noise adjustors **/
+				div.insertNode("div", { class: "edits-container" }, function (div) {
+					/** create flex container **/
+					div.insertNode("div", { class: "flex-xs dir-xs-col"}, function (div) {
+						/** create field for value with chang event listener to repaint terrain **/
+						Editor.field(div, { name: "value", min: 0, step: 1, value: properties[i].tile_range, "data-parent": i }, { change: function () {
+							/** get lookup key from bound **/
+							var key = parseInt(this.getAttribute("data-parent"));
+							/** update simplex object **/
+							properties[key].tile_range = parseInt(this.value);
+							/** update ranges **/
+							simplex.range = textureUpdate(properties);
+							/** update max texture length to reflect scaled textures **/
+							document.getElementById("max").querySelector("input[name='value']").value = simplex.range.length
+							/** repaint terrain **/
+							if (typeof update === "function") update();
+						}});
+					});
 				});
 			});
-		});
-	}
-
-	static grid (parent, properties, update) {
-		/** @description: static method to generate grid editor for map **/
-		/** @param: {parent} is type {HTMLNode} **/
-		/** @param: {properties} is type {object} **/
-		/** @param: {noise} is type {object} **/
-		/** @param: {update} is type {function} **/
-		/** set base parent node **/
-		parent = parent || document.body;
-		/** set base properties object **/
-		properties = properties || {};
-		/** **/
-		parent.insertNode("div", { id: "grid" }, function (div) {
-			/** set container for title **/
-			div.insertNode("div", { class: "title-container" }, function (div) {
-				/** create title **/
-				Editor.title(div, { title: "grid" });
-			});
-			/** set container for noise adjustors **/
-			div.insertNode("div", { class: "edits-container" }, function (div) {
-				/** create flex container **/
-				div.insertNode("div", { class: "flex-xs dir-xs-row" }, function (div) {
-					/** create columns editor **/
-					Editor.field(div, { key: true, name: "cols", value: properties.columns });
-					/** create rows editor **/
-					Editor.field(div, { key: true, name: "rows", value: properties.rows });
-					/** create scale editor **/
-					Editor.field(div, { key: true, name: "scale", value: properties.scale });
-				});
-			});
-		});
-	}
-
-
-	static fieldset (parent, properties, functs) {
-
-	}
-
-	static create (parent, properties, simplex, update) {
-
+		}
 	}
 
 	constructor () {
