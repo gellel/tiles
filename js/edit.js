@@ -205,8 +205,4 @@ class Editor {
 		}
 	}
 
-	constructor () {
-		
-	}
-
 }
