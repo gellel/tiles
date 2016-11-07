@@ -151,8 +151,6 @@ class Editor {
 		}
 	}
 
-	
-
 	static textures (parent, simplex, textureUpdate, update) {
 		/** @description: static method to generate noise editor for map **/
 		/** @param: {parent} is type {HTMLNode} **/
