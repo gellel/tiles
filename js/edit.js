@@ -191,11 +191,11 @@ class Editor {
 						}});
 
 						/** create field for value with chang event listener to repaint terrain **/
-						Editor.field(div, { type: "color", name: "colour", min: 0, step: 1, value: properties[i].hex, "data-parent": i }, { change: function () {
+						Editor.field(div, { type: "color", name: "colour", min: 0, step: 1, value: properties[i].colour, "data-parent": i }, { change: function () {
 							/** get lookup key from bound **/
 							var key = parseInt(this.getAttribute("data-parent"));
 							/** update property **/
-							properties[key].hex = this.value;
+							properties[key].colour = this.value;
 							/** repaint terrain **/
 							if (typeof update === "function") update();
 						}});
