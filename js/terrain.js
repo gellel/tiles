@@ -19,7 +19,6 @@ class Terrain {
 		scale = !isNaN(scale) ? scale : 10;
 		/** set base colour string **/
 		colour = typeof colour === "string" ? colour : "blue";
-
 		/** set dithers for texture **/
 		dithers = !isNaN(dithers) ? dithers : MATH.rint(5, 15);
 		/** set dithers container **/
@@ -31,10 +30,8 @@ class Terrain {
 			/** push value to dithers **/
 			dd.push(Canvas.RGBA(RGB, RGB, RGB, MATH.rfloat(0.1, 0.3) ));
 		}
-
 		/** sort dithers for distribution **/
 		dd.sort();
-
 		/** create canvas for painting simplex texture **/
 		var c = document.createElement("canvas");
 		/** assign rendering bitmap **/
@@ -45,7 +42,6 @@ class Terrain {
 		ctx.fillStyle = colour;
 		/** paint base colour to canvas **/
 		ctx.fillRect(0, 0, width * scale, height * scale);
-
 		/** enumerate over x distance **/
 		for (var i = 0; i < width; i++) {
 			/** enumerate over y distance **/
@@ -97,19 +93,6 @@ class Terrain {
 		}
 		/** return new array **/
 		return s;
-	}
-
-	create () {
-
-
-	}
-
-	constructor (config) {
-		config = config || {};
-
-		this.textures = config.textures || [{hex: "cyan"}, {hex: "magenta"}, {hex: "yellow"}, {hex: "aquamarine"}]
-		this.range = Terrain.textureRange(this.textures);
-		this.grid = config.grid instanceof Array ? config.grid : [{x: 0, y: 0, width: 10, height: 10}, {x: 10, y: 0, width: 10, height: 10}, {x: 20, y: 0, width: 10, height: 10}, {x: 30, y: 0, width: 10, height: 10}];
 	}
 
 }
