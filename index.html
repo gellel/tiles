@@ -10,9 +10,7 @@
 	<body class="vh-xs-12 flex-xs dir-xs-row" style="overflow: hidden;">
 		
 		<section id="frame" class="col-xs-grow flex-xs justify-xs-center align-xs-center"></section>
-		
 		<section id="editor" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;"></section>
-
 		<section id="textures" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;"></section>
 
 		<script src="js/prototypes.js"></script>
@@ -35,7 +33,6 @@
 		<script type="text/javascript">
 
 
-
 			window.getScript("json/tiles_as.js", function () {
 
 				
@@ -45,7 +42,8 @@
 				/** set editor container **/
 				var editor = document.getElementById("editor");
 
-				var e = document.getElementById("textures");
+				/** set textures container **/
+				var textures = document.getElementById("textures");
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
@@ -89,6 +87,7 @@
 				/** set min to new **/
 				simplex.min = 0;
 				
+
 				function terrainrange () {
 
 					simplex.max = simplex.range.length;
@@ -138,7 +137,7 @@
 				
 
 				Editor.noise(editor, simplex.getAdjustable(), simplex, terrainrange);
-				Editor.textures(e, simplex, Terrain.textureRange, terrainrange)
+				Editor.textures(textures, simplex, Terrain.textureRange, terrainrange)
 
 
 				terrainrange();
