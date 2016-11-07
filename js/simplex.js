@@ -157,7 +157,7 @@ class Simplex {
 		return 70.14805770654148 * (n0 + n1 + n2);
 	}
 
-	static N2D (perm, permMod12, x, y, amplitude, frequency, persistence, octaves, min, max, adjust, distribute, normalise) {
+	static N2D (perm, permMod12, x, y, amplitude, frequency, persistence, octaves, min, max, offsetX, offsetY, adjust, distribute, normalise) {
 		/** @description: adjust base noise value for 2d noise **/
 		/** @param: {perm} is type {Uint8Array} **/
 		/** @param: {permMod12} is type {Uint8Array} **/
@@ -188,6 +188,10 @@ class Simplex {
 		min = !isNaN(min) ? min : -1;
 		/** set base max **/
 		max = !isNaN(max) ? max : 1;
+		/** set base offset x **/
+		offsetX = !isNaN(offsetX) ? offsetX : 0;
+		/** set base offset y **/
+		offsetY = !isNaN(offsetY) ? offsetY : 0;
 		/** set base amplitude **/
 		var a = 1;
 		/** set base noise value **/
@@ -197,9 +201,9 @@ class Simplex {
 		/** enumerate over config octaves **/
 		for (var i = 0; i < octaves; i++) {
 			/** scale x value by copied frequency (center scale using: x - width / 2) **/
-			var xf = x * frequency;
+			var xf = x * frequency + offsetX;
 			/** scale y value by copied frequency (center scale using: y - height / 2) **/
-			var yf = y * frequency;
+			var yf = y * frequency + offsetY;
 			/** get raw noise (with possible adjustment) **/
 			var n = adjust(Simplex.RAW2D(perm, permMod12, xf, yf));
 			/** set noise value and scale by copied amplitude **/
@@ -222,7 +226,7 @@ class Simplex {
 		/** @param: {distribute} is type {function} **/
 		/** @param: {normalise} is type {function} **/
 		/** @return: is type {number} **/
-		return Simplex.N2D(this.perm, this.permMod12, x, y, this.amplitude, this.frequency, this.persistence, this.octaves, this.min, this.max, adjust, distribute, normalise);
+		return Simplex.N2D(this.perm, this.permMod12, x, y, this.amplitude, this.frequency, this.persistence, this.octaves, this.min, this.max, this.offsetX, this.offsetY, adjust, distribute, normalise);
 	}
 
 	seed () {
@@ -254,7 +258,7 @@ class Simplex {
 		/** set base config **/
 		config = config || {};
 		/** assign scales to object **/
-		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 1, max: this.octaves }, amplitude: { min: 0, max: this.amplitude < 1 ? 1 : this.amplitude }, frequency: { min: 0, max: this.frequency < 1 ? 1 : this.frequency }, persistence: { min: 0, max: this.persistence < 1 ? 1 : this.persistence }, p0: { min: -1, max: 1, step: 0.01, value: 0 }, p0: { min: -1, max: 1, step: 0.01, value: 0 }, p1: { min: -1, max: 1, step: 0.01, value: 0 }, p2: { min: -1, max: 1, step: 0.01, value: 0 }, p3: { min: -1, max: 1, step: 0.01, value: 0 } });
+		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 1, max: this.octaves }, amplitude: { min: 0, max: this.amplitude < 1 ? 1 : this.amplitude }, frequency: { min: 0, max: this.frequency < 1 ? 1 : this.frequency }, persistence: { min: 0, max: this.persistence < 1 ? 1 : this.persistence }, offsetX: { min: -1, max: 1, value: 0, step: 0.001 }, offsetY: { min: -1, max: 1, value: 0, step: 0.001 }, p0: { min: -1, max: 1, step: 0.01, value: 0 }, p0: { min: -1, max: 1, step: 0.01, value: 0 }, p1: { min: -1, max: 1, step: 0.01, value: 0 }, p2: { min: -1, max: 1, step: 0.01, value: 0 }, p3: { min: -1, max: 1, step: 0.01, value: 0 } });
 	}
 
 	setScaleStep (config) {

@@ -93,6 +93,7 @@
 					
 						var adjust = function (noise) {
 
+
 							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
 							return noise - d - Curve.bezier(d, simplex.p0 || 0,  simplex.p1 || 0, simplex.p2 || 0,  simplex.p3 || 0);
@@ -114,14 +115,12 @@
 						}
 						
 
-						var x = tile.column // - tile.columns / 2;
+						var x = tile.column// - tile.columns / 2;
 						
-						var y = tile.row // - tile.rows;
+						var y = tile.row// - tile.rows / 2;
 
 						var n = simplex.noise2d(x, y, adjust, distribute, normalise);
 
-					
-						
 						var t = textures[parseInt(Math.abs(n))];
 
 						var c = t.colour ? t.colour.hex : t.hex;
@@ -166,10 +165,12 @@
 
 			//	createProceduralTerrain()
 			//	Editor.noise(editor, adjust, simplex, createProceduralTerrain);
+				
+
+
 				Editor.noise(editor, adjust, simplex, createTerrain);
 				createTerrain();
-				
-				
+			
 
 			}); 
 
