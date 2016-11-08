@@ -258,7 +258,7 @@ class Simplex {
 		/** set base config **/
 		config = config || {};
 		/** assign scales to object **/
-		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 1, max: this.octaves }, amplitude: { min: 0, max: this.amplitude < 1 ? 1 : this.amplitude }, frequency: { min: 0, max: this.frequency < 1 ? 1 : this.frequency }, persistence: { min: 0, max: this.persistence < 1 ? 1 : this.persistence }, offsetX: { min: -1, max: 1, value: 0, step: 0.001 }, offsetY: { min: -1, max: 1, value: 0, step: 0.001 } });
+		return this.setScaleStep({ min: { min: this.min, max: this.max }, max: { min: this.min, max: this.max }, octaves: { min: 1, max: this.octaves }, amplitude: { min: 0, max: this.amplitude < 1 ? 1 : this.amplitude }, frequency: { min: 0, max: this.frequency < 1 ? 1 : this.frequency }, persistence: { min: 0, max: this.persistence < 1 ? 1 : this.persistence }, offsetX: { min: -1, max: 1, value: 0, step: 0.01 }, offsetY: { min: -1, max: 1, value: 0, step: 0.01 } });
 	}
 
 	setScaleStep (config) {

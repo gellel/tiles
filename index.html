@@ -96,13 +96,15 @@
 
 						var adjust = function (noise) {
 
-							var d = !simplex.f ? 0 : Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
+							var d = 0;
 
-							d = !simplex.a && !simplex.b ? 0 : Curve.sin(d, simplex.a || 0, simplex.b || 0);
+							if (simplex.fallout) d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
-							noise = noise - d;
+							if (simplex.sin) d = Curve.sin(d, simplex.a, simplex.b);
 
-							return noise - Curve.bezier(noise, simplex.p0 || 0,  simplex.p1 || 0, simplex.p2 || 0,  simplex.p3 || 0);
+							if (simplex.bezier) d = Curve.bezier((d ? d : noise), simplex.p0,  simplex.p1, simplex.p2,  simplex.p3)
+						
+							return noise - d;
 						}
 
 						var distribute = function (noise, amplitude) {
@@ -143,7 +145,7 @@
 				Editor.noise(editor, simplex.getAdjustable(), simplex, terrainrange);
 				Editor.noise(curves, Curve.bezierMatrix(), simplex, terrainrange);
 				Editor.noise(curves, Curve.sinMatrix(), simplex, terrainrange);
-				Editor.toggle(curves, { falloff: { key: "f" } }, simplex, terrainrange);
+				Editor.toggle(curves, { fallout: { key: "fallout" }, sin: { key: "sin" }, bezier: { key: "bezier" } }, simplex, terrainrange);
 
 				terrainrange();
 

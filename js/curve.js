@@ -134,6 +134,15 @@ class Curve {
 		/** @param: {p2} is type {number} **/ 
 		/** @param: {p3} is type {number} **/
 		/** @return: is type {number} **/
+		/** handle arguments **/
+		/** set base point **/
+		p0 = !isNaN(p0) ? p0 : 0;
+		/** set base point **/
+		p1 = !isNaN(p1) ? p1 : 0;
+		/** set base point **/
+		p2 = !isNaN(p2) ? p2 : 0;
+		/** set base point **/
+		p3 = !isNaN(p3) ? p3 : 0;
 		var u = 1 - t;
 		var tt = t * t;
 		var uu = u * u;
@@ -153,12 +162,14 @@ class Curve {
 
 	static bezierMatrix () {
 		/** @description: create handles for editing bezier **/
+		/** @return: is type {object} **/
 		return { p0: { min: -1, max: 1, step: 0.01, value: 0 }, p1: { min: -1, max: 1, step: 0.01, value: 0 }, p2: { min: -1, max: 1, step: 0.01, value: 0 }, p3: { min: -1, max: 1, step: 0.01, value: 0 } };
 	}
 
 	static sinMatrix () {
 		/** @description: create handles for editing sin curve **/
-		return { a: { min: -3, max: 3, step: 0.01, value: 0 }, b: { min: -2.2, max: 2.2, step: 0.01, value: 0 } }; 
+		/** @return: is type {object} **/
+		return { a: { min: -3, max: 3, step: 0.001, value: 0 }, b: { min: -2.2, max: 2.2, step: 0.001, value: 0 } }; 
 	}
 
 }

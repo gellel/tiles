@@ -175,13 +175,11 @@ class Editor {
 					/** create flex container **/
 					div.insertNode("div", { class: "flex-xs dir-xs-row" }, function (div) {
 						/** iterate over keys of property object **/
-						
-						console.log(properties[key])
-
-						Editor.field(div, { type: "checkbox", key: true, name: "use", value: properties[key].value, "data-parent": key }, { change: function () {
-							noise[properties[key].key] = this.checked;
-
-							console.log(noise[properties[key].key] )
+						Editor.field(div, { type: "checkbox", key: true, name: "use", "data-parent": key }, { change: function () {
+							/** update simplex object **/
+							noise[this.getAttribute("data-parent")] = this.checked;
+							/** repaint terrain **/
+							if (typeof update === "function") update();
 						}});
 					});
 				});
