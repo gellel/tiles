@@ -1,5 +1,9 @@
 noise notes: 
 
+distribution:
+	- Noise distribution:
+		- when returning noise via "distribution" function, avoiding the division allows the noise returned to step scale instead of range scale.
+
 frequency:
 	- Frequency zoom:
 		- when supplying noise2d with x and y, using the formula (x - width / 2) centers the zoom for the x axis; same is true for the y axis (y - height / 2). 
