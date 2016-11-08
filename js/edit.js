@@ -151,6 +151,44 @@ class Editor {
 		}
 	}
 
+	static toggle (parent, properties, noise, update) {
+		/** @description: static method to generate noise editor for map **/
+		/** @param: {parent} is type {HTMLNode} **/
+		/** @param: {properties} is type {object} **/
+		/** @param: {noise} is type {object} **/
+		/** @param: {update} is type {function} **/
+		/** set base parent node **/
+		parent = parent || document.body;
+		/** set base properties object **/
+		properties = properties || {};
+		/** iterate over properties **/
+		for (var key in properties) {
+			/** set reference id for field **/
+			parent.insertNode("div", { id: key }, function (div) {
+				/** set container for title **/
+				div.insertNode("div", { class: "title-container" }, function (div) {
+					/** create title **/
+					Editor.title(div, { title: key });
+				});
+				/** set container for noise adjustors **/
+				div.insertNode("div", { class: "edits-container" }, function (div) {
+					/** create flex container **/
+					div.insertNode("div", { class: "flex-xs dir-xs-row" }, function (div) {
+						/** iterate over keys of property object **/
+						
+						console.log(properties[key])
+
+						Editor.field(div, { type: "checkbox", key: true, name: "use", value: properties[key].value, "data-parent": key }, { change: function () {
+							noise[properties[key].key] = this.checked;
+
+							console.log(noise[properties[key].key] )
+						}});
+					});
+				});
+			});
+		}
+	}
+
 	static textures (parent, simplex, textureUpdate, update) {
 		/** @description: static method to generate noise editor for map **/
 		/** @param: {parent} is type {HTMLNode} **/
@@ -187,7 +225,6 @@ class Editor {
 							/** repaint terrain **/
 							if (typeof update === "function") update();
 						}});
-
 						/** create field for value with chang event listener to repaint terrain **/
 						Editor.field(div, { type: "color", name: "colour", min: 0, step: 1, value: properties[i].colour, "data-parent": i }, { change: function () {
 							/** get lookup key from bound **/

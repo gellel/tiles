@@ -126,20 +126,6 @@ class Curve {
 		return sin;
 	}
 
-	static arc (x1, y1, x2, y2, curve) {
-		/** @description: returns falloff distance with smoothing **/
-		/** @param: {x1} is type {number} **/
-		/** @param: {y1} is type {number} **/
-		/** @param: {x2} is type {number} **/
-		/** @param: {y2} is type {number} **/
-		/** @param: {curve} is type {function} or {string} **/
-		/** @return: is type {number} **/
-		/** handle arguments **/
-		curve = typeof curve === "function" ? curve : typeof curve === "string" ? Curve[curve] : Curve.linear;
-		/** return fall off **/
-		return curve(Curve.distance(x1, y1, x2, y2));
-	}
-
 	static bezier (t, p0, p1, p2, p3) {
 		/** @description: returns bezier curve value **/
 		/** @param: {t} is type {number} **/
@@ -163,6 +149,16 @@ class Curve {
 		p = p + ttt * p3;
 		/** return curve point **/
 		return p;
+	}
+
+	static bezierMatrix () {
+		/** @description: create handles for editing bezier **/
+		return { p0: { min: -1, max: 1, step: 0.01, value: 0 }, p1: { min: -1, max: 1, step: 0.01, value: 0 }, p2: { min: -1, max: 1, step: 0.01, value: 0 }, p3: { min: -1, max: 1, step: 0.01, value: 0 } };
+	}
+
+	static sinMatrix () {
+		/** @description: create handles for editing sin curve **/
+		return { a: { min: -3, max: 3, step: 0.01, value: 0 }, b: { min: -2.2, max: 2.2, step: 0.01, value: 0 } }; 
 	}
 
 }

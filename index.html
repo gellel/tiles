@@ -10,8 +10,9 @@
 	<body class="vh-xs-12 flex-xs dir-xs-row" style="overflow: hidden;">
 		
 		<section id="frame" class="col-xs-grow flex-xs justify-xs-center align-xs-center"></section>
-		<section id="editor" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;"></section>
-		<section id="textures" class="col-xs-auto flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border: 1px solid #ececec;"></section>
+		<section id="curves" class="col-xs-3 flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border-left: 1px solid #ececec;"></section>
+		<section id="editor" class="col-xs-3 flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border-left: 1px solid #ececec;"></section>
+		<section id="textures" class="col-xs-1 flex-xs dir-xs-col tp-xs-2 bp-xs-2" style="overflow-y: scroll; background-color: white; border-left: 1px solid #ececec;"></section>
 
 		<script src="js/prototypes.js"></script>
 		<script src="js/math.js"></script>
@@ -35,15 +36,14 @@
 
 			window.getScript("json/tiles_as.js", function () {
 
-				
 				/** set frame container **/
 				var frame = document.getElementById("frame");
-
 				/** set editor container **/
 				var editor = document.getElementById("editor");
-
 				/** set textures container **/
 				var textures = document.getElementById("textures");
+				/** set curves container **/
+				var curves = document.getElementById("curves");
 
 				/** set base grid measurements **/
 				window.grid = new Grid(
@@ -96,9 +96,13 @@
 
 						var adjust = function (noise) {
 
-							var d = Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
+							var d = !simplex.f ? 0 : Curve.distance(tile.column, tile.row, tile.columns, tile.rows);
 
-							return noise - d - Curve.bezier(d, simplex.p0 || 0,  simplex.p1 || 0, simplex.p2 || 0,  simplex.p3 || 0);
+							d = !simplex.a && !simplex.b ? 0 : Curve.sin(d, simplex.a || 0, simplex.b || 0);
+
+							noise = noise - d;
+
+							return noise - Curve.bezier(noise, simplex.p0 || 0,  simplex.p1 || 0, simplex.p2 || 0,  simplex.p3 || 0);
 						}
 
 						var distribute = function (noise, amplitude) {
@@ -135,10 +139,11 @@
 
 
 				
-
+				Editor.textures(textures, simplex, Terrain.textureRange, terrainrange);
 				Editor.noise(editor, simplex.getAdjustable(), simplex, terrainrange);
-				Editor.textures(textures, simplex, Terrain.textureRange, terrainrange)
-
+				Editor.noise(curves, Curve.bezierMatrix(), simplex, terrainrange);
+				Editor.noise(curves, Curve.sinMatrix(), simplex, terrainrange);
+				Editor.toggle(curves, { falloff: { key: "f" } }, simplex, terrainrange);
 
 				terrainrange();
 
