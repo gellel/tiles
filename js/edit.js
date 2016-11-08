@@ -63,7 +63,7 @@ class Editor {
 							/** remove key from item **/
 							delete properties.key;
 							/** set item to 22% of container size **/
-							div.insertNode("div", { class: "col-xs-4", style: "background-color: whitesmoke;" }, function (div) {
+							div.insertNode("div", { class: "col-xs-auto", style: "background-color: whitesmoke;" }, function (div) {
 								/** set y axis padding **/
 								div.insertNode("div", { class: "tp-xs-2 bp-xs-2" }, function (div) {
 									/** set x axis padding **/
@@ -114,7 +114,7 @@ class Editor {
 					Editor.title(div, { title: key });
 				});
 				/** set container for noise adjustors **/
-				div.insertNode("div", { class: "edits-container" }, function (div) {
+				div.insertNode("div", { class: "flex-xs dir-xs-col" }, function (div) {
 					/** create flex container **/
 					div.insertNode("div", { class: "flex-xs dir-xs-row" }, function (div) {
 						/** iterate over keys of property object **/

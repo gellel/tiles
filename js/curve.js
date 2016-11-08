@@ -169,7 +169,7 @@ class Curve {
 	static sinMatrix () {
 		/** @description: create handles for editing sin curve **/
 		/** @return: is type {object} **/
-		return { a: { min: -3, max: 3, step: 0.001, value: 0 }, b: { min: -2.2, max: 2.2, step: 0.001, value: 0 } }; 
+		return { a: { min: 0, max: 5, step: 0.001, value: 0 }, b: { min: 0, max: 5, step: 0.001, value: 0 } }; 
 	}
 
 }

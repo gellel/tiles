@@ -21,23 +21,6 @@ class Canvas extends Grid {
 		return "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
 	}
 
-	static RandomRBGInt (min) {
-		/** @description: creates a rgb integer using supplied arguments with 255 as ceiling **/
-		/** @param: {int} is type {integer} **/
-		/** @return: is type {integer} **/
-		return MATH.rint(min, 255);
-	}
-
-	static RandomAlphaInt (pmin, pmax, smin, smax) {
-		/** @description: creates a alpha channel integer using supplied arguments with 1.0 as ceiling **/
-		/** @param: {pmin} is type {integer} **/
-		/** @param: {pmax} is type {integer} **/
-		/** @param: {smin} is type {integer} **/
-		/** @param: {smax} is type {integer} **/
-		/** @return: is type {string} **/
-		return "0" + "." + MATH.rint(pmin, pmax) + MATH.rint(smin, smax);
-	}
-
 	static attributes (grid) {
 		/** @description: returns base object for calculation **/
 		/** @param: grid is type {object} **/
